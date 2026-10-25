@@ -371,6 +371,8 @@ npx.cmd --yes lighthouse@13.5.0 http://127.0.0.1:4321/ --preset=desktop --only-c
 
 **Released.** The site is live at <https://chessunited.pages.dev>, verified over
 HTTPS, and meets the Lighthouse targets on every indexable page. The open items
-are source control (no GitHub repository is connected), the club's own domain,
+are automatic deploys (the repository exists at
+<https://github.com/RammyJo/chessunited> but is not yet linked to the Pages
+project), the club's own domain,
 cross-browser and assistive-technology testing, and routine content upkeep (event
 dates and poster prices).

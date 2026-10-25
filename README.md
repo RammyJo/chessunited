@@ -23,7 +23,7 @@ list and the club's Messenger community link.
 | Performance | **VERIFIED** — Lighthouse mobile 95–99, desktop 100 |
 | Static, browser, CSP and calendar checks | **VERIFIED** — see `QA_REPORT.md` |
 | Live deployment (Cloudflare Pages, project `chessunited`) | **VERIFIED** — `chessunited.pages.dev`, 2026-10-24 blue-dominant build |
-| GitHub repository | **PENDING** — no repository is connected to this workspace |
+| GitHub repository | **VERIFIED** — <https://github.com/RammyJo/chessunited>, branch `main`, pushed 2026-10-25 |
 | Spaceship domain + DNS | **PENDING** — no domain registered or supplied |
 | Custom canonical domain | **PENDING** — the site canonicalises to its `pages.dev` host |
 

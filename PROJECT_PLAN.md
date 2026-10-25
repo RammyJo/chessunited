@@ -118,7 +118,8 @@ the club's own posters. See `research/SOURCE_NOTES.md` for the full transcriptio
 
 The site is **live** at <https://chessunited.pages.dev> on Cloudflare Pages, with
 HTTPS, security headers, a custom 404, the sitemap and the calendar files verified
-on the real host. No domain was purchased and nothing was pushed to a Git remote.
+on the real host. No domain was purchased. The source is pushed to
+<https://github.com/RammyJo/chessunited> on `main`.
 
 - **VERIFIED:** build, type check, static links/anchors, image variants, alt text,
   metadata, JSON-LD, sitemap/robots, calendar files, copy button, QR decode,

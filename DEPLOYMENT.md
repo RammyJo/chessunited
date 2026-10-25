@@ -129,8 +129,9 @@ preview hostname.
 
 ## 3. Direct upload with Wrangler — **done, this is how the site ships**
 
-No Git repository is needed for this path, which is how `chessunited.pages.dev`
-was created and is kept up to date.
+The source now lives in <https://github.com/RammyJo/chessunited> on `main`, and
+this direct-upload path is still how `chessunited.pages.dev` was created and is
+kept up to date.
 
 ```powershell
 npx.cmd wrangler login                    # browser consent, ~2 min window
@@ -156,20 +157,24 @@ Notes:
 
 ## 4. Option B — connect a Git repository
 
-There is no Git repository in this folder yet. Do not initialize, push or change
-repository visibility without approval.
+The source is pushed to <https://github.com/RammyJo/chessunited> on `main` —
+143 files, created 2026-10-25 with the GitHub CLI under the `RammyJo` account.
+`node_modules/`, `dist/`, `.astro/`, `screenshots/`, `.env` and `.wrangler/` are
+excluded by the committed `.gitignore`.
 
-Once a repository exists:
+To make every push deploy itself:
 
-1. Push the project (excluding `node_modules/`, `dist/`, `.astro/`, `.env` and
-   `.wrangler/`; the supplied `.gitignore` covers these).
-2. In Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** →
-   **Connect to Git**.
-3. Select the repository and branch.
-4. Use the settings in section 2. Add `SITE_URL` as a production environment
-   variable.
-5. Deploy. Every push to the production branch creates a new deployment; other
-   branches can create preview deployments.
+1. In Cloudflare dashboard → **Workers & Pages** → **chessunited** → **Settings**
+   → **Builds & deployments** → **Connect to Git**.
+2. Pick `RammyJo/chessunited` and the `main` branch when the Cloudflare GitHub
+   app asks for repository access.
+3. Apply the build settings from section 2 and add `SITE_URL` as a **production**
+   environment variable set to `https://chessunited.pages.dev`.
+4. Deploy. Pushes to `main` then create deployments on their own; other branches
+   can create previews.
+
+Wrangler cannot make this link — the repository connection is dashboard-only.
+Until it is made, releases stay a manual `wrangler pages deploy` (section 3).
 
 ## 5. Custom headers and cache behavior
 
@@ -228,9 +233,9 @@ direct upload, rebuild the previous commit or `dist/` and upload again.
 
 ## 8. What is not included
 
-- No Git repository, remote, CI workflow or automatic deploy is configured, so
-  every release is a manual `wrangler pages deploy`. Connecting the repository to
-  the Pages project (section 4) would make pushes deploy themselves.
+- The Git repository exists and `main` is pushed, but no CI workflow or automatic
+  deploy is wired up yet, so every release is a manual `wrangler pages deploy`.
+  Connecting the repository to the Pages project (section 4) fixes that.
 - No custom domain or DNS record exists yet; the site runs on its `pages.dev`
   host, which is live and verified.
 - No API token is stored. Authorization is the interactive Wrangler OAuth
