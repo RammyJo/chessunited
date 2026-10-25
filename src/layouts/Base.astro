@@ -1,0 +1,81 @@
+---
+import { site } from '../data/site';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+  canonical?: string | false;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  image = '/images/og.jpg',
+  noindex = false,
+  type = 'website',
+  canonical: canonicalPath,
+  jsonLd,
+} = Astro.props;
+
+const siteOrigin = Astro.site ?? 'https://chessunited.pages.dev';
+const canonicalHref =
+  canonicalPath === false ? null : new URL(canonicalPath ?? Astro.url.pathname, siteOrigin);
+const ogUrl = canonicalHref ?? new URL('/', siteOrigin);
+const ogImage = new URL(image, siteOrigin);
+const pageTitle = title.includes(site.name) ? title : `${title} — ${site.name}`;
+const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {canonicalHref && <link rel="canonical" href={canonicalHref.href} />}
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <meta name="theme-color" content="#4bbced" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" href="/images/favicon-64.png" sizes="64x64" type="image/png" />
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <link rel="preload" href="/fonts/archivo-black-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={ogUrl.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Chess United — chess for everyone. San Fernando City, La Union." />
+    <meta property="og:locale" content="en_PH" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+
+    <script is:inline src="/scripts/boot.js"></script>
+    <script is:inline src="/scripts/site.js" defer></script>
+
+    {jsonLdBlocks.map((block) => (
+      <script type="application/ld+json" set:html={JSON.stringify(block)} />
+    ))}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>

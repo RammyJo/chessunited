@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base
+  title="Page not found — Chess United"
+  description="That page isn't on the board. Return to Chess United — weekly chess in San Fernando City, La Union."
+  noindex
+  canonical={false}
+>
+  <Header />
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">404 · Page not found</p>
+        <h1>Stalemate.</h1>
+        <p class="lede">
+          This page isn't on the board. It may have moved, or the link may be wrong. The club,
+          however, is exactly where it should be.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="/">Back to the home page <Icon name="arrow" size={16} class="arrow" /></a>
+          <a class="btn btn--ghost" href="/events/">See the tournaments</a>
+        </div>
+        <div class="page-hero-meta">
+          <span><Icon name="calendar" size={15} /> Every Saturday</span>
+          <span><Icon name="clock" size={15} /> 10 AM – 2 PM</span>
+          <span><Icon name="pin" size={15} /> Robinsons Mall La Union</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="lost-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Useful squares</p>
+            <h2 id="lost-title">Try one of these.</h2>
+          </div>
+        </div>
+        <div class="mini-event">
+          <p class="mini-date">01<span>Play</span></p>
+          <div>
+            <h3>Weekly chess</h3>
+            <p>Every Saturday, 10 AM – 2 PM, Robinsons Mall La Union.</p>
+          </div>
+          <a class="text-link" href="/play/">Weekly play <Icon name="arrow" size={14} class="arrow" /></a>
+        </div>
+        <div class="mini-event">
+          <p class="mini-date">02<span>Watch</span></p>
+          <div>
+            <h3>Tournament days</h3>
+            <p>Tournament 2.0 on 7 November and the Super Mario Cup on 5 December.</p>
+          </div>
+          <a class="text-link" href="/events/">Events <Icon name="arrow" size={14} class="arrow" /></a>
+        </div>
+        <div class="mini-event">
+          <p class="mini-date">03<span>Visit</span></p>
+          <div>
+            <h3>Find the table</h3>
+            <p>Venues, maps and the community group.</p>
+          </div>
+          <a class="text-link" href="/visit/">Visit <Icon name="arrow" size={14} class="arrow" /></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

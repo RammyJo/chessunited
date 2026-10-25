@@ -1,0 +1,150 @@
+# Asset inventory
+
+Status: **VERIFIED** — every supplied source file is accounted for, and every
+displayed image was checked against its source and alt text.
+
+The club supplied **27 JPEGs** on 2026-10-23 (file times 10:45–11:00). They remain
+untouched in `C:\Users\ORAS Intern\Downloads`. Optimized derivatives live in
+`public/images`; the source-to-output map is also machine-readable in
+`research/image-manifest.json`.
+
+## Summary
+
+| Class | Sources | Derivatives | Role |
+| --- | ---: | ---: | --- |
+| Photographs | 15 | 45 WebP | Real club and tournament photography |
+| Posters / graphics | 8 | 16 WebP + 1 cropped QR | Schedule, events, merch, partners, QR |
+| Logo / brand | 1 | 7 files | Logo, app icons, favicon, OG card |
+| Hero | 1 (reuses photo) | 3 WebP + 1 JPEG | Home-page portrait crop |
+| **Displayed sources** | **22** | — | 15 photos + 6 poster sources + logo |
+| Source-only, not displayed | 2 | 4 WebP | Weekly poster, T1 program poster |
+| Unused | 3 | 0 | 2 personal-brand posters, 1 Messenger invite screenshot |
+
+No stock photography, generated imagery, tracking pixels or third-party image
+CDNs are used. The only generated raster is `og.jpg` (a branded social card made
+from the supplied logo).
+
+## Photography
+
+All 15 are resized proportionally; no content is removed. Each has
+480/800/1200 px WebP variants, except the banner selfie (480/800/1080). `alt`
+text and captions live in `src/data/images.ts`.
+
+| Key | Source file | Source px / bytes | Outputs (WebP, bytes) | Used on |
+| --- | --- | --- | --- | --- |
+| `table19` | `a66fa455-ad10-43bb-a2c9-96c959af723c.jpg` | 1536×2048 / 203,590 | `table-19-480/800/1200` — 55,380 / 108,976 / 182,980 | Hero source, home gallery, gallery |
+| `hall` | `3fcb7c6e-57cf-4ebd-b5ef-06ad56bf0d6b.jpg` | 1536×2048 / 188,204 | `tournament-hall-480/800/1200` — 48,640 / 97,202 / 171,958 | Play, home gallery, gallery |
+| `medals` | `5c070c9d-7c3e-4db3-a0d7-a3b3f511b2a6.jpg` | 1536×2048 / 258,476 | `three-medals-480/800/1200` — 61,994 / 153,398 / 284,798 | Events T1 recap, home gallery, gallery |
+| `champion` | `52924d3e-ebc9-4382-8c3a-a4cc63c94dcd.jpg` | 1536×1024 / 169,931 | `champion-medal-480/800/1200` — 39,992 / 90,122 / 171,074 | Gallery |
+| `gold` | `55644f40-2f10-455e-92e6-e1d99ab5cc78.jpg` | 2048×1536 / 232,062 | `medal-champion-480/800/1200` — 36,726 / 85,862 / 165,342 | Gallery (champion, Open) |
+| `silver` | `e7cafd39-b59d-4b69-89bc-6c3260b1e57a.jpg` | 2048×1536 / 210,331 | `medal-second-480/800/1200` — 33,472 / 80,980 / 152,532 | Gallery (2nd, Kiddies) |
+| `bronze` | `39097b16-14c6-4d21-9e47-0a17d2a27790.jpg` | 2048×1536 / 136,113 | `medal-third-480/800/1200` — 25,742 / 49,658 / 81,760 | Gallery (3rd, Open) |
+| `flatlay` | `14c1c942-23ec-4581-9b8c-3699f0335dd2.jpg` | 1536×2048 / 141,239 | `merch-flatlay-480/800/1200` — 38,136 / 75,452 / 122,672 | Home merch block, home gallery, gallery |
+| `medalist` | `12ecbe4a-a70e-4423-ada3-fe8e98088060.jpg` | 2048×1536 / 174,515 | `medalist-480/800/1200` — 31,912 / 63,062 / 105,418 | About, events T1 recap, home gallery, gallery |
+| `merchheld` | `97954572-bc30-406c-83d8-38d2a5c6f5a6.jpg` | 1536×2048 / 128,282 | `merch-in-hand-480/800/1200` — 33,766 / 62,504 / 101,114 | Gallery |
+| `crew` | `d876ff22-ae53-4908-b302-b265bf6b5ba5.jpg` | 2048×1536 / 226,724 | `chowking-crew-480/800/1200` — 36,948 / 78,962 / 139,100 | Gallery (club life) |
+| `selfie` | `d8152276-6ef8-4318-9652-2410cdfc9654.jpg` | 1080×810 / 40,687 | `banner-selfie-480/800/1080` — 16,712 / 30,184 / 43,364 | Gallery |
+| `club` | `7eb8c41b-fdec-4c57-915f-5725710ce8ee.jpg` | 2048×1536 / 137,801 | `club-selfie-480/800/1200` — 26,668 / 50,000 / 79,448 | Gallery (club life) |
+| `hall2` | `857444a9-ae15-4afc-90f5-0127d4c50d4f.jpg` | 2048×1536 / 235,101 | `tournament-hall-2-480/800/1200` — 42,670 / 89,520 / 155,412 | Home gallery, gallery |
+| `restaurant` | `9011d057-d23e-462a-afaa-9334cc060411.jpg` | 1536×2048 / 188,819 | `restaurant-group-480/800/1200` — 51,258 / 99,102 / 165,226 | Gallery (club life) |
+
+Hero derivatives from `table19`:
+
+| File | Pixels | Bytes |
+| --- | --- | ---: |
+| `/images/hero-640.webp` | 640×853 | 89,636 |
+| `/images/hero-960.webp` | 960×1280 | 149,740 |
+| `/images/hero-1280.webp` | 1280×1707 | 220,744 |
+| `/images/hero.jpg` (fallback) | 1000×1333 | 237,227 |
+
+## Posters and graphics
+
+Posters are kept as text-bearing images; the site reproduces their facts in HTML
+so the information remains readable and indexable. They are not used as the only
+source of any fact.
+
+| Key | Source file | Source px / bytes | Outputs (WebP, bytes) | Used on |
+| --- | --- | --- | --- | --- |
+| `t1` | `767745ad-7cf5-476d-b85c-c739721d54ec.jpg` | 2048×1535 / 215,460 | `tournament-1-0-560/900` — 45,184 / 82,284 | Events T1 recap poster |
+| `t2` | `474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg` | 2048×1535 / 270,564 | `tournament-2-0-560/900` — 58,782 / 107,584 | Events T2 poster; event JSON-LD image |
+| `mario` | `266a4f5c-3575-4d87-ab78-cea6c564fed5.jpg` | 2000×1414 / 228,918 | `super-mario-cup-560/900` — 49,706 / 89,854 | Events Mario poster; event JSON-LD image |
+| `weekly` | `fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg` | 1414×2000 / 160,107 | `weekly-chess-560/900` — 51,974 / 87,358 | **Source only** — weekly facts; not rendered |
+| `merch` | `5a4d8f73-9107-4ae5-9db5-84e8a8a5636c.jpg` | 2000×1414 / 290,381 | `merch-price-list-560/900` — 60,788 / 114,734 | Shop poster |
+| `sponsors` | `7569a681-69ba-4d78-b300-59e827530814.jpg` | 1030×2049 / 256,442 | `partners-1-0-560/900` — 138,408 / 263,682 | About partners poster |
+| `program` | `1ca3bb3f-b8c0-44fb-8284-cdfff717c142.jpg` | 892×636 / 67,008 | `program-1-0-640/892` — 48,536 / 75,838 | **Source only** — T1 program/team facts; not rendered |
+| `qr` | `c4c90e7d-5cec-4529-bc08-7370d921109c.jpg` | 1290×1636 / 158,922 | `community-qr-480/760` — 38,014 / 65,134 | QR source for the Visit crop |
+
+The cropped QR is `/images/posters/community-qr-code.webp` (480×480, 59,144 B).
+It was decoded with ZXing-C++ to:
+
+```
+https://m.me/j/HytA8igzNnAWDEXo/?send_source=gc:qr_code_scan_c
+```
+
+That is the URL stored in `src/data/site.ts` and used by every “Join the group”
+link.
+
+## Brand and interface assets
+
+| File | Pixels | Bytes | Notes |
+| --- | --- | ---: | --- |
+| `/images/logo.webp` | 560×560 | 35,834 | Header/footer mark, from `dc091ca1-0e95-4e90-a4ce-02d35d62889f.jpg` |
+| `/images/logo-300.png` | 300×300 | 83,947 | Square PNG mark |
+| `/images/icon-512.png` | 512×512 | 185,221 | Manifest / JSON-LD logo |
+| `/images/icon-192.png` | 192×192 | 40,794 | Manifest icon |
+| `/images/favicon-64.png` | 64×64 | 7,308 | `rel="icon"` |
+| `/images/apple-touch-icon.png` | 180×180 | 37,019 | iOS home-screen icon |
+| `/images/og.jpg` | 1200×630 | 110,076 | Generated social card |
+| `/manifest.webmanifest` | — | — | App name, icons, theme |
+
+## Fonts
+
+| File | Bytes | License |
+| --- | ---: | --- |
+| `/fonts/archivo-black-latin.woff2` | 18,604 | SIL OFL 1.1 — `OFL-ArchivoBlack.txt` |
+| `/fonts/manrope-latin.woff2` | 24,836 | SIL OFL 1.1 — `OFL-Manrope.txt` |
+
+Both are self-hosted, Latin-subset WOFF2 files. No Google Fonts request is made at
+runtime.
+
+## Unused supplied files
+
+These are intentionally **not** on the site. They remain in the source folder.
+
+| Source file | Pixels / bytes | Why unused |
+| --- | --- | --- |
+| `0f0242ac-c7a1-47d0-b2e2-4a4a534f5e06.jpg` | 2000×1414 / 258,443 | Personal-brand collage about Ricky Shetty; out of scope for the club site |
+| `d38c9c60-9378-4cc1-b0ff-065ada123269.jpg` | 2000×1414 / 257,434 | Second personal-brand poster; out of scope |
+| `f923c353-345c-4550-a56d-04edfdd285a8.jpg` | 1290×1146 / 65,929 | Messenger invite screenshot with a time-sensitive “72 members” count; the group link is the live channel |
+
+The three medal close-ups (`55644f40…`, `e7cafd39…`, `39097b16…`) were added to
+the gallery in the 2026-10-23 pass, so every real club photograph is now on the
+site. The 15 gallery photographs are the complete supplied photo set.
+
+## Ownership and permission
+
+- The 27 club photos/posters were supplied by Chess United for this project. No
+  separate reuse license was supplied; do not redistribute them outside the club
+  site without the club's permission.
+- Partner logos appear only inside the supplied Tournament 1.0 sponsors poster.
+  They remain trademarks of their owners; the site does not redraw or relicense
+  them.
+- The fonts are covered by the SIL Open Font License files in `public/fonts/`.
+- The site code has no open-source license file. Treat it as club project work
+  until Chess United decides otherwise.
+- The generated OG card was rendered from the club logo with a system font at
+  build time; it is a club asset, not a font redistribution.
+
+## Regenerating images
+
+Only needed when a source image changes:
+
+```powershell
+py scripts\optimize_images.py
+npm.cmd run build
+```
+
+The script reads originals from `C:\Users\ORAS Intern\Downloads` (edit `SRC` at
+the top if they move), never writes to the originals, and refreshes
+`research/image-manifest.json`. It requires Python 3 and Pillow; Python is not a
+runtime or deployment dependency.

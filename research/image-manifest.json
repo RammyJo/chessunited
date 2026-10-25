@@ -1,0 +1,563 @@
+{
+  "photos": {
+    "table19": {
+      "source": "a66fa455-ad10-43bb-a2c9-96c959af723c.jpg",
+      "width": 1536,
+      "height": 2048,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 640,
+          "path": "/images/photos/table-19-480.webp",
+          "bytes": 55380
+        },
+        {
+          "w": 800,
+          "h": 1067,
+          "path": "/images/photos/table-19-800.webp",
+          "bytes": 108976
+        },
+        {
+          "w": 1200,
+          "h": 1600,
+          "path": "/images/photos/table-19-1200.webp",
+          "bytes": 182980
+        }
+      ]
+    },
+    "hall": {
+      "source": "3fcb7c6e-57cf-4ebd-b5ef-06ad56bf0d6b.jpg",
+      "width": 1536,
+      "height": 2048,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 640,
+          "path": "/images/photos/tournament-hall-480.webp",
+          "bytes": 48640
+        },
+        {
+          "w": 800,
+          "h": 1067,
+          "path": "/images/photos/tournament-hall-800.webp",
+          "bytes": 97202
+        },
+        {
+          "w": 1200,
+          "h": 1600,
+          "path": "/images/photos/tournament-hall-1200.webp",
+          "bytes": 171958
+        }
+      ]
+    },
+    "medals": {
+      "source": "5c070c9d-7c3e-4db3-a0d7-a3b3f511b2a6.jpg",
+      "width": 1536,
+      "height": 2048,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 640,
+          "path": "/images/photos/three-medals-480.webp",
+          "bytes": 61994
+        },
+        {
+          "w": 800,
+          "h": 1067,
+          "path": "/images/photos/three-medals-800.webp",
+          "bytes": 153398
+        },
+        {
+          "w": 1200,
+          "h": 1600,
+          "path": "/images/photos/three-medals-1200.webp",
+          "bytes": 284798
+        }
+      ]
+    },
+    "champion": {
+      "source": "52924d3e-ebc9-4382-8c3a-a4cc63c94dcd.jpg",
+      "width": 1536,
+      "height": 1024,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 320,
+          "path": "/images/photos/champion-medal-480.webp",
+          "bytes": 39992
+        },
+        {
+          "w": 800,
+          "h": 533,
+          "path": "/images/photos/champion-medal-800.webp",
+          "bytes": 90122
+        },
+        {
+          "w": 1200,
+          "h": 800,
+          "path": "/images/photos/champion-medal-1200.webp",
+          "bytes": 171074
+        }
+      ]
+    },
+    "gold": {
+      "source": "55644f40-2f10-455e-92e6-e1d99ab5cc78.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/medal-champion-480.webp",
+          "bytes": 36726
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/medal-champion-800.webp",
+          "bytes": 85862
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/medal-champion-1200.webp",
+          "bytes": 165342
+        }
+      ]
+    },
+    "silver": {
+      "source": "e7cafd39-b59d-4b69-89bc-6c3260b1e57a.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/medal-second-480.webp",
+          "bytes": 33472
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/medal-second-800.webp",
+          "bytes": 80980
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/medal-second-1200.webp",
+          "bytes": 152532
+        }
+      ]
+    },
+    "bronze": {
+      "source": "39097b16-14c6-4d21-9e47-0a17d2a27790.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/medal-third-480.webp",
+          "bytes": 25742
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/medal-third-800.webp",
+          "bytes": 49658
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/medal-third-1200.webp",
+          "bytes": 81760
+        }
+      ]
+    },
+    "flatlay": {
+      "source": "14c1c942-23ec-4581-9b8c-3699f0335dd2.jpg",
+      "width": 1536,
+      "height": 2048,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 640,
+          "path": "/images/photos/merch-flatlay-480.webp",
+          "bytes": 38136
+        },
+        {
+          "w": 800,
+          "h": 1067,
+          "path": "/images/photos/merch-flatlay-800.webp",
+          "bytes": 75452
+        },
+        {
+          "w": 1200,
+          "h": 1600,
+          "path": "/images/photos/merch-flatlay-1200.webp",
+          "bytes": 122672
+        }
+      ]
+    },
+    "medalist": {
+      "source": "12ecbe4a-a70e-4423-ada3-fe8e98088060.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/medalist-480.webp",
+          "bytes": 31912
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/medalist-800.webp",
+          "bytes": 63062
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/medalist-1200.webp",
+          "bytes": 105418
+        }
+      ]
+    },
+    "merchheld": {
+      "source": "97954572-bc30-406c-83d8-38d2a5c6f5a6.jpg",
+      "width": 1536,
+      "height": 2048,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 640,
+          "path": "/images/photos/merch-in-hand-480.webp",
+          "bytes": 33766
+        },
+        {
+          "w": 800,
+          "h": 1067,
+          "path": "/images/photos/merch-in-hand-800.webp",
+          "bytes": 62504
+        },
+        {
+          "w": 1200,
+          "h": 1600,
+          "path": "/images/photos/merch-in-hand-1200.webp",
+          "bytes": 101114
+        }
+      ]
+    },
+    "crew": {
+      "source": "d876ff22-ae53-4908-b302-b265bf6b5ba5.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/chowking-crew-480.webp",
+          "bytes": 36948
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/chowking-crew-800.webp",
+          "bytes": 78962
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/chowking-crew-1200.webp",
+          "bytes": 139100
+        }
+      ]
+    },
+    "selfie": {
+      "source": "d8152276-6ef8-4318-9652-2410cdfc9654.jpg",
+      "width": 1080,
+      "height": 810,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/banner-selfie-480.webp",
+          "bytes": 16712
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/banner-selfie-800.webp",
+          "bytes": 30184
+        },
+        {
+          "w": 1080,
+          "h": 810,
+          "path": "/images/photos/banner-selfie-1080.webp",
+          "bytes": 43364
+        }
+      ]
+    },
+    "club": {
+      "source": "7eb8c41b-fdec-4c57-915f-5725710ce8ee.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/club-selfie-480.webp",
+          "bytes": 26668
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/club-selfie-800.webp",
+          "bytes": 50000
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/club-selfie-1200.webp",
+          "bytes": 79448
+        }
+      ]
+    },
+    "hall2": {
+      "source": "857444a9-ae15-4afc-90f5-0127d4c50d4f.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/tournament-hall-2-480.webp",
+          "bytes": 42670
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/tournament-hall-2-800.webp",
+          "bytes": 89520
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/tournament-hall-2-1200.webp",
+          "bytes": 155412
+        }
+      ]
+    },
+    "restaurant": {
+      "source": "9011d057-d23e-462a-afaa-9334cc060411.jpg",
+      "width": 1536,
+      "height": 2048,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 640,
+          "path": "/images/photos/restaurant-group-480.webp",
+          "bytes": 51258
+        },
+        {
+          "w": 800,
+          "h": 1067,
+          "path": "/images/photos/restaurant-group-800.webp",
+          "bytes": 99102
+        },
+        {
+          "w": 1200,
+          "h": 1600,
+          "path": "/images/photos/restaurant-group-1200.webp",
+          "bytes": 165226
+        }
+      ]
+    }
+  },
+  "posters": {
+    "t1": {
+      "source": "767745ad-7cf5-476d-b85c-c739721d54ec.jpg",
+      "width": 2048,
+      "height": 1535,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 420,
+          "path": "/images/posters/tournament-1-0-560.webp",
+          "bytes": 45184
+        },
+        {
+          "w": 900,
+          "h": 675,
+          "path": "/images/posters/tournament-1-0-900.webp",
+          "bytes": 82284
+        }
+      ]
+    },
+    "t2": {
+      "source": "474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg",
+      "width": 2048,
+      "height": 1535,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 420,
+          "path": "/images/posters/tournament-2-0-560.webp",
+          "bytes": 58782
+        },
+        {
+          "w": 900,
+          "h": 675,
+          "path": "/images/posters/tournament-2-0-900.webp",
+          "bytes": 107584
+        }
+      ]
+    },
+    "mario": {
+      "source": "266a4f5c-3575-4d87-ab78-cea6c564fed5.jpg",
+      "width": 2000,
+      "height": 1414,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 396,
+          "path": "/images/posters/super-mario-cup-560.webp",
+          "bytes": 49706
+        },
+        {
+          "w": 900,
+          "h": 636,
+          "path": "/images/posters/super-mario-cup-900.webp",
+          "bytes": 89854
+        }
+      ]
+    },
+    "weekly": {
+      "source": "fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg",
+      "width": 1414,
+      "height": 2000,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 792,
+          "path": "/images/posters/weekly-chess-560.webp",
+          "bytes": 51974
+        },
+        {
+          "w": 900,
+          "h": 1273,
+          "path": "/images/posters/weekly-chess-900.webp",
+          "bytes": 87358
+        }
+      ]
+    },
+    "merch": {
+      "source": "5a4d8f73-9107-4ae5-9db5-84e8a8a5636c.jpg",
+      "width": 2000,
+      "height": 1414,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 396,
+          "path": "/images/posters/merch-price-list-560.webp",
+          "bytes": 60788
+        },
+        {
+          "w": 900,
+          "h": 636,
+          "path": "/images/posters/merch-price-list-900.webp",
+          "bytes": 114734
+        }
+      ]
+    },
+    "sponsors": {
+      "source": "7569a681-69ba-4d78-b300-59e827530814.jpg",
+      "width": 1030,
+      "height": 2049,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 1114,
+          "path": "/images/posters/partners-1-0-560.webp",
+          "bytes": 138408
+        },
+        {
+          "w": 900,
+          "h": 1790,
+          "path": "/images/posters/partners-1-0-900.webp",
+          "bytes": 263682
+        }
+      ]
+    },
+    "program": {
+      "source": "1ca3bb3f-b8c0-44fb-8284-cdfff717c142.jpg",
+      "width": 892,
+      "height": 636,
+      "sizes": [
+        {
+          "w": 640,
+          "h": 456,
+          "path": "/images/posters/program-1-0-640.webp",
+          "bytes": 48536
+        },
+        {
+          "w": 892,
+          "h": 636,
+          "path": "/images/posters/program-1-0-892.webp",
+          "bytes": 75838
+        }
+      ]
+    },
+    "qr": {
+      "source": "c4c90e7d-5cec-4529-bc08-7370d921109c.jpg",
+      "width": 1290,
+      "height": 1636,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 609,
+          "path": "/images/posters/community-qr-480.webp",
+          "bytes": 38014
+        },
+        {
+          "w": 760,
+          "h": 964,
+          "path": "/images/posters/community-qr-760.webp",
+          "bytes": 65134
+        }
+      ]
+    }
+  },
+  "hero": {
+    "source": "a66fa455-ad10-43bb-a2c9-96c959af723c.jpg",
+    "width": 1536,
+    "height": 2048,
+    "sizes": [
+      {
+        "w": 640,
+        "h": 853,
+        "path": "/images/hero-640.webp",
+        "bytes": 89636
+      },
+      {
+        "w": 960,
+        "h": 1280,
+        "path": "/images/hero-960.webp",
+        "bytes": 149740
+      },
+      {
+        "w": 1280,
+        "h": 1707,
+        "path": "/images/hero-1280.webp",
+        "bytes": 220744
+      }
+    ]
+  },
+  "logo": {
+    "source": "dc091ca1-0e95-4e90-a4ce-02d35d62889f.jpg",
+    "width": 1080,
+    "height": 1080
+  }
+}

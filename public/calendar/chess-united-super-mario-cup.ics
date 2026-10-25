@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chess United//Tournaments//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:ortega-super-mario-cup-2026@chessunited
+DTSTAMP:20261023T000000Z
+DTSTART:20261205T010000Z
+DTEND:20261205T090000Z
+SUMMARY:Ortega Chess Tournament: Super Mario Cup
+LOCATION:Ortega Convention Center\, New Government Center\, Barangay Sevill
+ a / Sagayad\, San Fernando City\, La Union
+DESCRIPTION:Open Division (13 and above): registration PHP 500\, PHP 50\,00
+ 0 winner take all. Kiddies Division (12 and below): registration PHP 400\,
+  PHP 5\,000 kids prize. 100% of proceeds go to NASUDI. Runs 9:00 AM to 5:0
+ 0 PM.
+URL:https://chessunited.pages.dev/events/#super-mario-cup
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

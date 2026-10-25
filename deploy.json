@@ -1,0 +1,12 @@
+{
+  "entrypoint": "worker.generated.js",
+  "compatibilityDate": "2026-10-01",
+  "modules": [
+    {
+      "name": "worker.generated.js",
+      "type": "esm",
+      "path": "./sites/worker.generated.js"
+    }
+  ],
+  "assetsDirectory": "./dist"
+}

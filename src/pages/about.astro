@@ -1,0 +1,221 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { site, team, partnerTiers } from '../data/site';
+import { photos, posters } from '../data/images';
+
+const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const abs = (path: string) => new URL(path, origin).href;
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: abs('/') },
+    { '@type': 'ListItem', position: 2, name: 'About', item: abs('/about/') },
+  ],
+};
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('');
+---
+
+<Base
+  title="About the club — Chess United"
+  description="Meet Chess United: a community chess club in San Fernando City, La Union running weekly Saturday chess, age-division tournaments, and a club for all ages."
+  jsonLd={breadcrumbJsonLd}
+>
+  <Header />
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">The club</p>
+        <h1>A club for the<br />whole board.</h1>
+        <p class="lede">
+          Chess United is a community chess club in San Fernando City, La Union. Weekly games in
+          the mall, tournament days with real prizes, and a seat for every age.
+        </p>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="story-title">
+      <div class="wrap about-split">
+        <div>
+          <p class="eyebrow">The story</p>
+          <h2 id="story-title" class="display-md">Chess, united.</h2>
+          <div class="prose mt-2">
+            <p>
+              Chess United runs a weekly Saturday session at Robinsons Mall La Union and
+              organises age-division tournaments with cash prizes. The first, Tournament 1.0,
+              was held at Rovers Coffee in Carlatan in October 2026; the next is at Manna Mall in
+              November.
+            </p>
+            <p>
+              The idea is in the name. Kids and adults, learning and competition, in the same
+              room. The club's own tagline puts it plainly: <strong>chess for everyone.</strong>
+            </p>
+            <p>
+              The weekly session is open to kids, teens and adults. The
+              tournament divisions are split by age, and the club's community group is where
+              players ask questions, arrange games and keep up with what's next.
+            </p>
+          </div>
+
+          <div class="hero-actions">
+            <a class="btn" href="/play/">Join a Saturday</a>
+            <a class="btn btn--ghost" href="/events/">See the tournaments</a>
+          </div>
+        </div>
+
+        <figure class="about-photo reveal" style="margin:0">
+          <img
+            src={photos.medalist.src}
+            srcset={photos.medalist.srcset}
+            sizes="(max-width: 980px) 92vw, 46vw"
+            width={photos.medalist.width}
+            height={photos.medalist.height}
+            alt={photos.medalist.alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="caption">Tournament 1.0 · Rovers Coffee</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="values-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">What we're about</p>
+            <h2 id="values-title">Three things worth<br />showing up for.</h2>
+          </div>
+          <p class="lede">
+            A club for anyone who wants more people at the board.
+          </p>
+        </div>
+
+        <div class="value-grid">
+          <article class="value-card reveal">
+            <p class="value-num">01 / Everyone</p>
+            <h3>Every age gets a board.</h3>
+            <p>
+              Kids, teens and adults play at the weekly session. Tournament play splits into
+              Kiddies (12 &amp; below) and Open (13 &amp; above) so there is a fair bracket for
+              both.
+            </p>
+          </article>
+          <article class="value-card reveal">
+            <p class="value-num">02 / In public</p>
+            <h3>Chess in the middle of the mall.</h3>
+            <p>
+              The club plays where people can see it — Robinsons Mall La Union, every Saturday,
+              10 AM to 2 PM. Curiosity is a good enough reason to stop by.
+            </p>
+          </article>
+          <article class="value-card reveal">
+            <p class="value-num">03 / Next generation</p>
+            <h3>Young players get their own stage.</h3>
+            <p>
+              The Kiddies Division gives players 12 and under their own bracket, their own
+              prizes and a real tournament experience.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="team-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">The people</p>
+            <h2 id="team-title">Who runs the club.</h2>
+          </div>
+          <p class="lede">
+            The names on the Tournament 1.0 programme: the club's president and vice president,
+            and the day's MC.
+          </p>
+        </div>
+
+        <div class="team-grid">
+          {team.map((person) => (
+            <article class="team-card reveal">
+              <p class="team-initials" aria-hidden="true">{initials(person.name)}</p>
+              <h3>{person.name}</h3>
+              <p>{person.role}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" id="partners" aria-labelledby="partners-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Backed by the community</p>
+            <h2 id="partners-title">Tournament 1.0 partners<br />and sponsors.</h2>
+          </div>
+          <p class="lede">
+            Tournament day took a village: local government, malls, businesses, media and
+            community groups. These names are reproduced from the club's official partners
+            poster.
+          </p>
+        </div>
+
+        <dl class="partner-tiers">
+          {partnerTiers.map((tier) => (
+            <div class="partner-tier">
+              <dt>{tier.tier}</dt>
+              <dd>
+                {tier.partners.map((partner) => <span class="partner-chip">{partner}</span>)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <p class="partner-note">
+          Additional partner names appear on the printed poster. This list covers the tiers that
+          are clearly legible on the supplied artwork.
+        </p>
+
+        <figure class="poster-card mt-3" style="position:static;max-width:520px;transform:none">
+          <img
+            src={posters.sponsors}
+            width="900"
+            height="1790"
+            alt="Chess United Tournament 1.0 partners and sponsors poster, listing partners by chess-piece tier."
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>Official Tournament 1.0 partners &amp; sponsors poster</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="cta-band" aria-labelledby="about-cta">
+      <div class="wrap cta-inner">
+        <div>
+          <h2 id="about-cta" class="display-lg">Meet us at the board.</h2>
+          <p>Saturdays, 10 AM – 2 PM, Robinsons Mall La Union.</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
+            Join the group <Icon name="external" size={15} />
+          </a>
+          <a class="btn btn--light" href="/visit/">Find us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

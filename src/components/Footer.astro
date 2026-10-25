@@ -1,0 +1,69 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-main">
+    <div class="footer-brand">
+      <a class="brand" href="/">
+        <img class="brand-logo" src="/images/logo.webp" width="560" height="560" alt="" />
+        <span class="brand-text">
+          <span class="brand-name">Chess United</span>
+          <span class="brand-place">San Fernando · La Union</span>
+        </span>
+      </a>
+      <p class="footer-tagline">Chess for <span>everyone.</span></p>
+      <p class="footer-note">
+        A community chess club in San Fernando City, La Union. Weekly games, age-division
+        tournaments, and a seat for every age.
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h2>Explore</h2>
+      <ul>
+        <li><a href="/events/">Events</a></li>
+        <li><a href="/play/">Weekly play</a></li>
+        <li><a href="/gallery/">Gallery</a></li>
+        <li><a href="/shop/">Shop</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h2>The club</h2>
+      <ul>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/visit/">Visit us</a></li>
+        <li>
+          <a href={site.groupUrl} target="_blank" rel="noopener">
+            Messenger group <Icon name="external" size={12} />
+          </a>
+        </li>
+        <li><a href="/calendar/chess-united-tournament-2-0.ics" download>Tournament 2.0 calendar</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h2>Every Saturday</h2>
+      <div class="footer-hours">
+        <strong>10:00 AM – 2:00 PM</strong>
+        <span>Robinsons Mall La Union</span>
+        <span>San Fernando City, La Union</span>
+      </div>
+      <ul>
+        <li><a href="/visit/">Find the table <Icon name="arrow" size={12} /></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap footer-bottom">
+    <span>© {year} Chess United. All rights reserved.</span>
+    <span>Informational site · no cookies, no personal tracking.</span>
+    <a href="#main">Back to top ↑</a>
+  </div>
+
+  <span class="footer-word" aria-hidden="true">CHESS UNITED</span>
+</footer>

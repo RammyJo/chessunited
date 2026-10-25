@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+.astro/
+
+# local tooling / secrets
+.env
+.env.*
+!.env.example
+.wrangler/
+.dev.vars
+
+# generated deployment worker
+sites/worker.generated.js
+
+# local run artifacts
+preview.log
+preview.pid
+screenshots/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+lh-*.json

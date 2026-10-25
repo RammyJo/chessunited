@@ -1,0 +1,59 @@
+---
+import type { Photo } from '../data/images';
+import Icon from './Icon.astro';
+
+export interface Props {
+  photos: Photo[];
+  variant?: 'home' | 'full';
+}
+
+const { photos, variant = 'full' } = Astro.props as Props;
+const eagerCount = variant === 'full' ? 1 : 0;
+---
+
+<div class={`gallery-grid gallery-grid--${variant}`}>
+  {photos.map((photo, index) => (
+    <button
+      class="gallery-item"
+      type="button"
+      data-lightbox
+      data-full={photo.full}
+      data-alt={photo.alt}
+      data-caption={photo.caption}
+      aria-label={`Open larger photo: ${photo.caption}`}
+    >
+      <img
+        src={photo.src}
+        srcset={photo.srcset}
+        sizes="(max-width: 520px) 60vw, (max-width: 760px) 50vw, 33vw"
+        width={photo.width}
+        height={photo.height}
+        alt={photo.alt}
+        loading={index < eagerCount ? 'eager' : 'lazy'}
+        fetchpriority={variant === 'full' ? (index === 0 ? 'high' : 'low') : undefined}
+        decoding="async"
+      />
+      <span class="gallery-cap" aria-hidden="true">{photo.caption}</span>
+    </button>
+  ))}
+</div>
+
+<dialog class="lightbox" data-lightbox-dialog aria-label="Photo viewer">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close photo viewer">
+      <Icon name="close" size={20} />
+    </button>
+    <img data-lightbox-img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1200" height="630" alt="" />
+    <div class="lightbox-bar">
+      <p class="lightbox-caption" data-lightbox-caption></p>
+      <div class="lightbox-controls">
+        <button class="lightbox-nav" type="button" data-lightbox-prev aria-label="Previous photo">
+          <Icon name="prev" size={20} />
+        </button>
+        <button class="lightbox-nav" type="button" data-lightbox-next aria-label="Next photo">
+          <Icon name="next" size={20} />
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>

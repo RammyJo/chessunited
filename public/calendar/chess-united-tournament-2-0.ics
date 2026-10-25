@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chess United//Tournaments//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:chess-united-tournament-2-0-2026@chessunited
+DTSTAMP:20261023T000000Z
+DTSTART:20261107T020000Z
+DTEND:20261107T100000Z
+SUMMARY:Chess United Tournament 2.0
+LOCATION:Manna Mall\, San Fernando City\, La Union
+DESCRIPTION:Open Division (13 and above): registration PHP 350. Kiddies Div
+ ision (12 and below): registration PHP 300. Tournament runs 10:00 AM to 6:
+ 00 PM.
+URL:https://chessunited.pages.dev/events/#tournament-2-0
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

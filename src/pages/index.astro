@@ -1,0 +1,431 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import EventCard from '../components/EventCard.astro';
+import Gallery from '../components/Gallery.astro';
+import { site, upcomingEvents, merch, partnerTiers } from '../data/site';
+import { heroImage, photos, galleryHome } from '../data/images';
+
+const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const abs = (path: string) => new URL(path, origin).href;
+
+const clubJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SportsClub',
+  '@id': abs('/#club'),
+  name: site.name,
+  url: abs('/'),
+  logo: abs('/images/icon-512.png'),
+  image: abs('/images/og.jpg'),
+  description: site.description,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'San Fernando City',
+    addressRegion: 'La Union',
+    addressCountry: 'PH',
+  },
+  areaServed: {
+    '@type': 'City',
+    name: 'San Fernando City, La Union',
+  },
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': abs('/#website'),
+  url: abs('/'),
+  name: site.name,
+  description: site.description,
+  inLanguage: 'en-PH',
+  publisher: { '@id': abs('/#club') },
+};
+
+const eventJsonLd = upcomingEvents.map((event) => ({
+  '@context': 'https://schema.org',
+  '@type': 'SportsEvent',
+  name: event.name,
+  description: `${event.name} at ${event.venue}, San Fernando City, La Union. Open Division (13 & above) and Kiddies Division (12 & below).`,
+  startDate: `${event.date}T${event.start}:00+08:00`,
+  endDate: `${event.date}T${event.end}:00+08:00`,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  url: abs(`/events/#${event.slug}`),
+  image: abs(event.poster ?? '/images/og.jpg'),
+  location: {
+    '@type': 'Place',
+    name: event.venue,
+    address: {
+      '@type': 'PostalAddress',
+      ...(event.slug === 'super-mario-cup'
+        ? { streetAddress: 'New Government Center, Barangay Sevilla' }
+        : {}),
+      addressLocality: 'San Fernando City',
+      addressRegion: 'La Union',
+      addressCountry: 'PH',
+    },
+  },
+  organizer: { '@type': 'Organization', name: site.name, url: abs('/') },
+  offers: event.divisions.map((division) => ({
+    '@type': 'Offer',
+    name: division.name,
+    price: division.fee,
+    priceCurrency: 'PHP',
+    url: abs(`/events/#${event.slug}`),
+  })),
+}));
+
+const tickerItems = [
+  'Every Saturday · 10 AM – 2 PM · Robinsons Mall La Union',
+  'Tournament 2.0 · 7 November · Manna Mall',
+  'Super Mario Cup · 5 December · ₱50,000',
+  'Chess for everyone',
+];
+
+const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
+const shopPreview = merch
+  .flatMap((group) => group.items)
+  .filter((item) => ['T-shirt', 'Chess set', 'Tumbler', 'Cap'].includes(item.name));
+---
+
+<Base
+  title="Chess United — chess for everyone in San Fernando, La Union"
+  description={site.description}
+  jsonLd={[clubJsonLd, websiteJsonLd, ...eventJsonLd]}
+>
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    imagesrcset={heroImage.srcset}
+    imagesizes="(max-width: 980px) 92vw, 46vw"
+  />
+  <link slot="head" rel="preload" as="image" href={heroImage.jpg} />
+
+  <Header />
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">San Fernando City · La Union</p>
+          <h1 class="hero-title display-xl">
+            <span class="line">Chess</span>
+            <span class="line">for</span>
+            <span class="line"><span class="mark">everyone.</span></span>
+          </h1>
+          <p class="hero-lede">
+            A community chess club for kids, teens and adults in San Fernando. Pull up a chair
+            on Saturday, or test your game on tournament day.
+          </p>
+          <div class="hero-actions">
+            <a class="btn" href="/play/">
+              Join Saturday chess
+              <Icon name="arrow" size={17} class="arrow" />
+            </a>
+            <a class="btn btn--ghost" href="/events/">See the tournaments</a>
+          </div>
+          <ul class="hero-facts">
+            <li><Icon name="check" size={15} /> Kids &amp; adults</li>
+            <li><Icon name="check" size={15} /> All ages</li>
+            <li><Icon name="check" size={15} /> Weekly in the mall</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-frame">
+            <picture>
+              <source srcset={heroImage.srcset} sizes="(max-width: 980px) 92vw, 46vw" type="image/webp" />
+              <img
+                src={heroImage.jpg}
+                width={heroImage.width}
+                height={heroImage.height}
+                alt={heroImage.alt}
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
+          </div>
+          <div class="hero-sticker" aria-hidden="true">
+            <strong>Every<br />Saturday</strong>
+            <small>10 AM – 2 PM</small>
+          </div>
+          <a class="hero-ticket" href="/events/#tournament-2-0">
+            <span class="hero-ticket-date">
+              <strong>07</strong>
+              <span>NOV</span>
+            </span>
+            <span class="hero-ticket-body">
+              <small>Next up</small>
+              <strong>Tournament 2.0</strong>
+              <span>Manna Mall →</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-label="Club schedule">
+      <div class="ticker-track">
+        {[0, 1].map((group) => (
+          <div class="ticker-group" aria-hidden={group === 1 ? 'true' : undefined}>
+            {tickerItems.map((item) => (
+              <span class="ticker-item"><span class="star">✦</span>{item}</span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <section class="section" aria-labelledby="next-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">On the board</p>
+            <h2 id="next-title">Next up.</h2>
+          </div>
+          <p class="lede">
+            Two tournament days before the year ends. Same club, bigger board — with divisions
+            for kids and for everyone 13 and above.
+          </p>
+        </div>
+
+        <div class="event-grid">
+          {upcomingEvents.map((event) => <EventCard event={event} />)}
+        </div>
+
+        <div class="countdown-row reveal">
+          <p class="countdown-label">
+            Countdown to Tournament 2.0
+            <strong>Saturday, 7 November · Manna Mall</strong>
+          </p>
+          <div class="countdown" data-countdown data-deadline="2026-11-07T10:00:00+08:00" role="timer" aria-label="Time until Tournament 2.0">
+            <div><strong data-days>--</strong><span>days</span></div>
+            <div><strong data-hours>--</strong><span>hours</span></div>
+            <div><strong data-mins>--</strong><span>mins</span></div>
+            <div><strong data-secs>--</strong><span>secs</span></div>
+          </div>
+          <a class="text-link" href="/calendar/chess-united-tournament-2-0.ics" download>
+            <Icon name="download" size={15} /> Add to calendar
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="weekly section" aria-labelledby="weekly-title">
+      <div class="wrap weekly-inner">
+        <div class="weekly-copy">
+          <p class="eyebrow eyebrow--light">Every Saturday</p>
+          <h2 id="weekly-title" class="display-lg">The board is <em>always</em> set.</h2>
+          <p>
+            Chess United meets every Saturday at Robinsons Mall La Union. Kids, teens, adults,
+            first-timers — the club's promise is in its tagline: chess for everyone.
+          </p>
+          <div class="weekly-actions">
+            <a class="btn" href="/play/">What to expect</a>
+            <a class="text-link" href="/visit/">
+              Find the table <Icon name="arrow" size={14} class="arrow" />
+            </a>
+          </div>
+        </div>
+
+        <div class="schedule-card reveal">
+          <div class="schedule-card-head">
+            <strong>Weekly chess</strong>
+            <span class="schedule-badge">Open session</span>
+          </div>
+          <dl>
+            <div class="schedule-row">
+              <Icon name="calendar" size={18} />
+              <dt>When</dt>
+              <dd>Every Saturday</dd>
+            </div>
+            <div class="schedule-row">
+              <Icon name="clock" size={18} />
+              <dt>Time</dt>
+              <dd>10:00 AM – 2:00 PM</dd>
+            </div>
+            <div class="schedule-row">
+              <Icon name="pin" size={18} />
+              <dt>Where</dt>
+              <dd>Robinsons Mall La Union<span>San Fernando City, La Union</span></dd>
+            </div>
+            <div class="schedule-row">
+              <Icon name="users" size={18} />
+              <dt>Who</dt>
+              <dd>Kids, teens &amp; adults<span>Open play</span></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="divisions-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tournament play</p>
+            <h2 id="divisions-title">Two divisions.<br />One club.</h2>
+          </div>
+          <p class="lede">
+            Tournament days split the hall into two brackets, so young players get their own
+            competition and the open division plays for the top prize.
+          </p>
+        </div>
+
+        <div class="division-grid">
+          <article class="division division--kiddies reveal">
+            <div class="division-top">
+              <p class="division-label">Kiddies division</p>
+              <p class="division-age">12<span>&amp; below</span></p>
+            </div>
+            <div class="division-body">
+              <h3>The next generation.</h3>
+              <p>
+                A dedicated bracket for players 12 and under — same hall, their own shot at the
+                podium.
+              </p>
+              <p class="division-prize">
+                <Icon name="trophy" size={20} />
+                <span><strong>₱3,000</strong> champion prize at Tournament 2.0</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="division division--open reveal">
+            <div class="division-top">
+              <p class="division-label">Open division</p>
+              <p class="division-age">13<span>&amp; above</span></p>
+            </div>
+            <div class="division-body">
+              <h3>All comers.</h3>
+              <p>
+                Teens and adults, club players and first-timers. Tournament 2.0 also awards a
+                Top Lady and Top Senior prize in the open bracket.
+              </p>
+              <p class="division-prize">
+                <Icon name="trophy" size={20} />
+                <span><strong>₱5,000</strong> champion prize at Tournament 2.0</span>
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="gallery-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">From the hall</p>
+            <h2 id="gallery-title">This is what Saturday looks like.</h2>
+          </div>
+          <p class="lede">
+            Real tables, real clocks, real faces from Chess United Tournament 1.0 at Rovers
+            Coffee.
+          </p>
+        </div>
+
+        <Gallery photos={galleryHome} variant="home" />
+
+        <div class="mt-2">
+          <a class="text-link" href="/gallery/">
+            Open the gallery <Icon name="arrow" size={14} class="arrow" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="shop-title">
+      <div class="wrap shop-teaser">
+        <div class="shop-photo reveal">
+          <img
+            src={photos.flatlay.src}
+            srcset={photos.flatlay.srcset}
+            sizes="(max-width: 980px) 92vw, 42vw"
+            width={photos.flatlay.width}
+            height={photos.flatlay.height}
+            alt={photos.flatlay.alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="tag">Official club merch</span>
+        </div>
+        <div>
+          <p class="eyebrow">Club kit</p>
+          <h2 id="shop-title" class="display-md">Wear the board.</h2>
+          <p class="lede">
+            Official Chess United merchandise — from tournament-ready sets to the tumbler
+            you'll refill every Saturday.
+          </p>
+          <div class="price-list" aria-label="A few merchandise prices">
+            {shopPreview.map((item) => (
+              <div class="price-row">
+                <span class="name">{item.name}{item.note && <span class="item-note"> · {item.note}</span>}</span>
+                <span class="dots" aria-hidden="true"></span>
+                <span class="amount">₱{item.price.toLocaleString('en-PH')}</span>
+              </div>
+            ))}
+          </div>
+          <p class="mt-2">
+            <a class="btn" href="/shop/">See the full price list <Icon name="arrow" size={16} class="arrow" /></a>
+          </p>
+          <p class="muted" style="font-size:.78rem;margin-top:14px">
+            Pre-order · limited stocks. Prices as published on the club's merch list.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section--tight" aria-labelledby="partners-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Backed by the community</p>
+            <h2 id="partners-title">Tournament 1.0 partners.</h2>
+          </div>
+          <p class="lede">
+            Local government, malls, businesses and community groups that made the first
+            tournament day possible.
+          </p>
+        </div>
+      </div>
+
+      <div class="partners-strip" aria-label="Tournament 1.0 partners and sponsors">
+        <div class="partners-track">
+          {[0, 1].map((group) => (
+            <div class="partners-group" aria-hidden={group === 1 ? 'true' : undefined}>
+              {partnerNames.map((name) => <span class="partner-name">{name}</span>)}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="wrap mt-2">
+        <a class="text-link" href="/about/#partners">
+          About the club &amp; partners <Icon name="arrow" size={14} class="arrow" />
+        </a>
+      </div>
+    </section>
+
+    <section class="cta-band" aria-labelledby="cta-title">
+      <div class="wrap cta-inner">
+        <div>
+          <h2 id="cta-title" class="display-lg">Your next move is Saturday.</h2>
+          <p>Come for a game. Stay for the people.</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
+            Join the Messenger group
+            <Icon name="external" size={16} />
+          </a>
+          <a class="btn btn--light" href="/visit/">Find us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

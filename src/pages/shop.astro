@@ -1,0 +1,176 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { site, merch } from '../data/site';
+
+const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const abs = (path: string) => new URL(path, origin).href;
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: abs('/') },
+    { '@type': 'ListItem', position: 2, name: 'Shop', item: abs('/shop/') },
+  ],
+};
+
+const totalItems = merch.reduce((count, group) => count + group.items.length, 0);
+---
+
+<Base
+  title="Official merchandise — Chess United"
+  description="Chess United official merch: shirts, caps, chess sets, tumblers, clocks, keychains and more. Full price list, pre-order and limited stocks."
+  jsonLd={breadcrumbJsonLd}
+>
+  <Header />
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Official merch</p>
+        <h1>Club kit.</h1>
+        <p class="lede">
+          From the board to the bag: Chess United shirts, sets, clocks and small things. Every
+          item on this page comes from the club's published merchandise list.
+        </p>
+        <div class="page-hero-meta">
+          <span><Icon name="spark" size={15} /> {totalItems} items</span>
+          <span><Icon name="check" size={15} /> Pre-order</span>
+          <span><Icon name="info" size={15} /> Limited stocks</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="shop-intro-title">
+      <div class="wrap shop-teaser">
+        <div class="shop-photo reveal">
+          <img
+            src="/images/posters/merch-price-list-900.webp"
+            width="900"
+            height="636"
+            alt="Chess United official merchandise price list poster with shirts, chess sets, clocks and small items."
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="tag">Official price list</span>
+        </div>
+        <div>
+          <p class="eyebrow">The list</p>
+          <h2 id="shop-intro-title" class="display-md">Support the club. Look the part.</h2>
+          <p class="lede">
+            Merch is handled directly by the club — there is no online checkout on this site.
+            Pick what you want, then ask about pre-orders in the community group or at a
+            Saturday session.
+          </p>
+          <div class="note-box mt-2">
+            <strong>How pricing works:</strong> prices below are reproduced from the club's own
+            merchandise list. The poster advertises pre-order and limited stocks. Confirm current
+            availability and the order process with the club before paying.
+          </div>
+          <div class="hero-actions">
+            <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
+              Ask about an order <Icon name="external" size={15} />
+            </a>
+            <a class="btn btn--ghost" href="/visit/">Find a session</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="price-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Full price list</p>
+            <h2 id="price-title">Everything on the table.</h2>
+          </div>
+          <p class="lede">
+            Four groups: what you wear, what you play with, what sits on your desk, and the small
+            stuff.
+          </p>
+        </div>
+
+        <div class="merch-grid">
+          {merch.map((group) => (
+            <article class="merch-group reveal">
+              <div class="merch-group-head">
+                <h3>{group.name}</h3>
+                <span>{group.items.length} items</span>
+              </div>
+              <p class="blurb">{group.blurb}</p>
+              <div class="price-list">
+                {group.items.map((item) => (
+                  <div class="price-row">
+                    <span class="name">{item.name}{item.note && <span class="item-note"> · {item.note}</span>}</span>
+                    <span class="dots" aria-hidden="true"></span>
+                    <span class="amount">₱{item.price.toLocaleString('en-PH')}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div class="merch-note">
+          <Icon name="info" size={18} />
+          <span>
+            Prices are as published by Chess United and may change. Pre-order and limited stocks
+            apply. This site does not process payments.
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="order-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">How to ask</p>
+            <h2 id="order-title">No checkout here.</h2>
+          </div>
+          <p class="lede">
+            The club handles merch directly. These three steps keep it simple.
+          </p>
+        </div>
+
+        <div class="value-grid">
+          <article class="value-card">
+            <p class="value-num">01 / Pick</p>
+            <h3>Choose from the list.</h3>
+            <p>Note the item, quantity and — for shirts — your size. The published list covers the full range.</p>
+          </article>
+          <article class="value-card">
+            <p class="value-num">02 / Ask</p>
+            <h3>Message the club.</h3>
+            <p>Post in the CHESS UNITED – REGION 1 NETWORK group or ask at the Saturday session for current stock, the total and how to pay.</p>
+          </article>
+          <article class="value-card">
+            <p class="value-num">03 / Confirm</p>
+            <h3>Follow the club's instructions.</h3>
+            <p>The club confirms availability, payment and collection. This site does not take orders or payments.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band" aria-labelledby="shop-cta">
+      <div class="wrap cta-inner">
+        <div>
+          <h2 id="shop-cta" class="display-lg">Get the kit.</h2>
+          <p>Ask about pre-orders and current stock in the group.</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
+            Join the group <Icon name="external" size={15} />
+          </a>
+          <a class="btn btn--light" href="/visit/">Visit us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

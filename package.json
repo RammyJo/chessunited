@@ -1,0 +1,28 @@
+{
+  "name": "chess-united",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Official website for Chess United — a community chess club in San Fernando City, La Union.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/make_calendar.mjs && astro build && node scripts/postbuild.mjs && node scripts/make_worker.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "images": "py scripts/optimize_images.py",
+    "calendar": "node scripts/make_calendar.mjs",
+    "qa": "node scripts/qa.mjs && node scripts/verify-build.mjs",
+    "qa:browser": "node scripts/browser-qa.mjs",
+    "qa:csp": "node scripts/csp-check.mjs",
+    "test": "node scripts/qa.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/sitemap": "^3.7.4",
+    "puppeteer-core": "^25.16.0",
+    "typescript": "^6.0.3"
+  }
+}
