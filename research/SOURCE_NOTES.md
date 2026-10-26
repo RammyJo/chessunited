@@ -1,7 +1,9 @@
 # Chess United — raw source notes from supplied assets
 
 Transcribed directly from the supplied posters/screenshots. No interpretation added here.
-Source files are the 27 JPEGs added to `C:\Users\ORAS Intern\Downloads` on 2026-10-23.
+Sources: the 27 JPEGs added to `C:\Users\ORAS Intern\Downloads` on 2026-10-23, plus the
+5 new files in the 2026-10-26 morning batch and the 4 more that arrived the same evening
+(Tournament 2.0 poster, jersey, lanyard and worn-merch photo).
 
 ## Brand
 - Name: **CHESS UNITED**
@@ -48,24 +50,56 @@ Source files are the 27 JPEGs added to `C:\Users\ORAS Intern\Downloads` on 2026-
 - 6:00 PM Tournament Ends
 
 ## Tournament 2.0 (upcoming)
-- Saturday, **November 7, 2026** — 10:00 AM to 6:00 PM
-- Venue: **Manna Mall, San Fernando City, La Union**
+
+Two posters for this event exist. The second (`b1200d6e-1a7a-4254-89ea-bdf2099befa4.jpg`,
+supplied 2026-10-26) is the one published on the site; the first
+(`474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg`) is superseded and kept only as a source
+record.
+
+**Current poster (2026-10-26) — verbatim:**
+- "TOURNAMENT 2.0", "SATURDAY, 7 NOVEMBER 2026", "ROBINSONS MALL LA UNION"
 - Open Division (13 & above) — registration ₱350
-  - Champion ₱5,000 + trophy
-  - 2nd ₱3,000 + medal
-  - 3rd ₱2,000 + medal
-  - 4th ₱1,000
-  - 5th ₱700
-  - 6th–10th ₱500
-  - Top Lady ₱500
-  - Top Senior ₱500
+  - Champion ₱5,000 + trophy · 2nd ₱3,000 + medal · 3rd ₱2,000 + medal
+  - 4th ₱1,000 · 5th ₱700 · 6th–10th ₱500
+  - Top Lady ₱500 · Top Senior ₱500 · Top Junior ₱500 (13–16 years old)
+  - Top San Fernando ₱500 · Top La Union ₱500
 - Kiddies Division (12 & below) — registration ₱300
-  - Champion ₱3,000 + trophy
-  - 2nd ₱2,000
-  - 3rd ₱1,000
-  - 4th ₱700
-  - 5th ₱500
-  - 6th–10th ₱300
+  - Champion ₱3,000 + trophy · 2nd ₱2,000 + medal · 3rd ₱1,000 + medal
+  - 4th ₱700 · 5th ₱500 · 6th–10th ₱300 · Youngest participant ₱300
+- **This poster prints no start time.** It also has no separate QR or group handle
+  beyond the one already captured from the weekly poster.
+
+**Superseded poster (2026-10-23):**
+- Saturday, 7 November 2026 — **10:00 AM to 6:00 PM**
+- Venue: **Manna Mall**, San Fernando City, La Union
+- Open ₱350: Champion ₱5,000 + trophy, 2nd ₱3,000 + medal, 3rd ₱2,000 + medal,
+  4th ₱1,000, 5th ₱700, 6th–10th ₱500, Top Lady ₱500, Top Senior ₱500
+- Kiddies ₱300: Champion ₱3,000 + trophy, 2nd ₱2,000, 3rd ₱1,000, 4th ₱700,
+  5th ₱500, 6th–10th ₱300
+
+**Differences carried into the site:** venue Manna Mall → **Robinsons Mall La
+Union** (needs club confirmation — note that both venues appear in the Tournament
+1.0 sponsor list, so neither is implausible); three new Open awards and the Kiddies
+medals/youngest award added; dates and division ages unchanged. The 10:00 AM–6:00 PM
+window is still published from the first poster because the newer one says nothing
+about time — flagged for confirmation rather than treated as settled.
+
+## Merchandise artwork (supplied 2026-10-26)
+Three product files, published on the merchandise page. Nothing about pricing was
+read off these images; prices still come only from the merch price-list poster above.
+- **`71872df2-e3a8-4674-a263-1cfc0eb72fd7.jpg`** (1446×672) — front and back of a
+  white sublimation jersey: blue/red raglan sleeves, club crest on the chest, knight
+  graphic with a player name and number on the back. The printed list prices a
+  sublimation shirt at ₱600 but does not say what personalisation costs, so the page
+  tells visitors to confirm the design, size and total with the club.
+- **`8d1a9c4d-52a4-47d5-81d1-7e20a5e57dfb.jpg`** (900×2048) — lanyard artwork: blue
+  half and red half with club name and knight logo, black-and-white checkered lower
+  strap, ID card holder. Replaces the 626×949 file from earlier the same day.
+- **`c962c821-c428-4a1e-862d-926c773305c3.jpg`** (1448×2047) — a member wearing the
+  club t-shirt and cap, drinking from a branded mug and holding a blue club notebook
+  against a painted blue backdrop. Featured as the worn-merch panel.
+- Spelling proofing still open: the jersey back reads "Laconsay Riannne" and
+  "Rhenzzell Charl" — treated as artwork, not quoted as roster data on the site.
 
 ## Ortega Chess Tournament — "Super Mario Cup" (upcoming)
 - Saturday, **December 5, 2026** — 9:00 AM to 5:00 PM

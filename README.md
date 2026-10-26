@@ -3,11 +3,12 @@
 A fast, static website for **Chess United**, a community chess club in San
 Fernando City, La Union, Philippines. It publishes the two weekly Saturday
 tables, the 2026 tournament calendar with the published Top 10 results, real club
-photography, the official merch price list, the club ID kit and the club's
-Messenger community link.
+photography, a merchandise area (jersey, ID kit and the official price list) and
+the club's Messenger community link.
 
 - **Public routes:** exactly eight — `/`, `/events/`, `/play/`, `/gallery/`,
-  `/shop/`, `/about/`, `/visit/` and the `404.html` fallback.
+  `/shop/` (the merchandise area; the URL is unchanged so existing links and the
+  sitemap keep working), `/about/`, `/visit/` and the `404.html` fallback.
 
 - **Live site:** <https://chessunited.pages.dev> (Cloudflare Pages project
   `chessunited`; mirror on the same build at
@@ -78,7 +79,7 @@ src/
   layouts/
     Base.astro     Metadata, canonical, Open Graph, fonts, JSON-LD, scripts
   components/      Header, footer, icons, event card, gallery/lightbox
-  pages/           Home, events, play, gallery, shop, about, visit, 404
+  pages/           Home, events, play, gallery, shop (merchandise), about, visit, 404
   styles/
     global.css     Design system and responsive layout
 public/

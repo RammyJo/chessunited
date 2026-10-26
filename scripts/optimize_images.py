@@ -30,12 +30,14 @@ PHOTOS = {
     "hall2":     ("857444a9-ae15-4afc-90f5-0127d4c50d4f.jpg", "tournament-hall-2", [480, 800, 1200], None),
     "restaurant":("9011d057-d23e-462a-afaa-9334cc060411.jpg", "restaurant-group", [480, 800, 1200], None),
     "idcard":    ("66879aaa-0910-4add-8f7a-91e96c2312db.jpg", "member-id-selfie", [480, 800, 1200], None),
-    "lanyard":   ("620fb610-7804-422a-98e4-f6b6f5f13ea5.jpg", "lanyard-mockup", [480, 626], None),
+    "lanyard":   ("8d1a9c4d-52a4-47d5-81d1-7e20a5e57dfb.jpg", "lanyard-mockup", [480, 900], None),
+    "jersey":    ("71872df2-e3a8-4674-a263-1cfc0eb72fd7.jpg", "club-jersey", [480, 800, 1200], None),
+    "merchlife": ("c962c821-c428-4a1e-862d-926c773305c3.jpg", "merch-lifestyle", [480, 800], None),
 }
 
 POSTERS = {
     "t1":       ("767745ad-7cf5-476d-b85c-c739721d54ec.jpg", "tournament-1-0", [560, 900], None),
-    "t2":       ("474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg", "tournament-2-0", [560, 900], None),
+    "t2":       ("b1200d6e-1a7a-4254-89ea-bdf2099befa4.jpg", "tournament-2-0", [560, 900], None),
     "mario":    ("266a4f5c-3575-4d87-ab78-cea6c564fed5.jpg", "super-mario-cup", [560, 900], None),
     "weekly":   ("fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg", "weekly-chess", [560, 900], None),
     "merch":    ("5a4d8f73-9107-4ae5-9db5-84e8a8a5636c.jpg", "merch-price-list", [560, 900], None),
@@ -101,7 +103,7 @@ bbox = ImageOps.invert(gray).point(lambda p: 255 if p > 12 else 0).getbbox()
 emblem = logo.crop(bbox) if bbox else logo
 side = max(emblem.size)
 pad = int(side * 0.06)
-icon = Image.new("RGB", (side + pad * 2, side + pad * 2), "#0B1633")
+icon = Image.new("RGB", (side + pad * 2, side + pad * 2), "#0a1533")
 emblem.thumbnail((side, side), Image.LANCZOS)
 icon.paste(emblem, ((icon.width - emblem.width) // 2, (icon.height - emblem.height) // 2))
 icon = icon.resize((512, 512), Image.LANCZOS)
@@ -110,15 +112,15 @@ icon.resize((192, 192), Image.LANCZOS).save(OUT / "icon-192.png", "PNG", optimiz
 icon.resize((64, 64), Image.LANCZOS).save(OUT / "favicon-64.png", "PNG", optimize=True)
 icon.resize((180, 180), Image.LANCZOS).save(OUT / "apple-touch-icon.png", "PNG", optimize=True)
 
-# OG card 1200x630
-og = Image.new("RGB", (1200, 630), "#0B1633")
+# OG card 1200x630 — painted only in the three brand colours and their derivatives
+og = Image.new("RGB", (1200, 630), "#0a1533")
 d = ImageDraw.Draw(og)
 # checkerboard band
 sq = 30
 for y in range(0, 630, sq):
     for x in range(0, 1200, sq):
         if (x // sq + y // sq) % 2 == 0:
-            d.rectangle([x, y, x + sq, y + sq], fill="#101F41")
+            d.rectangle([x, y, x + sq, y + sq], fill="#16244c")
 # logo on the right
 badge = logo.resize((470, 470), Image.LANCZOS)
 og.paste(badge, (700, 80))
@@ -128,11 +130,11 @@ try:
     body = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 26)
 except Exception:
     display = small = body = None
-d.text((70, 120), "CHESS", font=display, fill="#FFFFFF")
-d.text((70, 212), "FOR", font=display, fill="#FFFFFF")
-d.text((70, 304), "EVERYONE.", font=display, fill="#F5C33B")
-d.text((74, 430), "SAN FERNANDO CITY  ·  LA UNION", font=small, fill="#6BD3F2")
-d.text((74, 480), "Weekly chess every Saturday  ·  10AM–2PM", font=body, fill="#F6F1E4")
+d.text((70, 120), "CHESS", font=display, fill="#ffffff")
+d.text((70, 212), "FOR", font=display, fill="#ffffff")
+d.text((70, 304), "EVERYONE.", font=display, fill="#f7e42e")
+d.text((74, 430), "SAN FERNANDO CITY  ·  LA UNION", font=small, fill="#4bbced")
+d.text((74, 480), "Two weekly tables every Saturday  ·  from 10 AM", font=body, fill="#d7ecf7")
 og.save(OUT / "og.jpg", "JPEG", quality=88, optimize=True, progressive=True)
 
 (ROOT / "research" / "image-manifest.json").write_text(json.dumps(manifest, indent=2))

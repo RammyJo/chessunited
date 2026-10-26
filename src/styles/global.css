@@ -959,6 +959,16 @@ a:hover .arrow { transform: translateX(4px); }
 .shop-photo img { width: 100%; height: 100%; object-fit: cover; }
 .shop-photo--portrait { transform: rotate(1deg); }
 .shop-photo--portrait img { object-fit: contain; max-height: 560px; }
+.shop-photo--wide { transform: none; background: var(--white); }
+.shop-photo--wide img { display: block; height: auto; object-fit: contain; }
+.jersey-facts {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  gap: clamp(18px, 3vw, 34px);
+  align-items: center;
+  margin-top: clamp(20px, 3vw, 32px);
+}
+.jersey-facts .price-list { margin-top: 0; }
 .shop-photo .tag {
   position: absolute;
   top: 14px; left: 14px;
@@ -1754,6 +1764,7 @@ a:hover .arrow { transform: translateX(4px); }
   .weekly-inner { grid-template-columns: 1fr; }
   .schedule-card { max-width: 620px; transform: none; }
   .shop-teaser { grid-template-columns: 1fr; }
+  .jersey-facts { grid-template-columns: 1fr; }
   .shop-photo { max-width: 560px; }
   .cta-inner { display: block; }
   .cta-actions { margin-top: 24px; }

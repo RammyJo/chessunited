@@ -344,6 +344,39 @@ address as Barangay **Lingsat**, while earlier club messages placed it in
 **Carlatan**. The site now publishes the poster wording and no longer states a
 barangay anywhere else.
 
+## 5f. Merchandise area and Tournament 2.0 poster swap (2026-10-26)
+
+Four more files arrived the same evening: the sublimation jersey artwork, a
+worn-merch lifestyle photo, a 900×2048 lanyard file that replaces the 626 px one,
+and a replacement Tournament 2.0 poster.
+
+| Check | Result |
+| --- | --- |
+| Public routes | **PASS** — still exactly 8. The merchandise area was built inside the existing `/shop/` page rather than as a ninth route; the URL is deliberately unchanged so live links, the sitemap and canonicals keep working |
+| Wording | **PASS** — header nav, footer, home teaser, breadcrumb, `<title>`, `h1` and meta description all read "Merchandise"; no user-facing "Shop" label remains (`/shop/` path only) |
+| New derivatives | **PASS** — 3 new sources → 8 WebP; the superseded `lanyard-mockup-626.webp` was deleted so the old artwork cannot be served |
+| Tournament 2.0 poster replaced | **PASS** — `tournament-2-0-560/900.webp` rebuilt from `b1200d6e…`; venue, `venueShort`, address, Maps query, FAQ answer and the `.ics` `LOCATION` all now say Robinsons Mall La Union |
+| Prize table from the new poster | **PASS** — Open gains Top Junior, Top San Fernando and Top La Union (₱500 each); Kiddies gains medals on 2nd/3rd and a ₱300 youngest-participant award |
+| `lanyard` intrinsic size | **PASS** — corrected to 480×1092 to match the served default derivative, so the layout hint cannot reserve the wrong box |
+| `npm run check` | **PASS** — 0 errors, 0 warnings, 0 hints (14 files) |
+| `npm run build` + `npm run qa` | **PASS** — 8 pages, 458 links, 67 images, 14 JSON-LD blocks, 12 CSP hashes |
+| `npm run qa:colors` | **PASS** — 15 colour literals, 0 outside the three brand hues |
+| `npm run qa:csp` | **PASS** — 8/8 pages, inline JS ran, no violations |
+| `npm run qa:browser` | **PASS** — 16 page/viewport checks at 1440×900 and 390×844, 0 errors, 0 warnings |
+
+Two content points the club still needs to settle, both left visible rather than
+guessed:
+
+- The replacement Tournament 2.0 poster names **Robinsons Mall La Union**, where
+  the first poster said Manna Mall. The site now publishes the newer wording.
+- That same poster prints a date, venue and prize table but **no start time**. The
+  10:00 AM–6:00 PM window on the site still comes from the earlier poster and is
+  unchanged pending confirmation.
+
+The §5e note that "no barangay is stated anywhere" is superseded: after aligning
+Tournament 1.0 with the newer Rovers Coffee poster, the site publishes **Barangay
+Lingsat** on MacArthur Highway. The older "Carlatan" wording is gone.
+
 ## 6. Not verified / limitations
 
 These are outside what automated QA can prove:

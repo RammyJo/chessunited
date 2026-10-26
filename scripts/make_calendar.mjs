@@ -21,7 +21,7 @@ const events = [
     start: '20261107T020000Z', // 10:00 Asia/Manila
     end: '20261107T100000Z', // 18:00 Asia/Manila
     summary: 'Chess United Tournament 2.0',
-    location: 'Manna Mall, San Fernando City, La Union',
+    location: 'Robinsons Mall La Union, San Fernando City, La Union',
     description:
       'Open Division (13 and above): registration PHP 350. ' +
       'Kiddies Division (12 and below): registration PHP 300. ' +

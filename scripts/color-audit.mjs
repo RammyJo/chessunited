@@ -19,7 +19,7 @@ const BRAND = {
   '#ffffff': 'white surface',
 };
 
-const EXT = /\.(css|astro|ts|tsx|js|svg|html|webmanifest)$/i;
+const EXT = /\.(css|astro|ts|tsx|js|jsx|svg|html|webmanifest|py)$/i;
 const SKIP = /node_modules|\.git|\.astro$/;
 
 function walk(dir, out = []) {

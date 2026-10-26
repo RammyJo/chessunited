@@ -14,7 +14,7 @@ const breadcrumbJsonLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: abs('/') },
-    { '@type': 'ListItem', position: 2, name: 'Shop', item: abs('/shop/') },
+    { '@type': 'ListItem', position: 2, name: 'Merchandise', item: abs('/shop/') },
   ],
 };
 
@@ -31,8 +31,8 @@ const totalItems = merch.reduce((count, group) => count + group.items.length, 0)
   <main id="main">
     <header class="page-hero">
       <div class="wrap">
-        <p class="eyebrow">Official merch</p>
-        <h1>Club kit.</h1>
+        <p class="eyebrow">Official club merchandise</p>
+        <h1>Merchandise.</h1>
         <p class="lede">
           From the board to the bag: Chess United shirts, sets, clocks and small things. Every
           item on this page comes from the club's published merchandise list.
@@ -45,7 +45,62 @@ const totalItems = merch.reduce((count, group) => count + group.items.length, 0)
       </div>
     </header>
 
-    <section class="section" aria-labelledby="shop-intro-title">
+    <section class="section" aria-labelledby="kit-title">
+      <div class="wrap shop-teaser">
+        <div>
+          <p class="eyebrow">The kit in real life</p>
+          <h2 id="kit-title" class="display-md">Shirt, cap, mug, notebook.</h2>
+          <p class="lede">
+            The club's printed range is worn at the tables, not kept in a box. Everything in this
+            picture is on the published price list below — ask the club for current stock and
+            sizes.
+          </p>
+          <div class="price-list mt-2">
+            <div class="price-row">
+              <span class="name">T-shirt<span class="item-note"> · medium only</span></span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱300</span>
+            </div>
+            <div class="price-row">
+              <span class="name">Cap</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱150</span>
+            </div>
+            <div class="price-row">
+              <span class="name">Mug</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱120</span>
+            </div>
+            <div class="price-row">
+              <span class="name">Notebook</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱150</span>
+            </div>
+          </div>
+          <div class="badge-row mt-2">
+            <span class="badge">Pre-order</span>
+            <span class="badge">Limited stocks</span>
+            <span class="badge">Club colours</span>
+          </div>
+        </div>
+
+        <div class="shop-photo shop-photo--portrait reveal">
+          <img
+            src={photos.merchlife.src}
+            srcset={photos.merchlife.srcset}
+            sizes="(max-width: 900px) 92vw, 42vw"
+            width={photos.merchlife.width}
+            height={photos.merchlife.height}
+            alt={photos.merchlife.alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="tag">Club merchandise</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="shop-intro-title">
       <div class="wrap shop-teaser">
         <div class="shop-photo reveal">
           <img
@@ -76,6 +131,60 @@ const totalItems = merch.reduce((count, group) => count + group.items.length, 0)
               Ask about an order <Icon name="external" size={15} />
             </a>
             <a class="btn btn--ghost" href="/visit/">Find a session</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="jersey-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tournament day</p>
+            <h2 id="jersey-title" class="display-md">The club jersey.</h2>
+          </div>
+          <p class="lede">
+            White body, blue and red raglan sleeves, the crest on the chest and the knight on the
+            back — the sublimation design the club publishes for tournament wear.
+          </p>
+        </div>
+
+        <div class="shop-photo shop-photo--wide reveal">
+          <img
+            src={photos.jersey.src}
+            srcset={photos.jersey.srcset}
+            sizes="(max-width: 900px) 92vw, 70vw"
+            width={photos.jersey.width}
+            height={photos.jersey.height}
+            alt={photos.jersey.alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="tag">Sublimation jersey design</span>
+        </div>
+
+        <div class="jersey-facts">
+          <div class="price-list">
+            <div class="price-row">
+              <span class="name">Sublimation shirt</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱600</span>
+            </div>
+            <div class="price-row">
+              <span class="name">T-shirt<span class="item-note"> · medium only</span></span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱300</span>
+            </div>
+            <div class="price-row">
+              <span class="name">Polo shirt</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱400</span>
+            </div>
+          </div>
+          <div class="note-box">
+            <strong>Ask before you order:</strong> the sample back carries a name and a number. The
+            published list prices a sublimation shirt at ₱600 but does not say what personalisation
+            costs, so confirm the design, size and total with the club.
           </div>
         </div>
       </div>

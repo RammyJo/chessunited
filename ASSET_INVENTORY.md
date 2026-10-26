@@ -3,9 +3,12 @@
 Status: **VERIFIED** — every supplied source file is accounted for, and every
 displayed image was checked against its source and alt text.
 
-The club supplied **27 JPEGs** on 2026-10-23 (file times 10:45–11:00) and a
-further **8 files** on 2026-10-26, of which 5 are new sources and 3 repeat
-earlier files. They remain untouched in `C:\Users\ORAS Intern\Downloads`.
+The club supplied **27 JPEGs** on 2026-10-23 (file times 10:45–11:00), a further
+**8 files** on 2026-10-26 (5 new sources, 3 repeats of earlier files) and **4 more**
+later the same day (jersey artwork, a merchandise lifestyle photo, a higher-resolution
+lanyard file and a replacement Tournament 2.0 poster). The second lanyard file and the
+first Tournament 2.0 poster supersede the versions from the earlier batch. They all
+remain untouched in `C:\Users\ORAS Intern\Downloads`.
 Optimized derivatives live in `public/images`; the source-to-output map is also
 machine-readable in `research/image-manifest.json`.
 
@@ -13,13 +16,14 @@ machine-readable in `research/image-manifest.json`.
 
 | Class | Sources | Derivatives | Role |
 | --- | ---: | ---: | --- |
-| Photographs | 17 | 50 WebP | Real club, tournament and merch photography |
+| Photographs | 19 | 55 WebP | Real club, tournament and merch photography |
 | Posters / graphics | 11 | 22 WebP + 1 cropped QR | Schedule, events, results, merch, partners, QR |
 | Logo / brand | 1 | 7 files | Logo, app icons, favicon, OG card |
 | Hero | 1 (reuses photo) | 3 WebP + 1 JPEG | Home-page portrait crop |
-| **Displayed sources** | **28** | — | 17 photos + 10 poster sources + logo |
+| **Displayed sources** | **30** | — | 19 photos + 10 poster sources + logo |
 | Source-only, not displayed | 1 | 2 WebP | T1 program poster |
 | Unused | 3 | 0 | 2 personal-brand posters, 1 Messenger invite screenshot |
+| Superseded this batch | 2 | 0 | First (626 px) lanyard file, first Tournament 2.0 poster |
 
 No stock photography, generated imagery, tracking pixels or third-party image
 CDNs are used. The only generated raster is `og.jpg` (a branded social card made
@@ -28,9 +32,9 @@ from the supplied logo).
 ## Photography
 
 Photographs are resized proportionally; no content is removed. Each has
-480/800/1200 px WebP variants, except the banner selfie (480/800/1080) and the
-lanyard artwork, whose source is only 626 px wide (480/626). `alt` text and
-captions live in `src/data/images.ts`.
+480/800/1200 px WebP variants, except the banner selfie (480/800/1080), the
+merchandise lifestyle shot (480/800) and the lanyard artwork, whose 2048 px-tall
+source is served at 480/900. `alt` text and captions live in `src/data/images.ts`.
 
 | Key | Source file | Source px / bytes | Outputs (WebP, bytes) | Used on |
 | --- | --- | --- | --- | --- |
@@ -50,7 +54,9 @@ captions live in `src/data/images.ts`.
 | `hall2` | `857444a9-ae15-4afc-90f5-0127d4c50d4f.jpg` | 2048×1536 / 235,101 | `tournament-hall-2-480/800/1200` — 42,670 / 89,520 / 155,412 | Home gallery, gallery |
 | `restaurant` | `9011d057-d23e-462a-afaa-9334cc060411.jpg` | 1536×2048 / 188,819 | `restaurant-group-480/800/1200` — 51,258 / 99,102 / 165,226 | Gallery (club life) |
 | `idcard` | `66879aaa-0910-4add-8f7a-91e96c2312db.jpg` | 2048×1536 / 190,223 | `member-id-selfie-480/800/1200` — 36,774 / 73,574 / 120,652 | Gallery (club life) |
-| `lanyard` | `620fb610-7804-422a-98e4-f6b6f5f13ea5.jpg` | 626×949 / 23,593 | `lanyard-mockup-480/626` — 13,842 / 18,356 | Shop, ID kit block |
+| `lanyard` | `8d1a9c4d-52a4-47d5-81d1-7e20a5e57dfb.jpg` | 900×2048 / 62,727 | `lanyard-mockup-480/900` — 27,516 / 58,952 | Merchandise, ID kit block |
+| `jersey` | `71872df2-e3a8-4674-a263-1cfc0eb72fd7.jpg` | 1446×672 / 29,890 | `club-jersey-480/800/1200` — 7,038 / 13,286 / 22,600 | Merchandise — club jersey section |
+| `merchlife` | `c962c821-c428-4a1e-862d-926c773305c3.jpg` | 1448×2047 / 281,377 | `merch-lifestyle-480/800` — 85,660 / 209,860 | Merchandise — featured worn-merch section |
 
 Hero derivatives from `table19`:
 
@@ -70,13 +76,13 @@ source of any fact.
 | Key | Source file | Source px / bytes | Outputs (WebP, bytes) | Used on |
 | --- | --- | --- | --- | --- |
 | `t1` | `767745ad-7cf5-476d-b85c-c739721d54ec.jpg` | 2048×1535 / 215,460 | `tournament-1-0-560/900` — 45,184 / 82,284 | Events T1 recap poster |
-| `t2` | `474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg` | 2048×1535 / 270,564 | `tournament-2-0-560/900` — 58,782 / 107,584 | Events T2 poster; event JSON-LD image |
+| `t2` | `b1200d6e-1a7a-4254-89ea-bdf2099befa4.jpg` | 1448×1086 / 205,507 | `tournament-2-0-560/900` — 77,248 / 145,740 | Events T2 poster; event JSON-LD image. Replaces `474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg` |
 | `mario` | `266a4f5c-3575-4d87-ab78-cea6c564fed5.jpg` | 2000×1414 / 228,918 | `super-mario-cup-560/900` — 49,706 / 89,854 | Events Mario poster; event JSON-LD image |
 | `weekly` | `fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg` | 1414×2000 / 160,107 | `weekly-chess-560/900` — 51,974 / 87,358 | Robinsons weekly poster, rendered on `/play/` |
 | `rovers` | `47e168d1-2072-42d6-b6e4-5b7df4b81366.jpg` | 1080×1920 / 127,282 | `weekly-rovers-560/900` — 61,062 / 107,330 | Rovers Coffee weekly poster, rendered on `/play/` |
 | `top10open` | `a943bad4-7e55-43c5-ac6c-dd43ea045cad.jpg` | 1414×2000 / 187,924 | `top10-open-560/900` — 61,336 / 104,014 | Events — Tournament 1.0 Open results |
 | `top10kids` | `c9e048a1-89fa-44e0-b4b1-1ffb7eeab5f5.jpg` | 1414×2000 / 210,798 | `top10-kiddies-560/900` — 68,978 / 115,286 | Events — Tournament 1.0 Kiddies results |
-| `merch` | `5a4d8f73-9107-4ae5-9db5-84e8a8a5636c.jpg` | 2000×1414 / 290,381 | `merch-price-list-560/900` — 60,788 / 114,734 | Shop poster |
+| `merch` | `5a4d8f73-9107-4ae5-9db5-84e8a8a5636c.jpg` | 2000×1414 / 290,381 | `merch-price-list-560/900` — 60,788 / 114,734 | Merchandise price-list poster |
 | `sponsors` | `7569a681-69ba-4d78-b300-59e827530814.jpg` | 1030×2049 / 256,442 | `partners-1-0-560/900` — 138,408 / 263,682 | About partners poster |
 | `program` | `1ca3bb3f-b8c0-44fb-8284-cdfff717c142.jpg` | 892×636 / 67,008 | `program-1-0-640/892` — 48,536 / 75,838 | **Source only** — T1 program/team facts; not rendered |
 | `qr` | `c4c90e7d-5cec-4529-bc08-7370d921109c.jpg` | 1290×1636 / 158,922 | `community-qr-480/760` — 38,014 / 65,134 | QR source for the Visit crop |
@@ -124,13 +130,22 @@ These are intentionally **not** on the site. They remain in the source folder.
 | `d38c9c60-9378-4cc1-b0ff-065ada123269.jpg` | 2000×1414 / 257,434 | Second personal-brand poster; out of scope |
 | `f923c353-345c-4550-a56d-04edfdd285a8.jpg` | 1290×1146 / 65,929 | Messenger invite screenshot with a time-sensitive “72 members” count; the group link is the live channel |
 
+Superseded by a better file from the same day — the pipeline no longer references
+them, but their derivatives were deleted so the old artwork cannot be served:
+
+| Source file | Pixels / bytes | Superseded by |
+| --- | --- | --- |
+| `620fb610-7804-422a-98e4-f6b6f5f13ea5.jpg` | 626×949 / 23,593 | `8d1a9c4d…` lanyard artwork (900×2048) |
+| `474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg` | 2048×1535 / 270,564 | `b1200d6e…` Tournament 2.0 poster (new venue and prizes) |
+
 The three medal close-ups (`55644f40…`, `e7cafd39…`, `39097b16…`) were added to
-the gallery in the 2026-10-23 pass, so every real club photograph is now on the
-site. The 15 gallery photographs are the complete supplied photo set.
+the gallery in the 2026-10-23 pass. `/gallery/` shows 16 of the 19 photo sources;
+the other three (lanyard artwork, jersey artwork and the worn-merch lifestyle
+shot) are used on the merchandise page, where they carry the product facts.
 
 ## Ownership and permission
 
-- The 27 club photos/posters were supplied by Chess United for this project. No
+- The club photos and posters were supplied by Chess United for this project. No
   separate reuse license was supplied; do not redistribute them outside the club
   site without the club's permission.
 - Partner logos appear only inside the supplied Tournament 1.0 sponsors poster.

@@ -401,21 +401,65 @@
       ]
     },
     "lanyard": {
-      "source": "620fb610-7804-422a-98e4-f6b6f5f13ea5.jpg",
-      "width": 626,
-      "height": 949,
+      "source": "8d1a9c4d-52a4-47d5-81d1-7e20a5e57dfb.jpg",
+      "width": 900,
+      "height": 2048,
       "sizes": [
         {
           "w": 480,
-          "h": 728,
+          "h": 1092,
           "path": "/images/photos/lanyard-mockup-480.webp",
-          "bytes": 13842
+          "bytes": 27516
         },
         {
-          "w": 626,
-          "h": 949,
-          "path": "/images/photos/lanyard-mockup-626.webp",
-          "bytes": 18356
+          "w": 900,
+          "h": 2048,
+          "path": "/images/photos/lanyard-mockup-900.webp",
+          "bytes": 58952
+        }
+      ]
+    },
+    "jersey": {
+      "source": "71872df2-e3a8-4674-a263-1cfc0eb72fd7.jpg",
+      "width": 1446,
+      "height": 672,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 223,
+          "path": "/images/photos/club-jersey-480.webp",
+          "bytes": 7038
+        },
+        {
+          "w": 800,
+          "h": 372,
+          "path": "/images/photos/club-jersey-800.webp",
+          "bytes": 13286
+        },
+        {
+          "w": 1200,
+          "h": 558,
+          "path": "/images/photos/club-jersey-1200.webp",
+          "bytes": 22600
+        }
+      ]
+    },
+    "merchlife": {
+      "source": "c962c821-c428-4a1e-862d-926c773305c3.jpg",
+      "width": 1448,
+      "height": 2047,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 679,
+          "path": "/images/photos/merch-lifestyle-480.webp",
+          "bytes": 85660
+        },
+        {
+          "w": 800,
+          "h": 1131,
+          "path": "/images/photos/merch-lifestyle-800.webp",
+          "bytes": 209860
         }
       ]
     }
@@ -441,21 +485,21 @@
       ]
     },
     "t2": {
-      "source": "474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg",
-      "width": 2048,
-      "height": 1535,
+      "source": "b1200d6e-1a7a-4254-89ea-bdf2099befa4.jpg",
+      "width": 1448,
+      "height": 1086,
       "sizes": [
         {
           "w": 560,
           "h": 420,
           "path": "/images/posters/tournament-2-0-560.webp",
-          "bytes": 58782
+          "bytes": 77248
         },
         {
           "w": 900,
           "h": 675,
           "path": "/images/posters/tournament-2-0-900.webp",
-          "bytes": 107584
+          "bytes": 145740
         }
       ]
     },

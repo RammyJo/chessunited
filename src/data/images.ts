@@ -171,11 +171,28 @@ export const photos: Record<string, Photo> = {
   lanyard: make(
     'lanyard',
     '/images/photos/lanyard-mockup',
-    626,
-    949,
+    480,
+    1092,
     'Chess United lanyard design: a blue half and a red half printed with the club name and knight logo, a black-and-white checkered lower strap, and a member ID card holder.',
     'The club lanyard.',
-    [480, 626],
+    [480, 900],
+  ),
+  jersey: make(
+    'jersey',
+    '/images/photos/club-jersey',
+    800,
+    372,
+    'Front and back of the white Chess United sublimation jersey: blue and red raglan sleeves, the club crest on the chest, and a knight with a player name and number on the back.',
+    'The club jersey.',
+  ),
+  merchlife: make(
+    'merchlife',
+    '/images/photos/merch-lifestyle',
+    800,
+    1131,
+    'A club member in the Chess United t-shirt and cap drinks from a branded mug while holding a blue Chess United notebook, against a painted blue backdrop.',
+    'Worn, printed, carried.',
+    [480, 800],
   ),
 };
 
