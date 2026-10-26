@@ -2,7 +2,7 @@
 
 A fast, static website for **Chess United**, a community chess club in San
 Fernando City, La Union, Philippines. It publishes the two weekly Saturday
-tables, the 2026 tournament calendar with published Top 10 results, real club
+tables, the 2026 tournament calendar with the published Top 10 results, real club
 photography, the official merch price list, the club ID kit and the club's
 Messenger community link.
 
@@ -26,8 +26,8 @@ Messenger community link.
 | Accessibility / SEO / best practices | **VERIFIED** — Lighthouse 100 a11y/SEO, 96+ best practices on the live site |
 | Performance | **VERIFIED** — Lighthouse mobile 95–99, desktop 100 |
 | Static, browser, CSP and calendar checks | **VERIFIED** — see `QA_REPORT.md` |
-| Live deployment (Cloudflare Pages, project `chessunited`) | **VERIFIED** — `chessunited.pages.dev`, 2026-10-24 blue-dominant build |
-| GitHub repository | **VERIFIED** — <https://github.com/RammyJo/chessunited>, branch `main`, pushed 2026-10-25 |
+| Live deployment (Cloudflare Pages, project `chessunited`) | **VERIFIED** — `chessunited.pages.dev`, production build `d859ae36` from commit `816add8`, 2026-10-26 |
+| GitHub repository | **VERIFIED** — <https://github.com/RammyJo/chessunited>, branch `main`, pushed 2026-10-26 |
 | Spaceship domain + DNS | **PENDING** — no domain registered or supplied |
 | Custom canonical domain | **PENDING** — the site canonicalises to its `pages.dev` host |
 
