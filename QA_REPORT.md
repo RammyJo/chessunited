@@ -317,6 +317,33 @@ low-opacity dot textures — `grep` finds **zero** solid navy backgrounds left i
 | Images | **PASS** — 56/56 load on the live Pages host across 7 pages |
 | Layout | **PASS** — no horizontal overflow at 1440 px or 390 px on any page |
 
+## 5e. Second asset batch, results and strict palette (2026-10-26)
+
+Five new sources arrived from the club (member-ID selfie, lanyard artwork, Rovers
+Coffee weekly poster, and the two Tournament 1.0 Top 10 posters); three further
+files in the batch repeated earlier assets and were not re-added.
+
+| Check | Result |
+| --- | --- |
+| New derivatives built by `npm run images` | **PASS** — 5 sources → 13 WebP, originals untouched in `Downloads` |
+| Top 10 standings transcribed into `src/data/site.ts` (20 names, both divisions) | **PASS** — poster text re-read from 1.6×–5× crops before typing |
+| Second weekly table (`weeklySessions`) propagated to home, play, visit, events, about, header, footer, 404, gallery CTA | **PASS** |
+| Public routes | **PASS** — 8 (`/`, `/events/`, `/play/`, `/gallery/`, `/shop/`, `/about/`, `/visit/`, `404.html`) |
+| `npm run qa:colors` | **PASS** — 15 colour literals, 0 outside the three brand hues |
+| Beige/cream neutrals removed | **PASS** — `--cream`/`--paper` replaced by pale azure `--surface` `#d7ecf7` and white `--card`; `manifest.webmanifest` `background_color` `#f3eddf` → `#4bbced` |
+| Yellow demotion | **PASS** — `#f7e42e` now appears only in `::selection` and the 9 px eyebrow dot; the 16 former fill/checkerboard/shadow/border uses became azure, azure-tint, ink or red |
+| Contrast after substitution | **PASS** — `--muted` `#0d6590` 5.32:1 on surface, 6.49:1 on card; ink on azure highlight 8.3:1; white on `--red-ink` 7.4:1 |
+| `npm run check` | **PASS** — 0 errors, 0 warnings, 0 hints |
+| `npm run build` + `npm run qa` | **PASS** — 8 pages, 451 links, 65 images, 14 JSON-LD blocks, 12 CSP hashes |
+| `npm run qa:csp` | **PASS** — 8/8 pages, inline JS ran, no violations |
+| `npm run qa:browser` | **PASS** — 16 page/viewport checks, 0 errors, 0 warnings |
+| Lightbox full-size targets exist | **PASS** — 22 `data-full` references, 0 missing |
+
+Outstanding content question for the club: the Rovers Coffee poster gives the
+address as Barangay **Lingsat**, while earlier club messages placed it in
+**Carlatan**. The site now publishes the poster wording and no longer states a
+barangay anywhere else.
+
 ## 6. Not verified / limitations
 
 These are outside what automated QA can prove:

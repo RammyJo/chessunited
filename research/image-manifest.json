@@ -374,6 +374,50 @@
           "bytes": 165226
         }
       ]
+    },
+    "idcard": {
+      "source": "66879aaa-0910-4add-8f7a-91e96c2312db.jpg",
+      "width": 2048,
+      "height": 1536,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 360,
+          "path": "/images/photos/member-id-selfie-480.webp",
+          "bytes": 36774
+        },
+        {
+          "w": 800,
+          "h": 600,
+          "path": "/images/photos/member-id-selfie-800.webp",
+          "bytes": 73574
+        },
+        {
+          "w": 1200,
+          "h": 900,
+          "path": "/images/photos/member-id-selfie-1200.webp",
+          "bytes": 120652
+        }
+      ]
+    },
+    "lanyard": {
+      "source": "620fb610-7804-422a-98e4-f6b6f5f13ea5.jpg",
+      "width": 626,
+      "height": 949,
+      "sizes": [
+        {
+          "w": 480,
+          "h": 728,
+          "path": "/images/photos/lanyard-mockup-480.webp",
+          "bytes": 13842
+        },
+        {
+          "w": 626,
+          "h": 949,
+          "path": "/images/photos/lanyard-mockup-626.webp",
+          "bytes": 18356
+        }
+      ]
     }
   },
   "posters": {
@@ -526,6 +570,63 @@
           "h": 964,
           "path": "/images/posters/community-qr-760.webp",
           "bytes": 65134
+        }
+      ]
+    },
+    "rovers": {
+      "source": "47e168d1-2072-42d6-b6e4-5b7df4b81366.jpg",
+      "width": 1080,
+      "height": 1920,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 996,
+          "path": "/images/posters/weekly-rovers-560.webp",
+          "bytes": 61062
+        },
+        {
+          "w": 900,
+          "h": 1600,
+          "path": "/images/posters/weekly-rovers-900.webp",
+          "bytes": 107330
+        }
+      ]
+    },
+    "top10open": {
+      "source": "a943bad4-7e55-43c5-ac6c-dd43ea045cad.jpg",
+      "width": 1414,
+      "height": 2000,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 792,
+          "path": "/images/posters/top10-open-560.webp",
+          "bytes": 61336
+        },
+        {
+          "w": 900,
+          "h": 1273,
+          "path": "/images/posters/top10-open-900.webp",
+          "bytes": 104014
+        }
+      ]
+    },
+    "top10kids": {
+      "source": "c9e048a1-89fa-44e0-b4b1-1ffb7eeab5f5.jpg",
+      "width": 1414,
+      "height": 2000,
+      "sizes": [
+        {
+          "w": 560,
+          "h": 792,
+          "path": "/images/posters/top10-kiddies-560.webp",
+          "bytes": 68978
+        },
+        {
+          "w": 900,
+          "h": 1273,
+          "path": "/images/posters/top10-kiddies-900.webp",
+          "bytes": 115286
         }
       ]
     }

@@ -3,21 +3,22 @@
 Status: **VERIFIED** — every supplied source file is accounted for, and every
 displayed image was checked against its source and alt text.
 
-The club supplied **27 JPEGs** on 2026-10-23 (file times 10:45–11:00). They remain
-untouched in `C:\Users\ORAS Intern\Downloads`. Optimized derivatives live in
-`public/images`; the source-to-output map is also machine-readable in
-`research/image-manifest.json`.
+The club supplied **27 JPEGs** on 2026-10-23 (file times 10:45–11:00) and a
+further **8 files** on 2026-10-26, of which 5 are new sources and 3 repeat
+earlier files. They remain untouched in `C:\Users\ORAS Intern\Downloads`.
+Optimized derivatives live in `public/images`; the source-to-output map is also
+machine-readable in `research/image-manifest.json`.
 
 ## Summary
 
 | Class | Sources | Derivatives | Role |
 | --- | ---: | ---: | --- |
-| Photographs | 15 | 45 WebP | Real club and tournament photography |
-| Posters / graphics | 8 | 16 WebP + 1 cropped QR | Schedule, events, merch, partners, QR |
+| Photographs | 17 | 50 WebP | Real club, tournament and merch photography |
+| Posters / graphics | 11 | 22 WebP + 1 cropped QR | Schedule, events, results, merch, partners, QR |
 | Logo / brand | 1 | 7 files | Logo, app icons, favicon, OG card |
 | Hero | 1 (reuses photo) | 3 WebP + 1 JPEG | Home-page portrait crop |
-| **Displayed sources** | **22** | — | 15 photos + 6 poster sources + logo |
-| Source-only, not displayed | 2 | 4 WebP | Weekly poster, T1 program poster |
+| **Displayed sources** | **28** | — | 17 photos + 10 poster sources + logo |
+| Source-only, not displayed | 1 | 2 WebP | T1 program poster |
 | Unused | 3 | 0 | 2 personal-brand posters, 1 Messenger invite screenshot |
 
 No stock photography, generated imagery, tracking pixels or third-party image
@@ -26,9 +27,10 @@ from the supplied logo).
 
 ## Photography
 
-All 15 are resized proportionally; no content is removed. Each has
-480/800/1200 px WebP variants, except the banner selfie (480/800/1080). `alt`
-text and captions live in `src/data/images.ts`.
+Photographs are resized proportionally; no content is removed. Each has
+480/800/1200 px WebP variants, except the banner selfie (480/800/1080) and the
+lanyard artwork, whose source is only 626 px wide (480/626). `alt` text and
+captions live in `src/data/images.ts`.
 
 | Key | Source file | Source px / bytes | Outputs (WebP, bytes) | Used on |
 | --- | --- | --- | --- | --- |
@@ -47,6 +49,8 @@ text and captions live in `src/data/images.ts`.
 | `club` | `7eb8c41b-fdec-4c57-915f-5725710ce8ee.jpg` | 2048×1536 / 137,801 | `club-selfie-480/800/1200` — 26,668 / 50,000 / 79,448 | Gallery (club life) |
 | `hall2` | `857444a9-ae15-4afc-90f5-0127d4c50d4f.jpg` | 2048×1536 / 235,101 | `tournament-hall-2-480/800/1200` — 42,670 / 89,520 / 155,412 | Home gallery, gallery |
 | `restaurant` | `9011d057-d23e-462a-afaa-9334cc060411.jpg` | 1536×2048 / 188,819 | `restaurant-group-480/800/1200` — 51,258 / 99,102 / 165,226 | Gallery (club life) |
+| `idcard` | `66879aaa-0910-4add-8f7a-91e96c2312db.jpg` | 2048×1536 / 190,223 | `member-id-selfie-480/800/1200` — 36,774 / 73,574 / 120,652 | Gallery (club life) |
+| `lanyard` | `620fb610-7804-422a-98e4-f6b6f5f13ea5.jpg` | 626×949 / 23,593 | `lanyard-mockup-480/626` — 13,842 / 18,356 | Shop, ID kit block |
 
 Hero derivatives from `table19`:
 
@@ -68,7 +72,10 @@ source of any fact.
 | `t1` | `767745ad-7cf5-476d-b85c-c739721d54ec.jpg` | 2048×1535 / 215,460 | `tournament-1-0-560/900` — 45,184 / 82,284 | Events T1 recap poster |
 | `t2` | `474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg` | 2048×1535 / 270,564 | `tournament-2-0-560/900` — 58,782 / 107,584 | Events T2 poster; event JSON-LD image |
 | `mario` | `266a4f5c-3575-4d87-ab78-cea6c564fed5.jpg` | 2000×1414 / 228,918 | `super-mario-cup-560/900` — 49,706 / 89,854 | Events Mario poster; event JSON-LD image |
-| `weekly` | `fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg` | 1414×2000 / 160,107 | `weekly-chess-560/900` — 51,974 / 87,358 | **Source only** — weekly facts; not rendered |
+| `weekly` | `fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg` | 1414×2000 / 160,107 | `weekly-chess-560/900` — 51,974 / 87,358 | Robinsons weekly poster, rendered on `/play/` |
+| `rovers` | `47e168d1-2072-42d6-b6e4-5b7df4b81366.jpg` | 1080×1920 / 127,282 | `weekly-rovers-560/900` — 61,062 / 107,330 | Rovers Coffee weekly poster, rendered on `/play/` |
+| `top10open` | `a943bad4-7e55-43c5-ac6c-dd43ea045cad.jpg` | 1414×2000 / 187,924 | `top10-open-560/900` — 61,336 / 104,014 | Events — Tournament 1.0 Open results |
+| `top10kids` | `c9e048a1-89fa-44e0-b4b1-1ffb7eeab5f5.jpg` | 1414×2000 / 210,798 | `top10-kiddies-560/900` — 68,978 / 115,286 | Events — Tournament 1.0 Kiddies results |
 | `merch` | `5a4d8f73-9107-4ae5-9db5-84e8a8a5636c.jpg` | 2000×1414 / 290,381 | `merch-price-list-560/900` — 60,788 / 114,734 | Shop poster |
 | `sponsors` | `7569a681-69ba-4d78-b300-59e827530814.jpg` | 1030×2049 / 256,442 | `partners-1-0-560/900` — 138,408 / 263,682 | About partners poster |
 | `program` | `1ca3bb3f-b8c0-44fb-8284-cdfff717c142.jpg` | 892×636 / 67,008 | `program-1-0-640/892` — 48,536 / 75,838 | **Source only** — T1 program/team facts; not rendered |

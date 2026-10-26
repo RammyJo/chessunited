@@ -1,9 +1,13 @@
 # Chess United — official website
 
 A fast, static website for **Chess United**, a community chess club in San
-Fernando City, La Union, Philippines. It publishes the weekly Saturday session,
-the 2026 tournament calendar, real club photography, the official merch price
-list and the club's Messenger community link.
+Fernando City, La Union, Philippines. It publishes the two weekly Saturday
+tables, the 2026 tournament calendar with published Top 10 results, real club
+photography, the official merch price list, the club ID kit and the club's
+Messenger community link.
+
+- **Public routes:** exactly eight — `/`, `/events/`, `/play/`, `/gallery/`,
+  `/shop/`, `/about/`, `/visit/` and the `404.html` fallback.
 
 - **Live site:** <https://chessunited.pages.dev> (Cloudflare Pages project
   `chessunited`; mirror on the same build at
@@ -52,6 +56,7 @@ On Windows PowerShell, if `npm.ps1` is blocked by execution policy, use
 | `npm run qa` | Static metadata/link/image/JSON-LD checks + build checks |
 | `npm run qa:browser` | Puppeteer desktop/mobile checks; needs `npm run preview` on port 4321 and Chrome |
 | `npm run qa:csp` | Serves `dist/` with the production CSP and checks all 8 pages for violations |
+| `npm run qa:colors` | Lists every colour literal in `src/`, `public/` and `dist/` and fails on any hue outside the three brand colours |
 | `npm run calendar` | Regenerates the two `.ics` files with the current `SITE_URL` |
 | `npm run images` | Rebuilds WebP derivatives from the supplied originals (Python + Pillow) |
 | `npm test` | Alias for the static QA pass |
@@ -68,7 +73,7 @@ npx.cmd --yes lighthouse@13.5.0 http://127.0.0.1:4321/ --view
 ```
 src/
   data/
-    site.ts        Events, fees, prizes, merch, team, partners, group URL
+    site.ts        Events, results, weekly tables, fees, merch, team, partners, group URL
     images.ts      Photo/poster paths, responsive srcsets, alt text, captions
   layouts/
     Base.astro     Metadata, canonical, Open Graph, fonts, JSON-LD, scripts
@@ -104,7 +109,7 @@ prizes, prices, names and venues come from the club's posters or the club's own
 messages. If a detail is not verified, the page says to ask the club rather than
 guessing.
 
-1. Edit `src/data/site.ts` for events, weekly details, merch, team and partners.
+1. Edit `src/data/site.ts` for events, `weeklySessions`, results, merch, team and partners.
 2. Edit `src/data/images.ts` for photo paths, `alt` text and captions.
 3. If an event date/time/fee changes, also update `scripts/make_calendar.mjs`
    (the calendar generator has its own small event list) and run `npm run build`.
@@ -166,10 +171,19 @@ rollback steps, and `DOMAIN_SETUP.md` for connecting a club domain.
   disabled under `prefers-reduced-motion: reduce`.
 - Brand palette: `--azure` `#4bbced`, `--red` `#c92929` and `--gold` `#f7e42e`
   are the club's exact brand values and live only in the token block at the top of
-  `src/styles/global.css`. Blue leads (primary buttons, accents), red supports
-  (details band, secondary actions) and yellow is kept to small highlights.
-  `--azure-ink` and `--red-ink` are darker, text-safe shades derived from those
-  hues so small copy stays above 4.5:1 on cream.
+  `src/styles/global.css`. Blue leads (page surfaces, primary buttons, section
+  fills), red supports (CTA band, details, rules) and yellow is restricted to two
+  micro-accents (text selection and the 9 px dot before an inverted eyebrow) — it
+  is never a fill. Every other colour in the CSS is a shade or tint derived from
+  those three hues; the old beige/cream neutrals were replaced with pale azure
+  (`--surface` `#d7ecf7`) and white cards. `--azure-ink` `#0d6590` and `--red-ink`
+  `#a81c1c` are the darker, text-safe derivations that keep small copy above 4.5:1
+  on the azure surfaces. `scripts/color-audit.mjs` lists every colour literal in
+  the source and the build.
+- Accessibility exception: near-black navy `--ink` `#0a1533` (a shade of the brand
+  blue) and white remain as the text/surface pair, because a three-colour palette
+  with no light surface and no dark ink cannot meet WCAG AA. This is documented
+  rather than silently introduced; it needs the client's explicit confirmation.
 - No secrets, tokens or `.env` files belong in this repository.
 
 ## Documentation
@@ -177,7 +191,7 @@ rollback steps, and `DOMAIN_SETUP.md` for connecting a club domain.
 | File | Contents |
 | --- | --- |
 | `PROJECT_PLAN.md` | Goals, verified facts, architecture, milestones |
-| `ASSET_INVENTORY.md` | All 27 supplied files, derivatives, usage, licensing |
+| `ASSET_INVENTORY.md` | Every supplied file, derivatives, usage, licensing |
 | `DEPLOYMENT.md` | Cloudflare Pages deployment runbook |
 | `DOMAIN_SETUP.md` | Spaceship → Cloudflare DNS runbook |
 | `QA_REPORT.md` | Actual test results, live verification and Lighthouse measurements |

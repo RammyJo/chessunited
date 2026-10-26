@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import { site, merch } from '../data/site';
+import { photos } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
 const abs = (path: string) => new URL(path, origin).href;
@@ -124,7 +125,51 @@ const totalItems = merch.reduce((count, group) => count + group.items.length, 0)
       </div>
     </section>
 
-    <section class="section" aria-labelledby="order-title">
+    <section class="section" aria-labelledby="idkit-title">
+      <div class="wrap shop-teaser">
+        <div class="shop-photo shop-photo--portrait reveal">
+          <img
+            src={photos.lanyard.src}
+            srcset={photos.lanyard.srcset}
+            sizes="(max-width: 900px) 92vw, 42vw"
+            width={photos.lanyard.width}
+            height={photos.lanyard.height}
+            alt={photos.lanyard.alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="tag">Club ID kit</span>
+        </div>
+        <div>
+          <p class="eyebrow">Lanyard &amp; member ID</p>
+          <h2 id="idkit-title" class="display-md">Two hundred pesos, and you're on the roster.</h2>
+          <p class="lede">
+            The club lanyard carries the member ID: blue on one side, red on the other, the knight
+            on the strap and a checkered run down to the clip. It is the cheapest way to look like
+            you belong on tournament day.
+          </p>
+          <div class="price-list">
+            <div class="price-row">
+              <span class="name">Lanyard</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱100</span>
+            </div>
+            <div class="price-row">
+              <span class="name">Member ID</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱100</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
+              Order an ID <Icon name="external" size={15} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="order-title">
       <div class="wrap">
         <div class="section-head">
           <div>

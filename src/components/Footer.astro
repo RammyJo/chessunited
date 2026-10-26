@@ -1,5 +1,5 @@
 ---
-import { site } from '../data/site';
+import { site, weeklySessions } from '../data/site';
 import Icon from './Icon.astro';
 
 const year = new Date().getFullYear();
@@ -49,12 +49,16 @@ const year = new Date().getFullYear();
     <div class="footer-col">
       <h2>Every Saturday</h2>
       <div class="footer-hours">
-        <strong>10:00 AM – 2:00 PM</strong>
-        <span>Robinsons Mall La Union</span>
-        <span>San Fernando City, La Union</span>
+        {weeklySessions.map((session) => (
+          <div class="footer-session">
+            <strong>{session.time}</strong>
+            <span>{session.name}</span>
+          </div>
+        ))}
+        <span class="footer-place">San Fernando City, La Union</span>
       </div>
       <ul>
-        <li><a href="/visit/">Find the table <Icon name="arrow" size={12} /></a></li>
+        <li><a href="/visit/">Find the tables <Icon name="arrow" size={12} /></a></li>
       </ul>
     </div>
   </div>

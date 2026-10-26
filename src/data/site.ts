@@ -7,6 +7,17 @@ export type Division = {
   prizes: Prize[];
 };
 
+export type ResultPlace = { rank: number; name: string };
+
+export type ResultBoard = {
+  division: string;
+  ages: string;
+  places: ResultPlace[];
+  poster: string;
+  posterWidth: number;
+  posterHeight: number;
+};
+
 export type Event = {
   slug: string;
   name: string;
@@ -29,6 +40,7 @@ export type Event = {
   posterWidth?: number;
   posterHeight?: number;
   divisions: Division[];
+  results?: ResultBoard[];
   highlight: string;
   note?: string;
   ics?: string;
@@ -39,18 +51,12 @@ export const site = {
   legalName: 'Chess United',
   tagline: 'Chess for everyone.',
   description:
-    'Community chess in San Fernando City, La Union. Weekly play every Saturday at Robinsons Mall La Union, plus age-division tournaments with cash prizes.',
+    'Community chess in San Fernando City, La Union. Weekly Saturday play at two tables, plus age-division tournaments with cash prizes.',
   city: 'San Fernando City',
   region: 'La Union',
   country: 'Philippines',
   groupName: 'CHESS UNITED – REGION 1 NETWORK',
   groupUrl: 'https://m.me/j/HytA8igzNnAWDEXo/?send_source=gc:qr_code_scan_c',
-  weekly: {
-    day: 'Every Saturday',
-    time: '10:00 AM – 2:00 PM',
-    venue: 'Robinsons Mall La Union',
-    mapsQuery: 'Robinsons Mall La Union, San Fernando City, La Union',
-  },
   nav: [
     { href: '/events/', label: 'Events' },
     { href: '/play/', label: 'Weekly play' },
@@ -208,6 +214,90 @@ export const events: Event[] = [
         ],
       },
     ],
+    results: [
+      {
+        division: 'Open Division',
+        ages: '13 & above',
+        poster: '/images/posters/top10-open-900.webp',
+        posterWidth: 900,
+        posterHeight: 1273,
+        places: [
+          { rank: 1, name: 'Quiban Fernan' },
+          { rank: 2, name: 'Subido Joel' },
+          { rank: 3, name: 'Halabaso Adriel Josh' },
+          { rank: 4, name: 'Dawa Abimelech' },
+          { rank: 5, name: 'Agaton Conrado' },
+          { rank: 6, name: 'Tadina Fernando' },
+          { rank: 7, name: 'Dayap Larry' },
+          { rank: 8, name: 'Cabading Verne Jules' },
+          { rank: 9, name: 'Foronda Mario' },
+          { rank: 10, name: 'Tadina Hector' },
+        ],
+      },
+      {
+        division: 'Kiddies Division',
+        ages: '12 & below',
+        poster: '/images/posters/top10-kiddies-900.webp',
+        posterWidth: 900,
+        posterHeight: 1273,
+        places: [
+          { rank: 1, name: 'Macaraig Jayniel Carl' },
+          { rank: 2, name: 'Carreon Rhenzzell Charl' },
+          { rank: 3, name: 'Agaton Hiraya Rocia' },
+          { rank: 4, name: 'Cagdan Maxyne Jocheb' },
+          { rank: 5, name: 'Lestino Drake Jordan' },
+          { rank: 6, name: 'Laconsay Riannne' },
+          { rank: 7, name: 'Lucio Andriel Judah' },
+          { rank: 8, name: 'Abaya Ma. Antoinette Hope' },
+          { rank: 9, name: 'Corre Kathaleyah' },
+          { rank: 10, name: 'Laygo Jevaun Kyle' },
+        ],
+      },
+    ],
+  },
+];
+
+export type WeeklySession = {
+  name: string;
+  when: string;
+  time: string;
+  venue: string;
+  address: string;
+  mapsQuery: string;
+  poster: string;
+  posterWidth: number;
+  posterHeight: number;
+  blurb: string;
+};
+
+/* Two standing weekly tables, each published on its own club poster. */
+export const weeklySessions: WeeklySession[] = [
+  {
+    name: 'Robinsons Mall La Union',
+    when: 'Every Saturday',
+    time: '10:00 AM – 2:00 PM',
+    venue: 'Robinsons Mall La Union',
+    address: 'Robinsons Place La Union, San Fernando City, La Union',
+    mapsQuery: 'Robinsons Mall La Union, San Fernando City, La Union',
+    poster: '/images/posters/weekly-chess-900.webp',
+    posterWidth: 900,
+    posterHeight: 1273,
+    blurb:
+      'The main weekly session: a four-hour table in the mall for kids, teens and adults, whether you are learning the moves or preparing for tournament day.',
+  },
+  {
+    name: 'Rovers Coffee',
+    when: 'Every Saturday morning',
+    time: '10:00 AM – 12:00 PM',
+    venue: 'Rovers Coffee',
+    address:
+      'Rovers Coffee, MacArthur Highway, opposite Saint Louis College, Barangay Lingsat, San Fernando City, La Union',
+    mapsQuery: 'Rovers Coffee, MacArthur Highway, San Fernando City, La Union',
+    poster: '/images/posters/weekly-rovers-900.webp',
+    posterWidth: 900,
+    posterHeight: 1600,
+    blurb:
+      'The morning table at the coffee shop that hosted Tournament 1.0 — a two-hour session for anyone who wants to play before the day gets busy.',
   },
 ];
 

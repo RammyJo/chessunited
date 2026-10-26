@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
-import { site, events, mapsUrl } from '../data/site';
+import { site, events, mapsUrl, weeklySessions } from '../data/site';
 
 const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
 const abs = (path: string) => new URL(path, origin).href;
@@ -23,7 +23,7 @@ const breadcrumbJsonLd = {
 const faqs = [
   {
     q: 'Where is the weekly session?',
-    a: 'Robinsons Mall La Union, San Fernando City, La Union. The session runs every Saturday from 10:00 AM to 2:00 PM.',
+    a: 'Two places, both every Saturday: Robinsons Mall La Union from 10:00 AM to 2:00 PM, and Rovers Coffee from 10:00 AM to 12:00 noon.',
   },
   {
     q: 'Where is Tournament 2.0?',
@@ -60,7 +60,7 @@ const faqJsonLd = {
 
 <Base
   title="Visit — where Chess United plays"
-  description="Find Chess United: weekly chess every Saturday at Robinsons Mall La Union, Tournament 2.0 at Manna Mall, and the Super Mario Cup at Ortega Convention Center."
+  description="Find Chess United: weekly Saturday chess at Robinsons Mall La Union and Rovers Coffee, plus tournament venues and how to join the club group."
   jsonLd={[breadcrumbJsonLd, faqJsonLd]}
 >
   <Header />
@@ -71,12 +71,13 @@ const faqJsonLd = {
         <p class="eyebrow">Visit</p>
         <h1>Find the table.</h1>
         <p class="lede">
-          Weekly chess stays at Robinsons Mall La Union. Tournament days move to bigger venues.
-          Here is every address, plus the group chat where the club posts updates.
+          Weekly chess runs at two tables — Robinsons Mall La Union and Rovers Coffee. Tournament
+          days move to bigger venues. Here is every address, plus the group chat where the club
+          posts updates.
         </p>
         <div class="page-hero-meta">
           <span><Icon name="pin" size={15} /> San Fernando City, La Union</span>
-          <span><Icon name="calendar" size={15} /> Saturdays, 10 AM – 2 PM</span>
+          <span><Icon name="calendar" size={15} /> Saturdays, from 10 AM</span>
         </div>
       </div>
     </header>
@@ -95,15 +96,17 @@ const faqJsonLd = {
         </div>
 
         <div class="venue-grid">
-          <article class="venue-card reveal">
-            <span class="tag">Every Saturday</span>
-            <h3>Robinsons Mall La Union</h3>
-            <address>San Fernando City, La Union</address>
-            <p class="venue-time">10:00 AM – 2:00 PM · weekly chess</p>
-            <a class="text-link" href={mapsUrl(site.weekly.mapsQuery)} target="_blank" rel="noopener">
-              Open in Google Maps <Icon name="external" size={13} />
-            </a>
-          </article>
+          {weeklySessions.map((session) => (
+            <article class="venue-card reveal">
+              <span class="tag">{session.when}</span>
+              <h3>{session.venue}</h3>
+              <address>{session.address}</address>
+              <p class="venue-time">{session.time} · weekly chess</p>
+              <a class="text-link" href={mapsUrl(session.mapsQuery)} target="_blank" rel="noopener">
+                Open in Google Maps <Icon name="external" size={13} />
+              </a>
+            </article>
+          ))}
 
           <article class="venue-card reveal">
             <span class="tag">Tournament 2.0 · 7 Nov</span>
@@ -131,8 +134,8 @@ const faqJsonLd = {
             <span class="tag">Getting there</span>
             <h3>Plan your first visit</h3>
             <address>
-              The weekly session is inside Robinsons Mall La Union. Ask for the chess tables if
-              you can't spot them.
+              Both weekly tables are in San Fernando City. Ask for the chess tables if you can't
+              spot them.
             </address>
             <p class="venue-time">Saturday chess: no sign-up on this site</p>
             <a class="text-link" href="/play/">
@@ -197,8 +200,9 @@ const faqJsonLd = {
           <div class="aside-card">
             <h3>Weekly checklist</h3>
             <ul class="checklist mt-2">
-              <li><Icon name="check" size={16} /> Saturday, 10 AM – 2 PM</li>
-              <li><Icon name="check" size={16} /> Robinsons Mall La Union</li>
+              <li><Icon name="check" size={16} /> Saturday, from 10 AM</li>
+              <li><Icon name="check" size={16} /> Robinsons Mall La Union · 10 AM – 2 PM</li>
+              <li><Icon name="check" size={16} /> Rovers Coffee · 10 AM – noon</li>
               <li><Icon name="check" size={16} /> Kids, teens and adults</li>
               <li><Icon name="check" size={16} /> Bring a board or clock if you have one</li>
             </ul>
@@ -235,10 +239,10 @@ const faqJsonLd = {
       <div class="wrap cta-inner">
         <div>
           <h2 id="visit-cta" class="display-lg">Saturday starts at 10.</h2>
-          <p>Robinsons Mall La Union. The board is waiting.</p>
+          <p>Robinsons Mall La Union or Rovers Coffee. The board is waiting.</p>
         </div>
         <div class="cta-actions">
-          <a class="btn" href={mapsUrl(site.weekly.mapsQuery)} target="_blank" rel="noopener">
+          <a class="btn" href={mapsUrl(weeklySessions[0].mapsQuery)} target="_blank" rel="noopener">
             Open in Maps <Icon name="external" size={15} />
           </a>
           <a class="btn btn--light" href={site.groupUrl} target="_blank" rel="noopener">

@@ -29,6 +29,8 @@ PHOTOS = {
     "club":      ("7eb8c41b-fdec-4c57-915f-5725710ce8ee.jpg", "club-selfie", [480, 800, 1200], None),
     "hall2":     ("857444a9-ae15-4afc-90f5-0127d4c50d4f.jpg", "tournament-hall-2", [480, 800, 1200], None),
     "restaurant":("9011d057-d23e-462a-afaa-9334cc060411.jpg", "restaurant-group", [480, 800, 1200], None),
+    "idcard":    ("66879aaa-0910-4add-8f7a-91e96c2312db.jpg", "member-id-selfie", [480, 800, 1200], None),
+    "lanyard":   ("620fb610-7804-422a-98e4-f6b6f5f13ea5.jpg", "lanyard-mockup", [480, 626], None),
 }
 
 POSTERS = {
@@ -40,6 +42,9 @@ POSTERS = {
     "sponsors": ("7569a681-69ba-4d78-b300-59e827530814.jpg", "partners-1-0", [560, 900], None),
     "program":  ("1ca3bb3f-b8c0-44fb-8284-cdfff717c142.jpg", "program-1-0", [640, 1000], None),
     "qr":       ("c4c90e7d-5cec-4529-bc08-7370d921109c.jpg", "community-qr", [480, 760], None),
+    "rovers":   ("47e168d1-2072-42d6-b6e4-5b7df4b81366.jpg", "weekly-rovers", [560, 900], None),
+    "top10open":("a943bad4-7e55-43c5-ac6c-dd43ea045cad.jpg", "top10-open", [560, 900], None),
+    "top10kids":("c9e048a1-89fa-44e0-b4b1-1ffb7eeab5f5.jpg", "top10-kiddies", [560, 900], None),
 }
 
 HERO_SRC = "a66fa455-ad10-43bb-a2c9-96c959af723c.jpg"

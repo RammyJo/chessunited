@@ -83,6 +83,34 @@ Source files are the 27 JPEGs added to `C:\Users\ORAS Intern\Downloads` on 2026-
 - The poster does not state a session fee. The site must not describe the weekly session as free.
 - Join the **CHESS UNITED - REGION 1 NETWORK** Messenger group (QR code on poster)
 
+## Weekly play — second table (poster supplied 2026-10-26)
+- Every **Saturday morning, 10:00 AM - 12:00 NN**
+- **Rovers Coffee** — "MacArthur Highway, opposite Saint Louis College,
+  Brgy. Lingsat, San Fernando City, La Union"
+- "CHESS FOR EVERYONE", "WELCOME TO OUR WEEKLY CHESS EVENT AT ROVERS COFFEE"
+- Same Messenger group QR as the Robinsons poster
+- **Conflict to resolve with the club:** this poster says Brgy. **Lingsat**;
+  earlier club messages placed Rovers in **Carlatan**. The site publishes the
+  poster wording and states no barangay anywhere else.
+
+## Tournament 1.0 — Top 10 results (posters supplied 2026-10-26)
+Transcribed from the two club results posters and re-read from magnified crops.
+Both posters are headed "CHESS UNITED TOURNAMENT 1.0" and "TOP 10".
+
+**Open Division — 13 & above**
+1. Quiban Fernan · 2. Subido Joel · 3. Halabaso Adriel Josh · 4. Dawa Abimelech ·
+5. Agaton Conrado · 6. Tadina Fernando · 7. Dayap Larry · 8. Cabading Verne Jules ·
+9. Foronda Mario · 10. Tadina Hector
+
+**Kiddies Division — 12 & below**
+1. Macaraig Jayniel Carl · 2. Carreon Rhenzzell Charl · 3. Agaton Hiraya Rocia ·
+4. Cagdan Maxyne Jocheb · 5. Lestino Drake Jordan · 6. Laconsay Riannne ·
+7. Lucio Andriel Judah · 8. Abaya Ma. Antoinette Hope · 9. Corre Kathaleyah ·
+10. Laygo Jevaun Kyle
+
+- **Proof the spelling with the club:** rank 6 Kiddies reads "Laconsay Riannne"
+  (double n) at 5× crop; rank 2 reads "Rhenzzell Charl", which may be truncated.
+
 ## Official merchandise price list
 - Chess set ₱800
 - T-shirt ₱300 (poster note: MEDIUM SIZE ONLY)

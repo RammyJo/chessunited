@@ -14,7 +14,8 @@
     "qa": "node scripts/qa.mjs && node scripts/verify-build.mjs",
     "qa:browser": "node scripts/browser-qa.mjs",
     "qa:csp": "node scripts/csp-check.mjs",
-    "test": "node scripts/qa.mjs"
+    "test": "node scripts/qa.mjs",
+    "qa:colors": "node scripts/color-audit.mjs"
   },
   "dependencies": {
     "astro": "^7.4.2"

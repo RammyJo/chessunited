@@ -1,11 +1,11 @@
 {
   "name": "Chess United",
   "short_name": "Chess United",
-  "description": "Community chess in San Fernando City, La Union. Weekly chess every Saturday and age-division tournaments.",
+  "description": "Community chess in San Fernando City, La Union. Weekly Saturday play at two tables and age-division tournaments.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f3eddf",
+  "background_color": "#4bbced",
   "theme_color": "#4bbced",
   "icons": [
     { "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png" },

@@ -21,17 +21,22 @@ const make = (
   alt: string,
   caption: string,
   ws: number[] = widths,
-): Photo => ({
-  key,
-  src: `${base}-800.webp`,
-  srcset: set(base, ws),
-  full: `${base}-${ws[ws.length - 1]}.webp`,
-  width,
-  height,
-  alt,
-  caption,
-  portrait: height > width,
-});
+): Photo => {
+  // The default <img src> is the 800w derivative; narrower originals fall back
+  // to their largest available width so the src always resolves to a real file.
+  const srcWidth = ws.includes(800) ? 800 : Math.max(...ws.filter((w) => w <= 800));
+  return {
+    key,
+    src: `${base}-${srcWidth}.webp`,
+    srcset: set(base, ws),
+    full: `${base}-${ws[ws.length - 1]}.webp`,
+    width,
+    height,
+    alt,
+    caption,
+    portrait: height > width,
+  };
+};
 
 export const photos: Record<string, Photo> = {
   table19: make(
@@ -155,6 +160,23 @@ export const photos: Record<string, Photo> = {
     'Three people smiling together at a restaurant under red lanterns, with a Chess United shirt in the middle.',
     'Under the lanterns.',
   ),
+  idcard: make(
+    'idcard',
+    '/images/photos/member-id-selfie',
+    800,
+    600,
+    'Two Chess United members in front of a tropical flower backdrop, one holding up a club member ID on a branded lanyard while the other holds a printed sheet of the Chess United logo.',
+    'Member ID and lanyard.',
+  ),
+  lanyard: make(
+    'lanyard',
+    '/images/photos/lanyard-mockup',
+    626,
+    949,
+    'Chess United lanyard design: a blue half and a red half printed with the club name and knight logo, a black-and-white checkered lower strap, and a member ID card holder.',
+    'The club lanyard.',
+    [480, 626],
+  ),
 };
 
 export const heroImage = {
@@ -175,6 +197,9 @@ export const posters = {
   sponsors: '/images/posters/partners-1-0-900.webp',
   program: '/images/posters/program-1-0-892.webp',
   qr: '/images/posters/community-qr-760.webp',
+  rovers: '/images/posters/weekly-rovers-900.webp',
+  top10Open: '/images/posters/top10-open-900.webp',
+  top10Kiddies: '/images/posters/top10-kiddies-900.webp',
 };
 
 export const galleryHome = [photos.table19, photos.hall, photos.medals, photos.flatlay, photos.medalist, photos.hall2];
@@ -194,4 +219,5 @@ export const galleryAll = [
   photos.crew,
   photos.club,
   photos.restaurant,
+  photos.idcard,
 ];
