@@ -26,7 +26,7 @@ Messenger community link.
 | Accessibility / SEO / best practices | **VERIFIED** — Lighthouse 100 a11y/SEO, 96+ best practices on the live site |
 | Performance | **VERIFIED** — Lighthouse mobile 95–99, desktop 100 |
 | Static, browser, CSP and calendar checks | **VERIFIED** — see `QA_REPORT.md` |
-| Live deployment (Cloudflare Pages, project `chessunited`) | **VERIFIED** — `chessunited.pages.dev`, production build `d859ae36` from commit `816add8`, 2026-10-26 |
+| Live deployment (Cloudflare Pages, project `chessunited`) | **VERIFIED** — `chessunited.pages.dev`, latest production build 2026-10-26 (see `wrangler pages deployment list --project-name chessunited`) |
 | GitHub repository | **VERIFIED** — <https://github.com/RammyJo/chessunited>, branch `main`, pushed 2026-10-26 |
 | Spaceship domain + DNS | **PENDING** — no domain registered or supplied |
 | Custom canonical domain | **PENDING** — the site canonicalises to its `pages.dev` host |
