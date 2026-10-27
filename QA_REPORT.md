@@ -452,9 +452,11 @@ or degrading client-supplied published content is an editorial decision. See **O
 
 - Baseline `dist/` snapshot taken **before** any edit:
   `%TEMP%\chessunited-sec-baseline\dist-before`.
-- After remediation, all 8 HTML pages are **text-identical** to the baseline; only
-  `_headers` and the 8 HTML files differ by hash. Zero churn in images, fonts, CSS,
-  JS, sitemap, robots or calendar output.
+- After remediation, the only difference in any of the 8 HTML pages is the removed
+  `<meta name="generator" content="Astro v7.4.2">`; everything else is byte-identical
+  and all 12 CSP hashes are unchanged. Among non-HTML build outputs, only `_headers`
+  differs (the HSTS line). Zero churn in images, fonts, CSS, JS, sitemap, robots or
+  calendar output — the user-visible page content and the visual design did not move.
 - The new assertions are not rubber stamps: run against the pre-fix baseline they
   emit 9 FAILs (`generator meta is present` ×8, `_headers: missing
   Strict-Transport-Security`) and exit 1; against the fixed build, exit 0.
