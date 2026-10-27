@@ -72,6 +72,18 @@ for (const [file, route] of htmlFiles) {
     errors.push(`${route}: third-party asset reference`);
   }
 
+  // Software versioning must not be advertised to whoever loads the page.
+  if (/<meta\s+name="generator"/i.test(html)) errors.push(`${route}: generator meta is present`);
+
+  // Script bodies must not be able to contain markup.
+  for (const ld of html.match(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi) || []) {
+    const body = ld.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '');
+    if (body.includes('<')) errors.push(`${route}: unescaped "<" in a JSON-LD block`);
+  }
+
+  // No inline event handlers: they would need 'unsafe-inline' in script-src.
+  if (/\son[a-z]+\s*=\s*"/i.test(html)) errors.push(`${route}: inline event handler`);
+
   let match;
   const inline = /<script(?![^>]*\bsrc=)([^>]*)>([\s\S]*?)<\/script>/gi;
   while ((match = inline.exec(html)) !== null) {
@@ -92,6 +104,37 @@ for (const hash of inlineHashes) {
 const allowed = new Set([...scriptSrc.matchAll(/'(sha256-[^']+)'/g)].map((m) => `'${m[1]}'`));
 for (const hash of allowed) {
   if (!inlineHashes.has(hash)) warnings.push(`CSP: unused inline hash ${hash}`);
+}
+
+// The header set is the whole browser-side defence for a static site, so every
+// directive that matters is asserted here instead of eyeballed at deploy time.
+const cspLine = headers.match(/Content-Security-Policy: ([^\n]+)/)?.[1] || '';
+const requiredCsp = [
+  ["default-src 'self'", /(^|;)\s*default-src 'self'/],
+  ["object-src 'none'", /object-src 'none'/],
+  ["frame-ancestors 'none'", /frame-ancestors 'none'/],
+  ["base-uri 'self'", /base-uri 'self'/],
+  ["form-action 'self'", /form-action 'self'/],
+  ['upgrade-insecure-requests', /upgrade-insecure-requests/],
+];
+for (const [label, pattern] of requiredCsp) {
+  if (!pattern.test(cspLine)) errors.push(`CSP: missing ${label}`);
+}
+for (const weak of ["'unsafe-eval'", "'unsafe-inline'"]) {
+  if (cspLine.includes(`script-src`) && cspLine.match(/script-src[^;]*/)?.[0].includes(weak)) {
+    errors.push(`CSP: script-src allows ${weak}`);
+  }
+}
+if (/script-src[^;]*(\*|https?:\/\/\*)/.test(cspLine)) errors.push('CSP: script-src has a wildcard host');
+for (const [label, pattern] of [
+  ['Strict-Transport-Security', /Strict-Transport-Security: max-age=\d{7,}/],
+  ['X-Frame-Options: DENY', /X-Frame-Options: DENY/],
+  ['X-Content-Type-Options: nosniff', /X-Content-Type-Options: nosniff/],
+  ['Referrer-Policy', /Referrer-Policy: strict-origin-when-cross-origin/],
+  ['Permissions-Policy', /Permissions-Policy: camera=\(\), microphone=\(\)/],
+  ['Cross-Origin-Opener-Policy', /Cross-Origin-Opener-Policy: same-origin/],
+]) {
+  if (!pattern.test(headers)) errors.push(`_headers: missing ${label}`);
 }
 
 const sitemap = await read('sitemap-0.xml');

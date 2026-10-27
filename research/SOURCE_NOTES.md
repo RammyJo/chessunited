@@ -1,7 +1,7 @@
 # Chess United — raw source notes from supplied assets
 
 Transcribed directly from the supplied posters/screenshots. No interpretation added here.
-Sources: the 27 JPEGs added to `C:\Users\ORAS Intern\Downloads` on 2026-10-23, plus the
+Sources: the 27 JPEGs added to the operator's `Downloads` folder on 2026-10-23, plus the
 5 new files in the 2026-10-26 morning batch and the 4 more that arrived the same evening
 (Tournament 2.0 poster, jersey, lanyard and worn-merch photo).
 

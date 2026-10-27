@@ -1,6 +1,7 @@
 # QA report — Chess United website
 
-Date: **2026-10-23**  
+Date: **2026-10-27** (first recorded 2026-10-23; §5a–§5f are dated 2026-10-23 to
+2026-10-26, §5g is the security pass)  
 Build: `npm run build` → `dist/` (8 HTML pages)  
 Environment: Windows 11, Node **24.21.0**, npm **11.19.0**, Chrome
 **155.0.8059.85**, Lighthouse **13.5.0**, Python 3.14.7 + Pillow (image pipeline
@@ -17,11 +18,16 @@ because no domain has been registered or supplied.
 | --- | --- | --- |
 | Astro/TypeScript diagnostics | `npm run check` | **PASS** — 14 files, 0 errors, 0 warnings, 0 hints |
 | Production build | `npm run build` | **PASS** — 8 pages, calendar regenerated, 12 CSP hashes |
-| Static QA | `npm run qa` | **PASS** — 8 pages, 428 links, 56 images, 14 JSON-LD blocks, 0 errors |
-| Build verification | part of `npm run qa` | **PASS** — 7 sitemap URLs, 12 inline hashes, 0 errors |
+| Static QA | `npm run qa` | **PASS** — 8 pages, 458 links, 67 images, 14 JSON-LD blocks, 0 errors |
+| Build verification | part of `npm run qa` | **PASS** — 7 sitemap URLs, 12 inline hashes, 0 errors, plus the §5g security assertions |
 | Browser QA | `npm run qa:browser` | **PASS** — 16 page/viewport checks, 0 errors, 0 warnings |
 | CSP simulation | `npm run qa:csp` | **PASS** — 8/8 pages, no violations, inline JS ran |
-| Dependency audit | `npm audit` | **PASS** — 0 vulnerabilities (350 packages; 185 prod, 88 dev) |
+| Palette audit | `npm run qa:colors` | **PASS** — 0 off-palette colour literals |
+| Dependency audit | `npm audit` | **PASS** — 0 vulnerabilities (306 installed package paths; `--omit=dev` also 0) |
+
+All eight rows above were re-run on 2026-10-27 against the post-hardening tree (see
+§5g); the two security-only rows in §5g cover the live edge headers, which stay
+unverified until a deploy is authorised.
 
 Browser QA covers 1440×900 and 390×844 for all eight pages. It checks HTTP
 status, horizontal overflow, broken images, duplicate IDs, missing `alt` text,
@@ -29,7 +35,8 @@ unnamed controls, one `<h1>` per page, both self-hosted fonts, the mobile menu
 and the gallery lightbox. It also records console and page errors. Result: **0
 errors, 0 warnings**.
 
-Screenshots: `C:\Users\ORASIN~1\AppData\Local\Temp\chessunited-qa\screens`.
+Screenshots: `<OS temp>/chessunited-qa/screens`, i.e. `os.tmpdir()` on the machine
+that ran the suite.
 
 ## 2. Lighthouse — final recorded run
 
@@ -376,6 +383,98 @@ guessed:
 The §5e note that "no barangay is stated anywhere" is superseded: after aligning
 Tournament 1.0 with the newer Rovers Coffee poster, the site publishes **Barangay
 Lingsat** on MacArthur Highway. The older "Carlatan" wording is gone.
+
+## 5g. Security audit and hardening pass (2026-10-27)
+
+A full security and reliability audit of the repository, not a redesign. Nothing
+in this pass changed layout, palette, animations, copy, routes or URLs.
+
+**Scope inspected:** all 14 Astro modules, both browser scripts, all 9 build/QA
+scripts, `astro.config.mjs`, `package.json`, `.gitignore`, `public/manifest.webmanifest`,
+`_headers`/`robots.txt` generation, the generated Worker, the `.ics` generator and
+output, every committed document, the git history (6 commits, 266 objects) and the
+built `dist/`.
+
+### Findings fixed
+
+| ID | Severity | Root cause | Fix | Verification |
+| --- | --- | --- | --- | --- |
+| SEC-01 | Low | `src/layouts/Base.astro` rendered JSON-LD with `set:html`, which performs **no** escaping. A value containing `</script>` would close the element early and turn data into markup. | Added `safeJson()` that escapes `<` as `\u003c` — byte-identical to any JSON parser, inert to the HTML parser. | Injected `</script><img src=x onerror=alert(1)>` through a real build: emitted escaped, `onerror` absent as an executable tag, JSON-LD still parsed as `FAQPage`. A new `verify-build.mjs` assertion fails if any `<` appears inside a JSON-LD block. |
+| SEC-02 | Low | `<meta name="generator">` advertised the exact Astro version on all 8 pages. | Removed the tag. | `verify-build.mjs` now fails on a generator meta; the pre-fix baseline fails 8× and the fixed build passes. |
+| SEC-03 | Medium | No `Strict-Transport-Security` header, so a first-visit downgrade or stripped redirect was possible. | `postbuild.mjs` emits `Strict-Transport-Security: max-age=31536000`, which also flows into the Worker mirror. `includeSubDomains` is deliberately **not** set: `pages.dev` is a domain Cloudflare shares with every customer, and pinning its subdomains would affect hosts this project does not own. | Assertion added; confirmed present in `dist/_headers` and in `sites/worker.generated.js`. |
+| SEC-04 | Medium | `wrangler` was absent from `package.json`. Every deploy ran `npx wrangler`, i.e. whatever the registry called "latest" at that moment, executed with the operator's Cloudflare token — an unpinned, unreviewed dependency in the release path. | Pinned `wrangler@4.153.0` (exact, no caret). The first attempt, `4.152.0`, pulled in 3 advisories (moderate `miniflare`, **high `undici`**, moderate `wrangler`), so it was re-pinned to the patched release. | `npm audit` → 0 vulnerabilities; `npm audit --omit=dev` → 0. Production bundle tree never changed. |
+| SEC-05 | Low | `SITE_URL` is a system boundary (canonicals, `og:url`, sitemap, robots, `.ics` URLs) but was interpolated raw from the environment. | `scripts/site-url.mjs` now throws unless the value is an absolute `https://` URL with a dotted host and no embedded credentials, and strips trailing slashes. | Invalid inputs rejected at build time; default `https://chessunited.pages.dev` still builds cleanly. |
+| SEC-06 | Info | The operator's personal Windows username appeared in committed absolute paths in `scripts/optimize_images.py`, five `research/*.py` files and two documents. | Replaced with `os.environ`/`Path.home()`/`os.path.expanduser` and repo-relative joins; paths redacted in the docs. | `grep -rn ORAS` over `.py`, `.md`, `.ts`, `.json` → 0 matches. |
+| SEC-07 | Info | `DEPLOYMENT.md` named the Cloudflare account by a personal email address. | Reworded to "the club administrator's Cloudflare account". The account ID is retained deliberately — it is not secret and is required to reproduce deploys. | Documentation review. |
+
+### Negative results (probed, nothing found)
+
+No authentication, sessions, cookies, forms, file uploads, database, server-side
+API or payment flow exists — the site is 8 static pages, so IDOR, injection,
+broken-access-control, SSRF and business-logic abuse categories have no surface to
+attack. No `innerHTML`, `eval`, `document.write`, `localStorage`, cookies or inline
+event handlers anywhere in `src/` or `dist/`; no source maps; no third-party script
+except Cloudflare's own cookieless RUM beacon; no secret, token or private key in any of the 266 objects in git history.
+`.gitignore` already excludes `.env*`, `.dev.vars` and
+`.wrangler/`. Mixed-content scan: the only `http://` strings are the SVG namespace
+declaration and the SIL Open Font License URL in licence text — neither is fetched.
+All outbound anchors (`m.me`, `google.com/maps`) carry `target="_blank"` +
+`rel="noopener"` and the Maps query strings pass through `encodeURIComponent`.
+Both `.ics` files are CRLF, every content line ≤75 octets, all required properties
+present, unique `UID`s, valid timestamps with `DTEND > DTSTART`, 8-hour events.
+
+### Accepted risk (documented, deliberately not changed)
+
+- **CSP hashes are global, not per-page.** A hash for page A's inline script is
+  listed for page B. Low only, because every hash is a build-time constant from
+  this repository. Narrowing it would require per-directory `_headers`, whose
+  multi-match semantics risk silently breaking inline JS on some routes.
+- **`img-src 'self' data:`** — `data:` is required by the lightbox 1×1 placeholder.
+- **`style-src 'unsafe-inline'`** — unavoidable with Astro's `style` attributes.
+- **`Access-Control-Allow-Origin: *`** — Cloudflare's default for static assets.
+  Wildcard CORS cannot leak authenticated data because no authenticated data exists.
+- **`typescript` 6 → 7** is a major upgrade with no security benefit for this pass.
+- A stale `lanyard-mockup-626.webp` may still HIT the edge cache on old deployment
+  URLs; the file is gone from the source tree and the current deployment.
+
+### Open, needs a human decision (not fixed)
+
+**P-01, Medium — privacy.** `/gallery/` publishes a photograph of a **real member's
+ID card held up to the camera**. The lightbox opens the 1200 px derivative
+(`member-id-selfie-1200.webp`), where the card's name line is partially legible. The
+site itself is not misconfigured — the exposure comes from the supplied content.
+Options, in order of preference: confirm the member's consent to publish, reduce this
+one photo's served maximum to 800 px (a one-line `make()` change in
+`src/data/images.ts`), or drop the frame. Not changed unilaterally, because deleting
+or degrading client-supplied published content is an editorial decision. See **Outstanding issues** in the final security report.
+
+### Regression evidence
+
+- Baseline `dist/` snapshot taken **before** any edit:
+  `%TEMP%\chessunited-sec-baseline\dist-before`.
+- After remediation, all 8 HTML pages are **text-identical** to the baseline; only
+  `_headers` and the 8 HTML files differ by hash. Zero churn in images, fonts, CSS,
+  JS, sitemap, robots or calendar output.
+- The new assertions are not rubber stamps: run against the pre-fix baseline they
+  emit 9 FAILs (`generator meta is present` ×8, `_headers: missing
+  Strict-Transport-Security`) and exit 1; against the fixed build, exit 0.
+- Full suite re-run on the clean tree after reverting the test payload:
+  `check` 0/0/0 (14 files), `qa` PASS 458 links / 67 images / 14 JSON-LD / 0 errors,
+  `verify-build` PASS 7 sitemap URLs / 12 hashes, `qa:colors` PASS 0 off-palette,
+  `qa:csp` PASS 8/8 pages with inline JS executing, `qa:browser` PASS 16 page/viewport
+  checks, `npm audit` 0.
+- The exploit test that would have *un-fixed* SEC-01 first was refused by the agent
+  runtime's safety layer. Pre-fix exploitability is therefore stated from the
+  documented semantics of Astro's `set:html` (it does not escape) rather than
+  demonstrated live; the post-fix escape **is** demonstrated.
+
+### Unverified
+
+Live edge headers (including the new HSTS line) are not verified, because this pass
+was instructed not to deploy. Verification requires a preview deploy, then
+`curl -sI https://<preview>.chessunited.pages.dev/`. No external vulnerability
+scanner or DAST tool was used; coverage is the project's own harness plus manual
+review, which is the strongest available option here.
 
 ## 6. Not verified / limitations
 

@@ -59,6 +59,9 @@ const csp = [
   'upgrade-insecure-requests',
 ].join('; ');
 
+// Strict-Transport-Security deliberately has no includeSubDomains: pages.dev is a
+// domain Cloudflare shares with every other Pages customer, and pinning its
+// subdomains would affect hosts this project does not own.
 const headers = `# Cloudflare Pages headers
 /*
   X-Content-Type-Options: nosniff
@@ -66,6 +69,7 @@ const headers = `# Cloudflare Pages headers
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000
   Content-Security-Policy: ${csp}
   Cache-Control: public, max-age=0, must-revalidate
 

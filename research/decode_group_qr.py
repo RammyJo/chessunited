@@ -1,5 +1,5 @@
 import cv2, numpy as np, os
-p = r"C:\Users\ORAS Intern\Downloads\c4c90e7d-5cec-4529-bc08-7370d921109c.jpg"
+p = os.path.expanduser("~/Downloads/c4c90e7d-5cec-4529-bc08-7370d921109c.jpg")
 img = cv2.imread(p)
 h,w = img.shape[:2]
 print("size", w, h)

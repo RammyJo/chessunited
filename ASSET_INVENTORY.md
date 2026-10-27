@@ -8,7 +8,7 @@ The club supplied **27 JPEGs** on 2026-10-23 (file times 10:45–11:00), a furth
 later the same day (jersey artwork, a merchandise lifestyle photo, a higher-resolution
 lanyard file and a replacement Tournament 2.0 poster). The second lanyard file and the
 first Tournament 2.0 poster supersede the versions from the earlier batch. They all
-remain untouched in `C:\Users\ORAS Intern\Downloads`.
+remain untouched in the operator's `Downloads` folder.
 Optimized derivatives live in `public/images`; the source-to-output map is also
 machine-readable in `research/image-manifest.json`.
 
@@ -166,7 +166,7 @@ py scripts\optimize_images.py
 npm.cmd run build
 ```
 
-The script reads originals from `C:\Users\ORAS Intern\Downloads` (edit `SRC` at
-the top if they move), never writes to the originals, and refreshes
+The script reads originals from `~/Downloads` — set `CHESS_UNITED_SOURCES` to point
+somewhere else if they move — never writes to the originals, and refreshes
 `research/image-manifest.json`. It requires Python 3 and Pillow; Python is not a
 runtime or deployment dependency.

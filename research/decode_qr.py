@@ -1,5 +1,5 @@
 import cv2, glob, os
-files = sorted(glob.glob(r"C:\Users\ORAS Intern\Downloads\*.jpg"))
+files = sorted(glob.glob(os.path.expanduser("~/Downloads/*.jpg")))
 det = cv2.QRCodeDetector()
 for f in files:
     img = cv2.imread(f)

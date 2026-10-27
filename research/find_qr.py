@@ -1,5 +1,5 @@
 import cv2, glob, os, numpy as np
-files = sorted(glob.glob(r"C:\Users\ORAS Intern\Downloads\*.jpg"))
+files = sorted(glob.glob(os.path.expanduser("~/Downloads/*.jpg")))
 det = cv2.QRCodeDetector()
 targets = [f for f in files if os.path.basename(f).split('-')[0] in {
  'fa6dc7c9','474a7a64','0f0242ac','d38c9c60','767745ad','266a4f5c','5a4d8f73',

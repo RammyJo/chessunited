@@ -24,6 +24,7 @@
     "@astrojs/check": "^0.9.12",
     "@astrojs/sitemap": "^3.7.4",
     "puppeteer-core": "^25.16.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "4.153.0"
   }
 }

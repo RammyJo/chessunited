@@ -6,7 +6,7 @@ Status: **DEPLOYED AND VERIFIED** (2026-10-24, brand-palette build).
 | --- | --- |
 | Production URL | <https://chessunited.pages.dev> |
 | Host | Cloudflare Pages — project **`chessunited`**, direct upload |
-| Account | `Ram@christian.com.ph's Account` (`a1535c96f8ebe5df3bbd767a4367914c`) |
+| Account | The club administrator's Cloudflare account (`a1535c96f8ebe5df3bbd767a4367914c`) |
 | Production branch | `main` |
 | Deployment | `757c7a52` — 94 files uploaded, `wrangler pages deploy` reported success |
 | Mirror | <https://site-88c41e329d7a4c7f97de7219774a18c9.freebuff.page> (Freebuff Sites, same `dist/`) |

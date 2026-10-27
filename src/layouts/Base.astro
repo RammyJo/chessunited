@@ -29,6 +29,11 @@ const ogUrl = canonicalHref ?? new URL('/', siteOrigin);
 const ogImage = new URL(image, siteOrigin);
 const pageTitle = title.includes(site.name) ? title : `${title} — ${site.name}`;
 const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+
+// set:html is unescaped, so a value containing "</script>" would end the element
+// early and turn data into markup. Escaping "<" keeps the JSON identical to any
+// parser while making that impossible.
+const safeJson = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -41,7 +46,6 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     {canonicalHref && <link rel="canonical" href={canonicalHref.href} />}
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
     <meta name="theme-color" content="#4bbced" />
-    <meta name="generator" content={Astro.generator} />
 
     <link rel="icon" href="/images/favicon-64.png" sizes="64x64" type="image/png" />
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
@@ -70,7 +74,7 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <script is:inline src="/scripts/site.js" defer></script>
 
     {jsonLdBlocks.map((block) => (
-      <script type="application/ld+json" set:html={JSON.stringify(block)} />
+      <script type="application/ld+json" set:html={safeJson(block)} />
     ))}
     <slot name="head" />
   </head>

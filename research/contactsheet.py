@@ -29,8 +29,8 @@ files = [
  ('a66fa455-ad10-43bb-a2c9-96c959af723c.jpg','photo O'),
  ('857444a9-ae15-4afc-90f5-0127d4c50d4f.jpg','photo P'),
  ('d876ff22-ae53-4908-b302-b265bf6b5ba5.jpg','T1 poster')]
-src = r"C:\Users\ORAS Intern\Downloads"
-out = r"C:\Users\ORAS Intern\Downloads\chessunited-website\research"
+src = os.path.expanduser("~/Downloads")
+out = os.path.dirname(os.path.abspath(__file__))
 try:
     font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 30)
 except Exception:

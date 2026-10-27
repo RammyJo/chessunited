@@ -4,8 +4,10 @@ Originals are read-only and live in Downloads; nothing is overwritten.
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 from pathlib import Path
 import json
+import os
 
-SRC = Path(r"C:\Users\ORAS Intern\Downloads")
+# Set CHESS_UNITED_SOURCES if the originals are not in this machine's Downloads.
+SRC = Path(os.environ.get("CHESS_UNITED_SOURCES") or (Path.home() / "Downloads"))
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "public" / "images"
 OUT.mkdir(parents=True, exist_ok=True)
