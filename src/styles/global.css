@@ -1071,6 +1071,37 @@ a:hover .arrow { transform: translateX(4px); }
 }
 .partner-note { margin-top: 16px; font-size: .74rem; color: var(--muted); }
 
+.sponsor-logos-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  margin-top: 42px;
+}
+.sponsor-logos-title + .partner-note { margin-top: 0; }
+.sponsor-grid {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 18px;
+}
+.sponsor-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 2px solid var(--ink);
+  background: var(--surface);
+}
+.sponsor-card img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: contain; display: block; border: 1px solid rgba(10, 21, 51, .18); }
+.sponsor-name {
+  font-family: var(--font-display);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  color: var(--ink);
+}
+
 /* --------------------------------------------------------------------------
    CTA band
    -------------------------------------------------------------------------- */

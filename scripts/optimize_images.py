@@ -54,7 +54,43 @@ POSTERS = {
 HERO_SRC = "a66fa455-ad10-43bb-a2c9-96c959af723c.jpg"
 LOGOSRC = "dc091ca1-0e95-4e90-a4ce-02d35d62889f.jpg"
 
-manifest = {"photos": {}, "posters": {}, "hero": {}, "logo": {}}
+# Sponsor artwork supplied via the club's "SPONSOR LOGOS" Google Drive folder.
+# Originals live in research/sponsors-raw (see research/SPONSOR_SOURCES.md).
+SPONSORS_SRC = ROOT / "research" / "sponsors-raw"
+SPONSORS = {
+    "freedom-church":     ("Freedom_Church.png", "Freedom Church"),
+    "marlon-cottage":     ("IMG_0426.JPG", "Marlon Floating Cottage"),
+    "sports-clinic":      ("IMG_0441.JPG", "Sports Clinic, City of San Fernando YESDO"),
+    "pokemon-lau":        ("IMG_0720.JPG", "Pokemon La Union Community Casual VGC"),
+    "paolyn-houseboat":   ("IMG_0848.JPG", "Paolyn Houseboat"),
+    "gordon-ramsay-bar":  ("IMG_0948.JPG", "Gordon Ramsay Bar & Grill"),
+    "healthy-globe":      ("IMG_1101.JPG", "Healthy Globe"),
+    "nucf":               ("IMG_1119.JPG", "National United Chess Federation of the Philippines"),
+    "influencers-united": ("IMG_1279.JPG", "Influencers United"),
+    "elite-shuttle":      ("IMG_1820.JPG", "Elite Shuttle"),
+    "jaypees":            ("IMG_1849.JPG", "Jaypee's Bakeshop and Cafe"),
+    "aloha-cares":        ("IMG_2037.JPG", "Aloha Cares"),
+    "chess-united":       ("IMG_2094.JPG", "Chess United"),
+    "nasudi":             ("IMG_2124.JPG", "NASUDI Center for Women and Children"),
+    "benz-ban-resort":    ("IMG_2129.JPG", "Benz-Ban Resort (Blck1 Cafe)"),
+    "fixel-printing":     ("IMG_2171.JPG", "Fixel Printing Services"),
+    "bless-la-union":     ("IMG_2189.JPG", "Bless La Union 2025"),
+    "chess-united-wordmark": ("IMG_2190.JPG", "Chess United wordmark"),
+    "bless-la-union-stage":  ("IMG_2191.JPG", "Bless La Union"),
+    "northern-ilocos-chess": ("IMG_2267.JPG", "Northern Ilocos Chess Club"),
+    "matcha":             ("IMG_2321.JPG", "Let There Be Matcha"),
+    "rovers":             ("IMG_2323.PNG", "Rovers"),
+    "reve-snaps":         ("IMG_3698.JPG", "Reve Snaps Camera Rental La Union"),
+    "san-fernando-tayo":  ("IMG_3953.JPG", "San Fernando Tayo, City of San Fernando YESDO"),
+    "gopalaro-rapid":     ("IMG_4375.JPG", "19th GoPalaro Rapid Chess Tournament"),
+    "elyu-spinners":      ("IMG_5261.JPG", "Elyu Spinners"),
+    "value":              ("IMG_7466.JPG", "VALUE - Vibrant Association of La Union Emcees"),
+    "childrens-island":   ("IMG_8692.JPG", "Children's Island Boodle Fight"),
+    "sto-tomas-chess":    ("IMG_8784.JPG", "City of Sto. Tomas Batangas Chess Players Association"),
+    "chingo-spot":        ("IMG_9448.JPG", "Chingo Spot"),
+}
+
+manifest = {"photos": {}, "posters": {}, "sponsors": {}, "hero": {}, "logo": {}}
 
 
 def load(name):
@@ -85,6 +121,20 @@ for key, (fn, stem, widths, _crop) in POSTERS.items():
     im = load(fn)
     manifest["posters"][key] = {"source": fn, "width": im.width, "height": im.height,
                                 "sizes": resize_widths(im, widths, OUT / "posters", stem)}
+
+# Sponsors: artwork on white, padded to a uniform 4:3 tile so the grid stays even.
+(OUT / "sponsors").mkdir(exist_ok=True)
+for key, (fn, _label) in SPONSORS.items():
+    im = Image.open(SPONSORS_SRC / fn)
+    im = ImageOps.exif_transpose(im).convert("RGB")
+    im.thumbnail((1000, 1000), Image.LANCZOS)
+    side = max(im.size)
+    pad = int(side * 0.08)
+    tile_w, tile_h = side + pad * 2, round((side + pad * 2) * 3 / 4)
+    tile = Image.new("RGB", (tile_w, tile_h), "#ffffff")
+    tile.paste(im, ((tile_w - im.width) // 2, (tile_h - im.height) // 2))
+    manifest["sponsors"][key] = {"source": fn, "width": tile.width, "height": tile.height,
+                                 "sizes": resize_widths(tile, [600, 300], OUT / "sponsors", key)}
 
 # Hero: portrait original, responsive + JPEG fallback
 hero = load(HERO_SRC)
@@ -143,3 +193,4 @@ og.save(OUT / "og.jpg", "JPEG", quality=88, optimize=True, progressive=True)
 print(json.dumps({k: len(v.get("sizes", [])) for k, v in manifest.items()}, indent=2))
 print("total photos:", sum(len(v["sizes"]) for v in manifest["photos"].values()))
 print("total posters:", sum(len(v["sizes"]) for v in manifest["posters"].values()))
+print("total sponsors:", sum(len(v["sizes"]) for v in manifest["sponsors"].values()))

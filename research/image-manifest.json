@@ -675,6 +675,578 @@
       ]
     }
   },
+  "sponsors": {
+    "freedom-church": {
+      "source": "Freedom_Church.png",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/freedom-church-600.webp",
+          "bytes": 10798
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/freedom-church-300.webp",
+          "bytes": 4564
+        }
+      ]
+    },
+    "marlon-cottage": {
+      "source": "IMG_0426.JPG",
+      "width": 1112,
+      "height": 834,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/marlon-cottage-600.webp",
+          "bytes": 31914
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/marlon-cottage-300.webp",
+          "bytes": 13494
+        }
+      ]
+    },
+    "sports-clinic": {
+      "source": "IMG_0441.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/sports-clinic-600.webp",
+          "bytes": 31314
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/sports-clinic-300.webp",
+          "bytes": 12336
+        }
+      ]
+    },
+    "pokemon-lau": {
+      "source": "IMG_0720.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/pokemon-lau-600.webp",
+          "bytes": 21538
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/pokemon-lau-300.webp",
+          "bytes": 10948
+        }
+      ]
+    },
+    "paolyn-houseboat": {
+      "source": "IMG_0848.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/paolyn-houseboat-600.webp",
+          "bytes": 37534
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/paolyn-houseboat-300.webp",
+          "bytes": 12558
+        }
+      ]
+    },
+    "gordon-ramsay-bar": {
+      "source": "IMG_0948.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/gordon-ramsay-bar-600.webp",
+          "bytes": 22176
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/gordon-ramsay-bar-300.webp",
+          "bytes": 7498
+        }
+      ]
+    },
+    "healthy-globe": {
+      "source": "IMG_1101.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/healthy-globe-600.webp",
+          "bytes": 25736
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/healthy-globe-300.webp",
+          "bytes": 10698
+        }
+      ]
+    },
+    "nucf": {
+      "source": "IMG_1119.JPG",
+      "width": 642,
+      "height": 482,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/nucf-600.webp",
+          "bytes": 61204
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/nucf-300.webp",
+          "bytes": 21522
+        }
+      ]
+    },
+    "influencers-united": {
+      "source": "IMG_1279.JPG",
+      "width": 922,
+      "height": 692,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/influencers-united-600.webp",
+          "bytes": 16956
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/influencers-united-300.webp",
+          "bytes": 7138
+        }
+      ]
+    },
+    "elite-shuttle": {
+      "source": "IMG_1820.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/elite-shuttle-600.webp",
+          "bytes": 50184
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/elite-shuttle-300.webp",
+          "bytes": 17936
+        }
+      ]
+    },
+    "jaypees": {
+      "source": "IMG_1849.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/jaypees-600.webp",
+          "bytes": 40904
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/jaypees-300.webp",
+          "bytes": 14792
+        }
+      ]
+    },
+    "aloha-cares": {
+      "source": "IMG_2037.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/aloha-cares-600.webp",
+          "bytes": 23728
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/aloha-cares-300.webp",
+          "bytes": 10298
+        }
+      ]
+    },
+    "chess-united": {
+      "source": "IMG_2094.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/chess-united-600.webp",
+          "bytes": 24136
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/chess-united-300.webp",
+          "bytes": 11328
+        }
+      ]
+    },
+    "nasudi": {
+      "source": "IMG_2124.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/nasudi-600.webp",
+          "bytes": 6722
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/nasudi-300.webp",
+          "bytes": 3774
+        }
+      ]
+    },
+    "benz-ban-resort": {
+      "source": "IMG_2129.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/benz-ban-resort-600.webp",
+          "bytes": 29988
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/benz-ban-resort-300.webp",
+          "bytes": 12550
+        }
+      ]
+    },
+    "fixel-printing": {
+      "source": "IMG_2171.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/fixel-printing-600.webp",
+          "bytes": 6996
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/fixel-printing-300.webp",
+          "bytes": 4082
+        }
+      ]
+    },
+    "bless-la-union": {
+      "source": "IMG_2189.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/bless-la-union-600.webp",
+          "bytes": 18118
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/bless-la-union-300.webp",
+          "bytes": 6684
+        }
+      ]
+    },
+    "chess-united-wordmark": {
+      "source": "IMG_2190.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/chess-united-wordmark-600.webp",
+          "bytes": 5928
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/chess-united-wordmark-300.webp",
+          "bytes": 3042
+        }
+      ]
+    },
+    "bless-la-union-stage": {
+      "source": "IMG_2191.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/bless-la-union-stage-600.webp",
+          "bytes": 8370
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/bless-la-union-stage-300.webp",
+          "bytes": 3478
+        }
+      ]
+    },
+    "northern-ilocos-chess": {
+      "source": "IMG_2267.JPG",
+      "width": 1040,
+      "height": 780,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/northern-ilocos-chess-600.webp",
+          "bytes": 38518
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/northern-ilocos-chess-300.webp",
+          "bytes": 15364
+        }
+      ]
+    },
+    "matcha": {
+      "source": "IMG_2321.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/matcha-600.webp",
+          "bytes": 9588
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/matcha-300.webp",
+          "bytes": 4832
+        }
+      ]
+    },
+    "rovers": {
+      "source": "IMG_2323.PNG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/rovers-600.webp",
+          "bytes": 6728
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/rovers-300.webp",
+          "bytes": 3388
+        }
+      ]
+    },
+    "reve-snaps": {
+      "source": "IMG_3698.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/reve-snaps-600.webp",
+          "bytes": 16988
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/reve-snaps-300.webp",
+          "bytes": 7076
+        }
+      ]
+    },
+    "san-fernando-tayo": {
+      "source": "IMG_3953.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/san-fernando-tayo-600.webp",
+          "bytes": 24838
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/san-fernando-tayo-300.webp",
+          "bytes": 10656
+        }
+      ]
+    },
+    "gopalaro-rapid": {
+      "source": "IMG_4375.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/gopalaro-rapid-600.webp",
+          "bytes": 53724
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/gopalaro-rapid-300.webp",
+          "bytes": 18236
+        }
+      ]
+    },
+    "elyu-spinners": {
+      "source": "IMG_5261.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/elyu-spinners-600.webp",
+          "bytes": 35846
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/elyu-spinners-300.webp",
+          "bytes": 14512
+        }
+      ]
+    },
+    "value": {
+      "source": "IMG_7466.JPG",
+      "width": 1112,
+      "height": 834,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/value-600.webp",
+          "bytes": 16346
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/value-300.webp",
+          "bytes": 6970
+        }
+      ]
+    },
+    "childrens-island": {
+      "source": "IMG_8692.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/childrens-island-600.webp",
+          "bytes": 56826
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/childrens-island-300.webp",
+          "bytes": 22910
+        }
+      ]
+    },
+    "sto-tomas-chess": {
+      "source": "IMG_8784.JPG",
+      "width": 975,
+      "height": 731,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/sto-tomas-chess-600.webp",
+          "bytes": 21938
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/sto-tomas-chess-300.webp",
+          "bytes": 9876
+        }
+      ]
+    },
+    "chingo-spot": {
+      "source": "IMG_9448.JPG",
+      "width": 1160,
+      "height": 870,
+      "sizes": [
+        {
+          "w": 600,
+          "h": 450,
+          "path": "/images/sponsors/chingo-spot-600.webp",
+          "bytes": 23014
+        },
+        {
+          "w": 300,
+          "h": 225,
+          "path": "/images/sponsors/chingo-spot-300.webp",
+          "bytes": 9762
+        }
+      ]
+    }
+  },
   "hero": {
     "source": "a66fa455-ad10-43bb-a2c9-96c959af723c.jpg",
     "width": 1536,

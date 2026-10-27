@@ -4,7 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import { site, team, partnerTiers } from '../data/site';
-import { photos, posters } from '../data/images';
+import { photos, sponsors } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
 const abs = (path: string) => new URL(path, origin).href;
@@ -187,17 +187,27 @@ const initials = (name: string) =>
           are clearly legible on the supplied artwork.
         </p>
 
-        <figure class="poster-card mt-3" style="position:static;max-width:520px;transform:none">
-          <img
-            src={posters.sponsors}
-            width="900"
-            height="1790"
-            alt="Chess United Tournament 1.0 partners and sponsors poster, listing partners by chess-piece tier."
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption>Official Tournament 1.0 partners &amp; sponsors poster</figcaption>
-        </figure>
+        <h3 class="sponsor-logos-title" id="sponsor-logos-title">The logos, in one place.</h3>
+        <p class="partner-note">
+          Every sponsor logo the club has supplied, gathered on this page.
+        </p>
+        <ul class="sponsor-grid" aria-labelledby="sponsor-logos-title">
+          {sponsors.map((sponsor) => (
+            <li class="sponsor-card">
+              <img
+                src={sponsor.src}
+                srcset={sponsor.srcset}
+                sizes="(min-width: 900px) 220px, (min-width: 560px) 30vw, 46vw"
+                width="600"
+                height="450"
+                alt={`${sponsor.name} logo`}
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="sponsor-name">{sponsor.name}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
 

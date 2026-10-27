@@ -97,6 +97,17 @@ https://m.me/j/HytA8igzNnAWDEXo/?send_source=gc:qr_code_scan_c
 That is the URL stored in `src/data/site.ts` and used by every “Join the group”
 link.
 
+## Sponsor logos
+
+30 sponsor artwork files supplied via the club's Google Drive folder
+“SPONSOR LOGOS” (downloaded 2026-10-27). Originals are kept read-only in
+`research/sponsors-raw/` with their Drive file IDs logged in
+`research/SPONSOR_SOURCES.md`. `scripts/optimize_images.py` places each one on
+a white 4:3 tile and writes `public/images/sponsors/<key>-600/300.webp`;
+`src/data/images.ts` exports the typed list rendered as the logo grid in the
+partners section of `/about/` (the only page that shows them). Names are
+transcribed from the artwork — proof them before the next deploy.
+
 ## Brand and interface assets
 
 | File | Pixels | Bytes | Notes |

@@ -219,8 +219,7 @@ export const posters = {
   top10Kiddies: '/images/posters/top10-kiddies-900.webp',
 };
 
-export const galleryHome = [photos.table19, photos.hall, photos.medals, photos.flatlay, photos.medalist, photos.hall2];
-export const galleryAll = [
+export const galleryHome = [photos.table19, photos.hall, photos.medals, photos.flatlay, photos.medalist, photos.hall2];export const galleryAll = [
   photos.table19,
   photos.medalist,
   photos.hall,
@@ -237,4 +236,54 @@ export const galleryAll = [
   photos.club,
   photos.restaurant,
   photos.idcard,
+];
+
+export type Sponsor = {
+  name: string;
+  src: string;
+  srcset: string;
+  alt: string;
+};
+
+// Artwork supplied by the club in the "SPONSOR LOGOS" Drive folder; each logo is
+// placed on a white 4:3 tile by scripts/optimize_images.py. Sources and Drive
+// file IDs are logged in research/SPONSOR_SOURCES.md.
+const sponsor = (name: string, alt: string, key = name): Sponsor => ({
+  name,
+  src: `/images/sponsors/${key}-600.webp`,
+  srcset: `/images/sponsors/${key}-300.webp 300w, /images/sponsors/${key}-600.webp 600w`,
+  alt,
+});
+
+export const sponsors: Sponsor[] = [
+  sponsor('Freedom Church', 'Freedom Church logo: a brushstroke cross in blue and red.', 'freedom-church'),
+  sponsor('Marlon Floating Cottage', 'Marlon Floating Cottage logo: an illustrated nipa cottage over water.', 'marlon-cottage'),
+  sponsor('Sports Clinic · City YESDO', 'Sports Clinic call-for-participants poster from the City of San Fernando Youth, Education and Sports Development Office.', 'sports-clinic'),
+  sponsor('Pokemon La Union Community', 'Pokemon La Union Community Casual VGC shield logo with a poke ball.', 'pokemon-lau'),
+  sponsor('Paolyn Houseboat', 'Paolyn Houseboat logo: a houseboat on Lakinisan Lagoon, Coron Island, Palawan.', 'paolyn-houseboat'),
+  sponsor('Gordon Ramsay Bar & Grill', 'Three Chess United members posing in front of a Gordon Ramsay Bar and Grill storefront.', 'gordon-ramsay-bar'),
+  sponsor('Healthy Globe', 'Healthy Globe logo: a globe with a green sprout and the verse 3 John 2.', 'healthy-globe'),
+  sponsor('National United Chess Federation of the Philippines', 'National United Chess Federation of the Philippines seal with an eagle over a chessboard globe.', 'nucf'),
+  sponsor('Influencers United', 'Influencers United logo with the tagline Social Media For Social Good.', 'influencers-united'),
+  sponsor('Elite Shuttle', 'Elite Shuttle logo: a glowing emblem in a Halloween-themed artwork.', 'elite-shuttle'),
+  sponsor("Jaypee's Bakeshop and Cafe", "Jaypee's Bakeshop and Cafe logo from La Union, with the tagline Quality Is Our Recipe.", 'jaypees'),
+  sponsor('Aloha Cares', 'Aloha Cares logo in green and red script with a heart.', 'aloha-cares'),
+  sponsor('Chess United', 'Chess United logo: a knight, rook and pawn above the club name.', 'chess-united'),
+  sponsor('NASUDI Center for Women and Children', 'NASUDI Center for Women and Children logo: two figures under a blue roof.', 'nasudi'),
+  sponsor('Benz-Ban Resort', 'Benz-Ban Resort and Blck1 Cafe logo: a sun rising over waves between palm trees.', 'benz-ban-resort'),
+  sponsor('Fixel Printing Services', 'Fixel Printing Services logo built from pixel blocks in yellow and red.', 'fixel-printing'),
+  sponsor('Bless La Union 2025', 'Bless La Union 2025 event artwork against a Philippine flag.', 'bless-la-union'),
+  sponsor('Chess United wordmark', 'Chess United wordmark with a gold crown over the U.', 'chess-united-wordmark'),
+  sponsor('Bless La Union', 'Bless La Union logo in yellow, white and red.', 'bless-la-union-stage'),
+  sponsor('Northern Ilocos Chess Club', 'Northern Ilocos Chess Club seal with two queens and the year Est. 2026.', 'northern-ilocos-chess'),
+  sponsor('Let There Be Matcha', 'Let There Be Matcha tea house logo on a green background.', 'matcha'),
+  sponsor('Rovers', 'Rovers logo in gold on black.', 'rovers'),
+  sponsor('Reve Snaps Camera Rental', 'Reve Snaps Camera Rental La Union logo in red and black type.', 'reve-snaps'),
+  sponsor('San Fernando Tayo · City YESDO', 'Sports Clinic poster from the City of San Fernando under the San Fernando Tayo branding.', 'san-fernando-tayo'),
+  sponsor('19th GoPalaro Rapid Chess Tournament', 'Poster of the 19th GoPalaro Rapid Chess Tournament at SM City La Union.', 'gopalaro-rapid'),
+  sponsor('Elyu Spinners', 'Elyu Spinners logo: paddles crossed under a sunset wave.', 'elyu-spinners'),
+  sponsor('VALUE · La Union Emcees', 'VALUE logo: the Vibrant Association of La Union Emcees, with a microphone and waves.', 'value'),
+  sponsor("Children's Island Boodle Fight", "Children's Island Boodle Fight logo: a child holding a boodle fight spread.", 'childrens-island'),
+  sponsor('Sto. Tomas Batangas Chess Players Association', 'City of Sto. Tomas Batangas Chess Players Association logo with a knight in Philippine colours.', 'sto-tomas-chess'),
+  sponsor('Chingo Spot', 'Chingo Spot logo: a monkey chef in a blue hat holding ramen and fried chicken.', 'chingo-spot'),
 ];
