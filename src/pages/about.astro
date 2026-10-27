@@ -25,6 +25,9 @@ const initials = (name: string) =>
     .slice(0, 2)
     .map((part) => part[0])
     .join('');
+
+const sponsorHalf = Math.ceil(sponsors.length / 2);
+const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)];
 ---
 
 <Base
@@ -189,25 +192,34 @@ const initials = (name: string) =>
 
         <h3 class="sponsor-logos-title" id="sponsor-logos-title">The logos, in one place.</h3>
         <p class="partner-note">
-          Every sponsor logo the club has supplied, gathered on this page.
+          Every sponsor logo the club has supplied, scrolling past in two rows.
         </p>
-        <ul class="sponsor-grid" aria-labelledby="sponsor-logos-title">
-          {sponsors.map((sponsor) => (
-            <li class="sponsor-card">
-              <img
-                src={sponsor.src}
-                srcset={sponsor.srcset}
-                sizes="(min-width: 900px) 220px, (min-width: 560px) 30vw, 46vw"
-                width="600"
-                height="450"
-                alt={`${sponsor.name} logo`}
-                loading="lazy"
-                decoding="async"
-              />
-              <span class="sponsor-name">{sponsor.name}</span>
-            </li>
-          ))}
-        </ul>
+        {sponsorRows.map((row, rowIndex) => (
+          <div class={`sponsor-marquee${rowIndex === 1 ? ' sponsor-marquee--rev' : ''}`}>
+            <div class={`sponsor-track sponsor-track--${rowIndex}`}>
+              {/* second group is visual padding for the seamless loop */}
+              {[0, 1].map((group) => (
+                <div class="sponsor-group" aria-hidden={group === 1 ? 'true' : undefined}>
+                  {row.map((sponsor) => (
+                    <div class="sponsor-card">
+                      <img
+                        src={sponsor.src}
+                        srcset={sponsor.srcset}
+                        sizes="220px"
+                        width="600"
+                        height="450"
+                        alt={`${sponsor.name} logo`}
+                        loading="eager"
+                        decoding="async"
+                      />
+                      <span class="sponsor-name">{sponsor.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
 

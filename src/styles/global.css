@@ -1077,18 +1077,25 @@ a:hover .arrow { transform: translateX(4px); }
   margin-top: 42px;
 }
 .sponsor-logos-title + .partner-note { margin-top: 0; }
-.sponsor-grid {
-  list-style: none;
-  margin: 22px 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 18px;
+.sponsor-marquee {
+  margin-top: 22px;
+  overflow: hidden;
 }
+.sponsor-marquee--rev { margin-top: 18px; }
+.sponsor-track {
+  display: flex;
+  width: max-content;
+  gap: 18px;
+  animation: marquee 70s linear infinite;
+}
+.sponsor-track--1 { animation-duration: 80s; animation-direction: reverse; }
+.sponsor-marquee:hover .sponsor-track { animation-play-state: paused; }
+.sponsor-group { display: flex; flex: none; gap: 18px; }
 .sponsor-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 220px;
   padding: 12px;
   border: 2px solid var(--ink);
   background: var(--surface);
@@ -1754,6 +1761,8 @@ a:hover .arrow { transform: translateX(4px); }
     transition-duration: .001ms !important;
   }
   .ticker-track, .partners-track { animation: none; }
+  .sponsor-track { animation: none; }
+  .sponsor-marquee { overflow-x: auto; }
   .js .reveal,
   .js .reveal--pop,
   .js .reveal--left,
@@ -1859,6 +1868,9 @@ a:hover .arrow { transform: translateX(4px); }
 
 @media print {
   .site-header, .site-footer, .mobile-menu, .hero-sticker, .hero-ticket, .cta-band, .ticker, .partners-strip { display: none !important; }
+  .sponsor-marquee { overflow: visible; }
+  .sponsor-track { width: auto; flex-wrap: wrap; }
+  .sponsor-group[aria-hidden='true'] { display: none; }
   body { background: #fff; color: var(--ink); }
   .section, .page-hero { padding-block: 1.2rem; }
   a { text-decoration: underline; }

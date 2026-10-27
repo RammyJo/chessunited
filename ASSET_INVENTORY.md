@@ -104,8 +104,9 @@ link.
 `research/sponsors-raw/` with their Drive file IDs logged in
 `research/SPONSOR_SOURCES.md`. `scripts/optimize_images.py` places each one on
 a white 4:3 tile and writes `public/images/sponsors/<key>-600/300.webp`;
-`src/data/images.ts` exports the typed list rendered as the logo grid in the
-partners section of `/about/` (the only page that shows them). Names are
+`src/data/images.ts` exports the typed list rendered as two horizontally
+scrolling logo rows in the partners section of `/about/` (the only page that
+shows them). Names are
 transcribed from the artwork — proof them before the next deploy.
 
 ## Brand and interface assets
