@@ -470,13 +470,33 @@ or degrading client-supplied published content is an editorial decision. See **O
   documented semantics of Astro's `set:html` (it does not escape) rather than
   demonstrated live; the post-fix escape **is** demonstrated.
 
+### Live state before this pass ships (read-only `curl -sI`, 2026-10-27)
+
+`https://chessunited.pages.dev/` returns `HTTP/1.1 200 OK` with CSP,
+`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`,
+`Permissions-Policy` and `Cross-Origin-Opener-Policy` all present — but **no
+`Strict-Transport-Security`**, and the live HTML still carries
+`<meta name="generator" content="Astro v7.4.2">`, because the hardening is committed
+locally and not yet deployed. `/calendar/chess-united-tournament-2-0.ics` serves
+`text/calendar; charset=utf-8`, and an unknown path returns a genuine
+`HTTP/1.1 404 Not Found`. Re-verify after the next deploy:
+`curl -sI https://<preview>.chessunited.pages.dev/`.
+
+Repository-side platform checks (read-only `gh api`): the repo is **public**,
+default branch `main`, **no `.github/workflows`** so there is no CI supply-chain
+surface, GitHub **secret scanning is enabled with push protection** (non-provider
+patterns and token validity checks are off — the free-plan default). Two gaps need
+an owner decision because enabling
+them changes account state: **Dependabot security updates are disabled** (so no
+automated advisory pull requests) and **`main` has no branch protection**. No
+deployment environments are configured.
+
 ### Unverified
 
-Live edge headers (including the new HSTS line) are not verified, because this pass
-was instructed not to deploy. Verification requires a preview deploy, then
-`curl -sI https://<preview>.chessunited.pages.dev/`. No external vulnerability
-scanner or DAST tool was used; coverage is the project's own harness plus manual
-review, which is the strongest available option here.
+No external vulnerability scanner or DAST tool was used; coverage is the project's
+own harness plus manual review, which is the strongest available option here.
+Cross-browser and assistive-technology testing were not run in this pass (§6).
+Cloudflare's own WAF/bot settings for the project were not enumerated.
 
 ## 6. Not verified / limitations
 
