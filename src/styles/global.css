@@ -1110,6 +1110,126 @@ a:hover .arrow { transform: translateX(4px); }
 }
 
 /* --------------------------------------------------------------------------
+   Chess United GLOBAL — world map, hubs and regional networks
+   -------------------------------------------------------------------------- */
+
+.global-map {
+  position: relative;
+  margin-top: 8px;
+  border: var(--line);
+  background: var(--card);
+  box-shadow: var(--shadow-md);
+}
+.global-map > img { width: 100%; height: auto; display: block; }
+.map-marker {
+  position: absolute;
+  left: var(--mx);
+  top: var(--my);
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.map-marker .map-dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--red);
+}
+.map-marker--net .map-dot { background: var(--azure); }
+.map-marker .map-label {
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--card);
+  border: 1.5px solid rgba(10, 21, 51, .35);
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+/* The Philippine cluster overlaps at map scale — anchor its labels apart. */
+.map-marker--top-right { transform: translate(-50%, calc(-50% - 44px)); }
+.map-marker--right, .map-marker--right-below { flex-direction: row-reverse; }
+.map-marker--right { transform: translate(calc(-100% - 14px), calc(-50% + 4px)); }
+.map-marker--right-below { transform: translate(calc(-100% - 14px), calc(-50% + 34px)); }
+.map-marker--left { flex-direction: row-reverse; }
+.map-marker--left { transform: translate(calc(-100% - 230px), -50%); }
+/* Thin leader lines tie the offset labels back to their points. */
+.map-marker--right::before, .map-marker--right-below::before, .map-marker--left::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  width: 14px;
+  border-top: 1.5px solid var(--ink);
+}
+.map-marker--left::before { right: -230px; left: auto; width: 223px; }
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 34px;
+}
+.hub-card {
+  border: var(--line);
+  background: var(--card);
+  padding: 22px;
+}
+.hub-role {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--red-ink);
+}
+.hub-card h3 { font-size: 1.06rem; margin-top: 8px; }
+.hub-card p { margin-top: 8px; font-size: .86rem; color: var(--on-azure-soft); }
+
+.network-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 18px;
+  margin-top: 18px;
+}
+.network-card {
+  border: 1.5px solid rgba(10, 21, 51, .35);
+  background: var(--card);
+  padding: 16px 18px;
+}
+.network-card h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: .94rem;
+}
+.network-card p { margin-top: 6px; font-size: .82rem; color: var(--on-azure-soft); }
+.network-where { font-weight: 800; font-size: .72rem !important; letter-spacing: .05em; text-transform: uppercase; color: var(--muted) !important; }
+.network-status {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: .6rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--ink);
+  padding: 2px 8px;
+}
+.network-status--active { background: var(--azure); color: var(--ink); }
+.network-status--building { background: var(--card); color: var(--muted); }
+
+.global-scope {
+  margin-top: 28px;
+  max-width: 78ch;
+  font-size: .92rem;
+  color: var(--on-azure-soft);
+}
+.global-scope strong { color: var(--ink); }
+
+/* --------------------------------------------------------------------------
    CTA band
    -------------------------------------------------------------------------- */
 
@@ -1822,6 +1942,7 @@ a:hover .arrow { transform: translateX(4px); }
 @media (max-width: 760px) {
   body { font-size: 1rem; }
   .event-grid, .division-grid, .merch-grid, .venue-grid, .value-grid, .team-grid { grid-template-columns: 1fr; }
+  .hub-grid, .network-grid { grid-template-columns: 1fr; }
   .event-card { grid-template-columns: 104px minmax(0, 1fr); }
   .event-card::before, .event-card::after { left: 101px; }
   .event-date .day { font-size: 3rem; }
@@ -1829,6 +1950,11 @@ a:hover .arrow { transform: translateX(4px); }
   .event-foot { align-items: flex-start; flex-direction: column; }
   .fact-grid { grid-template-columns: 1fr; }
   .detail-aside { grid-template-columns: 1fr; }
+  .map-marker .map-label { display: none; }
+  .map-marker, .map-marker--top-right, .map-marker--right, .map-marker--right-below, .map-marker--left {
+    transform: translate(-50%, -50%);
+  }
+  .map-marker--right::before, .map-marker--right-below::before, .map-marker--left::before { display: none; }
   .gallery-grid--home .gallery-item, .gallery-grid--full .gallery-item { grid-column: auto; }
   .gallery-grid { columns: 2; }
   .qr-card { grid-template-columns: 1fr; justify-items: start; }
@@ -1860,6 +1986,7 @@ a:hover .arrow { transform: translateX(4px); }
   .cta-actions .btn { flex: 1 1 100%; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
   .lightbox-bar { flex-direction: column; align-items: flex-start; }
+  .global-map { box-shadow: var(--shadow-sm); }
 }
 
 /* --------------------------------------------------------------------------
@@ -1871,6 +1998,8 @@ a:hover .arrow { transform: translateX(4px); }
   .sponsor-marquee { overflow: visible; }
   .sponsor-track { width: auto; flex-wrap: wrap; }
   .sponsor-group[aria-hidden='true'] { display: none; }
+  .global-map { box-shadow: none; }
+  .hub-grid, .network-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   body { background: #fff; color: var(--ink); }
   .section, .page-hero { padding-block: 1.2rem; }
   a { text-decoration: underline; }

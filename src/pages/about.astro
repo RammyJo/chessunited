@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
-import { site, team, partnerTiers } from '../data/site';
+import { site, team, partnerTiers, globalHubs, globalNetworks, globalMarkers } from '../data/site';
 import { photos, sponsors } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
@@ -32,7 +32,7 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
 
 <Base
   title="About the club — Chess United"
-  description="Meet Chess United: a community chess club in San Fernando City, La Union running weekly Saturday chess, age-division tournaments, and a club for all ages."
+  description="Meet Chess United: a San Fernando City, La Union club in the Chess United GLOBAL network — weekly Saturday chess and age-division tournaments."
   jsonLd={breadcrumbJsonLd}
 >
   <Header />
@@ -133,6 +133,90 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
             </p>
           </article>
         </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="global-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">One club, many boards</p>
+            <h2 id="global-title">Chess United<br />GLOBAL.</h2>
+          </div>
+          <p class="lede">
+            San Fernando City is where we play, but Chess United was never meant to stop at one
+            table. The club is part of a worldwide network — regional networks across the
+            Philippines and three headquarters covering the rest of the board.
+          </p>
+        </div>
+
+        <div class="global-map reveal">
+          <img
+            src="/images/world-map.svg"
+            width="1600"
+            height="800"
+            alt="World map with Chess United hubs marked in Vancouver, Bombay and San Fernando City, La Union"
+            loading="eager"
+            decoding="async"
+          />
+          <div class="map-marker map-marker--hq map-marker--left" style={`--mx:${globalMarkers['san-fernando'].x}%;--my:${globalMarkers['san-fernando'].y}%`}>
+            <span class="map-dot" aria-hidden="true"></span>
+            <span class="map-label">San Fernando · Asian HQ</span>
+          </div>
+          <div class="map-marker map-marker--hq" style={`--mx:${globalMarkers.vancouver.x}%;--my:${globalMarkers.vancouver.y}%`}>
+            <span class="map-dot" aria-hidden="true"></span>
+            <span class="map-label">Vancouver · North American HQ</span>
+          </div>
+          <div class="map-marker map-marker--hq" style={`--mx:${globalMarkers.bombay.x}%;--my:${globalMarkers.bombay.y}%`}>
+            <span class="map-dot" aria-hidden="true"></span>
+            <span class="map-label">Bombay · South Asian HQ</span>
+          </div>
+          <div class="map-marker map-marker--net map-marker--top-right" style={`--mx:${globalMarkers.luzon.x}%;--my:${globalMarkers.luzon.y}%`}>
+            <span class="map-dot" aria-hidden="true"></span>
+            <span class="map-label">CU Luzon</span>
+          </div>
+          <div class="map-marker map-marker--net map-marker--right" style={`--mx:${globalMarkers.visayas.x}%;--my:${globalMarkers.visayas.y}%`}>
+            <span class="map-dot" aria-hidden="true"></span>
+            <span class="map-label">CU Visayas</span>
+          </div>
+          <div class="map-marker map-marker--net map-marker--right-below" style={`--mx:${globalMarkers.mindanao.x}%;--my:${globalMarkers.mindanao.y}%`}>
+            <span class="map-dot" aria-hidden="true"></span>
+            <span class="map-label">CU Mindanao</span>
+          </div>
+        </div>
+
+        <div class="hub-grid">
+          {globalHubs.map((hub) => (
+            <article class="hub-card reveal">
+              <p class="hub-role">{hub.role}</p>
+              <h3>{hub.location}</h3>
+              <p>{hub.blurb}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="network-grid">
+          {globalNetworks.map((net) => (
+            <article class="network-card reveal">
+              <h3>
+                {net.name}
+                <span class={`network-status network-status--${net.status}`}>
+                  {net.status === 'active' ? 'Active' : 'Building'}
+                </span>
+              </h3>
+              <p class="network-where">{net.where}</p>
+              <p>{net.note}</p>
+            </article>
+          ))}
+        </div>
+
+        <p class="global-scope">
+          The way the club counts its territory follows an old pattern: the city (Jerusalem), the
+          province (Judea), the country (Samaria), and then the whole world — the scope in
+          Acts&nbsp;1:8. Chess United started in San Fernando City and is working outward from
+          there, one board at a time: <strong>that we might be a light to every city and nation
+          where the game is played.</strong>
+        </p>
       </div>
     </section>
 
