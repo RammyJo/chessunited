@@ -52,6 +52,7 @@ const csp = [
   "form-action 'self'",
   "img-src 'self' data:",
   "font-src 'self'",
+  "frame-src https://maps.google.com https://www.google.com",
   "style-src 'self' 'unsafe-inline'",
   `script-src ${scriptSrc}`,
   "connect-src 'self' https://cloudflareinsights.com",
