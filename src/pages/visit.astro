@@ -102,8 +102,20 @@ const faqJsonLd = {
               <h3>{session.venue}</h3>
               <address>{session.address}</address>
               <p class="venue-time">{session.time} · weekly chess</p>
-              <a class="text-link" href={mapsUrl(session.mapsQuery)} target="_blank" rel="noopener">
-                Open in Google Maps <Icon name="external" size={13} />
+              <div class="venue-map-frame">
+                <iframe
+                  title={`Map preview for ${session.venue}`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(session.address)}&output=embed`}
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  allowfullscreen
+                ></iframe>
+              </div>
+              <p class="venue-map-note">
+                Google Maps may show ratings and reviews for this venue. Those reviews are for the host location, not Chess United.
+              </p>
+              <a class="text-link" href={mapsUrl(session.mapsQuery)} target="_blank" rel="noopener noreferrer">
+                View venue details and reviews <Icon name="external" size={13} />
               </a>
             </article>
           ))}
