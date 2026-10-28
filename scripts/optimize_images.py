@@ -79,7 +79,6 @@ SPONSORS = {
     "bless-la-union-stage":  ("IMG_2191.JPG", "Bless La Union"),
     "northern-ilocos-chess": ("IMG_2267.JPG", "Northern Ilocos Chess Club"),
     "matcha":             ("IMG_2321.JPG", "Let There Be Matcha"),
-    "rovers":             ("IMG_2323.PNG", "Rovers"),
     "reve-snaps":         ("IMG_3698.JPG", "Reve Snaps Camera Rental La Union"),
     "san-fernando-tayo":  ("IMG_3953.JPG", "San Fernando Tayo, City of San Fernando YESDO"),
     "gopalaro-rapid":     ("IMG_4375.JPG", "19th GoPalaro Rapid Chess Tournament"),

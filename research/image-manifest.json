@@ -1075,25 +1075,6 @@
         }
       ]
     },
-    "rovers": {
-      "source": "IMG_2323.PNG",
-      "width": 1160,
-      "height": 870,
-      "sizes": [
-        {
-          "w": 600,
-          "h": 450,
-          "path": "/images/sponsors/rovers-600.webp",
-          "bytes": 6728
-        },
-        {
-          "w": 300,
-          "h": 225,
-          "path": "/images/sponsors/rovers-300.webp",
-          "bytes": 3388
-        }
-      ]
-    },
     "reve-snaps": {
       "source": "IMG_3698.JPG",
       "width": 1160,

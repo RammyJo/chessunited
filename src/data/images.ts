@@ -277,7 +277,6 @@ export const sponsors: Sponsor[] = [
   sponsor('Bless La Union', 'Bless La Union logo in yellow, white and red.', 'bless-la-union-stage'),
   sponsor('Northern Ilocos Chess Club', 'Northern Ilocos Chess Club seal with two queens and the year Est. 2026.', 'northern-ilocos-chess'),
   sponsor('Let There Be Matcha', 'Let There Be Matcha tea house logo on a green background.', 'matcha'),
-  sponsor('Rovers', 'Rovers logo in gold on black.', 'rovers'),
   sponsor('Reve Snaps Camera Rental', 'Reve Snaps Camera Rental La Union logo in red and black type.', 'reve-snaps'),
   sponsor('San Fernando Tayo · City YESDO', 'Sports Clinic poster from the City of San Fernando under the San Fernando Tayo branding.', 'san-fernando-tayo'),
   sponsor('19th GoPalaro Rapid Chess Tournament', 'Poster of the 19th GoPalaro Rapid Chess Tournament at SM City La Union.', 'gopalaro-rapid'),
