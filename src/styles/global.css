@@ -1570,6 +1570,31 @@ a:hover .arrow { transform: translateX(4px); }
 }
 .team-card h3 { margin-top: auto; font-size: 1.15rem; color: var(--ink); }
 .team-card p { margin-top: 5px; font-size: .62rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--on-azure-soft); }
+.team-card .team-note { letter-spacing: .08em; opacity: .75; }
+
+.officer-group + .officer-group { margin-top: clamp(34px, 4.5vw, 56px); }
+.officer-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+}
+.officer-group-head h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.9vw, 1.35rem);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.officer-group-head p { font-size: .8rem; color: var(--muted); max-width: 52ch; }
+
+/* A vacancy is not a person: no fill, no initials, dashed frame. */
+.team-card--open { background: var(--card); border-style: dashed; }
+.team-card--open .team-initials { color: var(--muted); }
+.team-card--open h3 { color: var(--muted); }
 
 /* --------------------------------------------------------------------------
    Visit / FAQ

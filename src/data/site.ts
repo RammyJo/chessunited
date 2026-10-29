@@ -435,10 +435,33 @@ export const globalMarkers: Record<string, { x: number; y: number }> = {
   mindanao: { x: 84.75, y: 46.17 },
 };
 
-export const team = [
-  { name: 'Yel Romero', role: 'Club President' },
-  { name: 'Elito Batulan', role: 'Club Vice President' },
-  { name: 'Ricky Shetty', role: 'MC' },
+export type Officer = { name: string; role: string; note?: string; open?: boolean };
+export type OfficerGroup = { id: string; title: string; caption: string; officers: Officer[] };
+
+export const officerGroups: OfficerGroup[] = [
+  {
+    id: 'senior',
+    title: 'Senior club officers',
+    caption: 'The names on the Tournament 1.0 programme.',
+    officers: [
+      { name: 'Yel Romero', role: 'Club President' },
+      { name: 'Elito Batulan', role: 'Club Vice President' },
+      { name: 'Ricky Shetty', role: 'Master of Ceremonies' },
+    ],
+  },
+  {
+    id: 'junior',
+    title: 'Junior club officers',
+    caption: 'The kids’ own cabinet — the same offices, elected from the Kiddies Division.',
+    officers: [
+      { name: 'Ryan Shetty', role: 'President' },
+      { name: 'Daniel Allan', role: 'Vice President', note: 'Tournament Director' },
+      { name: 'Ymer Cargamento', role: 'Secretary', note: 'Isaac' },
+      { name: 'Rianne Shetty', role: 'Public Relations Officer', note: 'Official video editor' },
+      { name: 'Renzo Shetty', role: 'Treasurer' },
+      { name: 'Auditor', role: 'Seat open', open: true },
+    ],
+  },
 ];
 
 export const formatPeso = (amount: number) =>

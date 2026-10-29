@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
-import { site, team, partnerTiers, globalHubs, globalNetworks, globalMarkers } from '../data/site';
+import { site, officerGroups, partnerTiers, globalHubs, globalNetworks, globalMarkers } from '../data/site';
 import { photos, sponsors } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
@@ -220,28 +220,38 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
       </div>
     </section>
 
-    <section class="section" aria-labelledby="team-title">
+    <section class="section" aria-labelledby="officers-title">
       <div class="wrap">
         <div class="section-head">
           <div>
             <p class="eyebrow">The people</p>
-            <h2 id="team-title">Who runs the club.</h2>
+            <h2 id="officers-title">Club officers.</h2>
           </div>
           <p class="lede">
-            The names on the Tournament 1.0 programme: the club's president and vice president,
-            and the day's MC.
+            Two cabinets run Chess United: the senior officers who steer the club, and a junior
+            cabinet elected from the kids — the same offices, at their own table.
           </p>
         </div>
 
-        <div class="team-grid">
-          {team.map((person) => (
-            <article class="team-card reveal">
-              <p class="team-initials" aria-hidden="true">{initials(person.name)}</p>
-              <h3>{person.name}</h3>
-              <p>{person.role}</p>
-            </article>
-          ))}
-        </div>
+        {officerGroups.map((group) => (
+          <div class="officer-group" aria-labelledby={`officers-${group.id}`}>
+            <div class="officer-group-head">
+              <h3 id={`officers-${group.id}`}>{group.title}</h3>
+              <p>{group.caption}</p>
+            </div>
+
+            <div class="team-grid">
+              {group.officers.map((person) => (
+                <article class={`team-card reveal${person.open ? ' team-card--open' : ''}`}>
+                  <p class="team-initials" aria-hidden="true">{person.open ? '+' : initials(person.name)}</p>
+                  <h3>{person.name}</h3>
+                  <p>{person.role}</p>
+                  {person.note && <p class="team-note">{person.note}</p>}
+                </article>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
 
