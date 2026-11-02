@@ -1,0 +1,20 @@
+# Cloudflare Pages project configuration.
+#
+# `wrangler pages deploy dist --project-name chessunited` picks this up, and
+# Cloudflare also auto-detects the `functions/` directory next to it.
+
+name = "chessunited"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "dist"
+
+# D1 database backing membership, registrations, orders and partner clubs.
+# Create it once, then paste the id printed by:
+#   npx wrangler d1 create chess-united
+[[d1_databases]]
+binding = "DB"
+database_name = "chess-united"
+database_id = "41d6bcc5-6c5b-44a9-9e4b-3008f5861560"
+
+# Secrets (set with `npx wrangler pages secret put <NAME>`):
+#   ADMIN_TOKEN  — passphrase for the /admin/ dashboard
+#   (optional) RESEND_API_KEY / MAIL_FROM — for confirmation emails

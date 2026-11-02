@@ -3,12 +3,27 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
-import { site, events, upcomingEvents, formatPeso, mapsUrl } from '../data/site';
+import { site, events, upcomingEvents, formatPeso, gcash, mapsUrl } from '../data/site';
 import { photos } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
 const abs = (path: string) => new URL(path, origin).href;
 const past = events.find((event) => event.status === 'past')!;
+
+/* Held as a string so Astro does not read `{{…}}` in markup as a JS expression.
+   forms.js fills these tokens from the JSON the API returns. */
+const entryTemplate = `
+  <h3>Entry received.</h3>
+  <p>
+    <strong>{{registration.fullName}}</strong> — {{registration.eventName}},
+    {{registration.division}}.
+  </p>
+  <p>Entry fee: ₱{{registration.amount}}</p>
+  <p>
+    Reference {{registration.gcashRef}} is saved against this entry. The club
+    confirms your slot once the payment is matched, so keep the receipt until then.
+  </p>
+`;
 const remainingLabel =
   upcomingEvents.length === 0
     ? 'Season complete'
@@ -143,8 +158,11 @@ const breadcrumbJsonLd = {
             {event.note && <p class="event-note">{event.note}</p>}
 
             <div class="event-actions">
-              <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
-                Ask about sign-up
+              <a class="btn" href="#register">
+                <Icon name="trophy" size={15} /> Enter online
+              </a>
+              <a class="btn btn--ghost" href={site.groupUrl} target="_blank" rel="noopener">
+                Ask in the group
                 <Icon name="external" size={15} />
               </a>
               {event.ics && (
@@ -184,6 +202,151 @@ const breadcrumbJsonLd = {
         </div>
       </section>
     ))}
+
+    <section class="section section--paper" id="register" aria-labelledby="register-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Register online</p>
+            <h2 id="register-title">Enter a tournament.</h2>
+          </div>
+          <p class="lede">
+            Pick your tournament and division, scan the club's GCash QR on that event's poster, pay
+            the entry fee, then paste the {gcash.referenceLength}-digit reference number from your
+            receipt. A club officer matches every reference by hand before your slot is confirmed.
+          </p>
+        </div>
+
+        <div class="entry-grid">
+          {upcomingEvents.map((event) => (
+            <div data-form-shell>
+              <form class="form-card" data-api="/api/registrations">
+                <h3>{event.shortName}</h3>
+                <p class="lede">{event.dateLabel} · {event.venue}</p>
+
+                <input type="hidden" name="eventSlug" value={event.slug} />
+
+                <div class="form-grid">
+                  <div class="field">
+                    <label for={`r-${event.slug}-name`}>Player's full name</label>
+                    <input
+                      id={`r-${event.slug}-name`}
+                      name="fullName"
+                      required
+                      minlength="3"
+                      maxlength="120"
+                      autocomplete="name"
+                    />
+                    <p class="field-error" data-error-for="fullName" hidden></p>
+                  </div>
+
+                  <div class="field">
+                    <label for={`r-${event.slug}-division`}>Division</label>
+                    <select id={`r-${event.slug}-division`} name="division" required>
+                      {event.divisions.map((division) => (
+                        <option value={division.name}>
+                          {division.name} — {division.ages} · {formatPeso(division.fee)} entry
+                        </option>
+                      ))}
+                    </select>
+                    <p class="field-error" data-error-for="division" hidden></p>
+                  </div>
+
+                  <div class="field">
+                    <label for={`r-${event.slug}-email`}>Email</label>
+                    <input
+                      id={`r-${event.slug}-email`}
+                      name="email"
+                      type="email"
+                      required
+                      autocomplete="email"
+                    />
+                    <p class="field-error" data-error-for="email" hidden></p>
+                  </div>
+
+                  <div class="field">
+                    <label for={`r-${event.slug}-phone`}>Mobile number</label>
+                    <input
+                      id={`r-${event.slug}-phone`}
+                      name="phone"
+                      required
+                      inputmode="tel"
+                      placeholder="09171234567"
+                      autocomplete="tel"
+                    />
+                    <p class="field-error" data-error-for="phone" hidden></p>
+                  </div>
+
+                  <div class="field">
+                    <label for={`r-${event.slug}-club`}>Club <span class="hint">optional</span></label>
+                    <input id={`r-${event.slug}-club`} name="club" maxlength="120" />
+                  </div>
+
+                  <div class="field">
+                    <label for={`r-${event.slug}-member`}>
+                      Member number <span class="hint">optional</span>
+                    </label>
+                    <input
+                      id={`r-${event.slug}-member`}
+                      name="memberNo"
+                      maxlength="20"
+                      placeholder="CU-2026-0000"
+                    />
+                  </div>
+
+                  <div class="field field--wide">
+                    <label for={`r-${event.slug}-ref`}>GCash reference number</label>
+                    <input
+                      id={`r-${event.slug}-ref`}
+                      name="gcashRef"
+                      required
+                      inputmode="numeric"
+                      maxlength="20"
+                      placeholder={`${gcash.referenceLength} digits`}
+                    />
+                    <p class="field-error" data-error-for="gcashRef" hidden></p>
+                  </div>
+
+                  <div class="field field--wide">
+                    <label for={`r-${event.slug}-notes`}>
+                      Anything the club should know <span class="hint">optional</span>
+                    </label>
+                    <textarea
+                      id={`r-${event.slug}-notes`}
+                      name="notes"
+                      maxlength="400"
+                      placeholder="School, age, or a note about the entry."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div class="pay-box mt-3">
+                  <strong>Paying by GCash</strong>
+                  <ol>
+                    <li>Scan the GCash QR printed on the {event.shortName} poster.</li>
+                    <li>Pay the entry fee for the division you chose — the amount is in the list above.</li>
+                    <li>Copy the {gcash.referenceLength}-digit reference number and paste it in the form.</li>
+                  </ol>
+                </div>
+
+                <p class="form-status" data-form-status hidden></p>
+
+                <div class="form-actions">
+                  <button class="btn" type="submit" data-busy="Sending…">
+                    <Icon name="check" size={16} /> Send my entry
+                  </button>
+                  <a class="btn btn--ghost" href="/membership/">Get a member number</a>
+                </div>
+              </form>
+
+              <div class="form-success" data-success hidden>
+                <template data-success-template set:html={entryTemplate}></template>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <section class="section section--paper" aria-labelledby="weekly-note-title">
       <div class="wrap">
@@ -354,11 +517,11 @@ const breadcrumbJsonLd = {
       <div class="wrap cta-inner">
         <div>
           <h2 id="events-cta" class="display-lg">Bring your board face.</h2>
-          <p>Sign-up is handled by the club — ask in the group for the current process.</p>
+          <p>Enter online with your GCash reference, or ask the club in the group.</p>
         </div>
         <div class="cta-actions">
-          <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
-            Join the group <Icon name="external" size={15} />
+          <a class="btn" href="#register">
+            Enter a tournament
           </a>
           <a class="btn btn--light" href="/visit/">Venue details</a>
         </div>

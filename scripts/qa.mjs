@@ -87,9 +87,11 @@ for (const file of htmlFiles) {
   if (!desc) errors.push(`${url}: missing meta description`);
   else if (desc.length > 170) warnings.push(`${url}: description is ${desc.length} chars`);
 
+  // A page kept out of search (noindex) is deliberately not canonicalised.
+  const noindex = /<meta\s+name="robots"\s+content="[^"]*noindex/i.test(html);
   const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i)?.[1];
   if (!canonical) {
-    if (url !== '/404.html') errors.push(`${url}: missing canonical`);
+    if (url !== '/404.html' && !noindex) errors.push(`${url}: missing canonical`);
   } else if (!/^https:\/\//.test(canonical)) {
     errors.push(`${url}: canonical is not absolute https`);
   }
@@ -121,8 +123,9 @@ for (const file of htmlFiles) {
     }
   }
 
-  // Internal links and assets
-  const attrPattern = /\b(?:href|src)="([^"]+)"/g;
+  // Internal links and assets. The lookbehind keeps `data-href` / `data-src`
+  // (placeholders filled in by client JS) out of the crawl.
+  const attrPattern = /(?<![\w-])(?:href|src)="([^"]+)"/g;
   let attr;
   while ((attr = attrPattern.exec(html)) !== null) {
     const target = attr[1].trim();

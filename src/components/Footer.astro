@@ -20,6 +20,21 @@ const year = new Date().getFullYear();
         A community chess club in San Fernando City, La Union. Weekly games, age-division
         tournaments, and a seat for every age.
       </p>
+
+      {site.social.some((account) => account.href) && (
+        <ul class="footer-social" aria-label="Chess United on social media">
+          {site.social
+            .filter((account) => account.href)
+            .map((account) => (
+              <li>
+                <a href={account.href} target="_blank" rel="noopener" aria-label={`Chess United on ${account.label}`}>
+                  <Icon name={account.id} size={20} />
+                  <span>{account.label}</span>
+                </a>
+              </li>
+            ))}
+        </ul>
+      )}
     </div>
 
     <div class="footer-col">
@@ -27,8 +42,10 @@ const year = new Date().getFullYear();
       <ul>
         <li><a href="/events/">Events</a></li>
         <li><a href="/play/">Weekly play</a></li>
+        <li><a href="/membership/">Membership</a></li>
         <li><a href="/gallery/">Gallery</a></li>
         <li><a href="/shop/">Merchandise</a></li>
+        <li><a href="/partners/">Partner clubs</a></li>
       </ul>
     </div>
 
@@ -36,6 +53,8 @@ const year = new Date().getFullYear();
       <h2>The club</h2>
       <ul>
         <li><a href="/about/">About</a></li>
+        <li><a href="/about/#officers">Club officers</a></li>
+        <li><a href="/about/#team">The team</a></li>
         <li><a href="/visit/">Visit us</a></li>
         <li>
           <a href={site.groupUrl} target="_blank" rel="noopener">
@@ -65,7 +84,7 @@ const year = new Date().getFullYear();
 
   <div class="wrap footer-bottom">
     <span>© {year} Chess United. All rights reserved.</span>
-    <span>Informational site · no cookies, no personal tracking.</span>
+    <span>Details you send through this site are held by the club and used only for your membership, entry or order.</span>
     <a href="#main">Back to top ↑</a>
   </div>
 

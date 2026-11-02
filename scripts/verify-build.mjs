@@ -20,6 +20,9 @@ const htmlFiles = [
   ['shop/index.html', '/shop/'],
   ['about/index.html', '/about/'],
   ['visit/index.html', '/visit/'],
+  ['membership/index.html', '/membership/'],
+  ['membership/card/index.html', '/membership/card/'],
+  ['partners/index.html', '/partners/'],
   ['404.html', '/404.html'],
 ];
 
@@ -139,11 +142,23 @@ for (const [label, pattern] of [
 
 const sitemap = await read('sitemap-0.xml');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-for (const route of ['/events/', '/play/', '/gallery/', '/shop/', '/about/', '/visit/']) {
+for (const route of [
+  '/events/',
+  '/play/',
+  '/gallery/',
+  '/shop/',
+  '/about/',
+  '/visit/',
+  '/membership/',
+  '/membership/card/',
+  '/partners/',
+]) {
   if (!locs.some((loc) => loc === `${SITE}${route}`)) errors.push(`sitemap: missing ${route}`);
 }
 if (locs.some((loc) => loc.includes('/404'))) errors.push('sitemap: contains 404');
-if (locs.length !== 7) errors.push(`sitemap: expected 7 URLs, found ${locs.length}`);
+if (locs.some((loc) => loc.includes('/admin'))) errors.push('sitemap: contains /admin');
+if (new Set(locs).size !== locs.length) errors.push('sitemap: has duplicate URLs');
+if (locs.length !== 10) errors.push(`sitemap: expected 10 URLs, found ${locs.length}`);
 
 const manifest = JSON.parse(await read('manifest.webmanifest'));
 if (!manifest.name || !manifest.short_name || manifest.start_url !== '/') {

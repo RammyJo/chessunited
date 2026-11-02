@@ -1,0 +1,295 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Icon from '../../components/Icon.astro';
+import { site, partnerTiers } from '../../data/site';
+
+const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const abs = (path: string) => new URL(path, origin).href;
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: abs('/') },
+    { '@type': 'ListItem', position: 2, name: 'Partner clubs', item: abs('/partners/') },
+  ],
+};
+---
+
+<Base
+  title="Partner clubs — Chess United"
+  description="Find a chess club near you. Club officers add their meeting place, schedule and tournaments to the Chess United directory — a global hub for local chess."
+  jsonLd={breadcrumbJsonLd}
+>
+  <Header />
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Chess United GLOBAL</p>
+        <h1>Find the nearest board.</h1>
+        <p class="lede">
+          Every club that lists here is put forward by its own officers — where it meets, when it
+          meets, and what it is running next. The goal is one place to look, wherever you are.
+        </p>
+        <div class="page-hero-meta">
+          <span><Icon name="pin" size={15} /> <span data-club-count>0</span> clubs listed</span>
+          <span><Icon name="users" size={15} /> Officer-submitted</span>
+          <span><Icon name="check" size={15} /> Reviewed before publishing</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="directory-title">
+      <div class="wrap" data-club-directory>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">The directory</p>
+            <h2 id="directory-title">Clubs in the network.</h2>
+          </div>
+          <p class="lede">
+            Chess United clubs and partner clubs, with their own meeting details and their own
+            tournament dates. Everything here was submitted by a club officer and approved by the
+            Chess United team.
+          </p>
+        </div>
+
+        <noscript>
+          <p class="note-box">
+            The directory loads with JavaScript. Turn it on to browse the clubs, or ask in the
+            <a href={site.groupUrl} target="_blank" rel="noopener">club group</a>.
+          </p>
+        </noscript>
+
+        <p class="club-empty" data-club-loading hidden>Loading the clubs…</p>
+
+        <p class="club-empty" data-club-empty hidden>
+          <strong>No clubs are listed yet.</strong> The directory opens as soon as the first club
+          officers send their details — a club signing up below is all it takes.
+        </p>
+
+        <p class="club-empty" data-club-error hidden>
+          The directory could not be loaded right now. Try again shortly, or ask in the
+          <a href={site.groupUrl} target="_blank" rel="noopener">club group</a>.
+        </p>
+
+        <div class="club-grid" data-club-list hidden></div>
+      </div>
+    </section>
+
+    <section class="section section--paper" id="add" aria-labelledby="add-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">For club officers</p>
+            <h2 id="add-title">Put your club on the map.</h2>
+          </div>
+          <p class="lede">
+            One form. Your meeting place, your schedule, a contact and — if you have one coming up
+            — your next tournament. A Chess United officer reviews it, then it appears above.
+          </p>
+        </div>
+
+        <div class="membership-split mt-3" data-form-shell>
+          <div>
+            <div class="pay-box">
+              <strong>What happens next</strong>
+              <ol>
+                <li>You send the club details through the form.</li>
+                <li>A Chess United officer checks them against your club's own page or poster.</li>
+                <li>Your club and its tournaments appear in the directory above.</li>
+                <li>Send an update any time — a new meeting place, a new tournament.</li>
+              </ol>
+            </div>
+
+            <div class="note-box mt-3">
+              <strong>Please be accurate.</strong> Meeting places, schedules and tournament dates
+              are published exactly as you send them, so players can turn up and find you. If
+              something changes, send it again.
+            </div>
+
+            <h3 class="mt-3">Already a Chess United partner?</h3>
+            <p class="lede">
+              The club's Tournament 1.0 partners are listed on the
+              <a href="/about/#partners">about page</a> alongside the rest of the club's sponsors.
+            </p>
+          </div>
+
+          <div>
+            <form class="form-card" data-api="/api/partner-clubs">
+              <h3>Club submission</h3>
+
+              <div class="form-grid">
+                <div class="field field--wide">
+                  <label for="p-club">Club name</label>
+                  <input id="p-club" name="clubName" required minlength="3" maxlength="140" />
+                  <p class="field-error" data-error-for="clubName" hidden></p>
+                </div>
+
+                <div class="field">
+                  <label for="p-city">City or municipality</label>
+                  <input id="p-city" name="city" required maxlength="80" />
+                  <p class="field-error" data-error-for="city" hidden></p>
+                </div>
+
+                <div class="field">
+                  <label for="p-province">Province or state</label>
+                  <input id="p-province" name="province" maxlength="80" />
+                </div>
+
+                <div class="field field--wide">
+                  <label for="p-country">Country</label>
+                  <input id="p-country" name="country" value="Philippines" maxlength="80" />
+                </div>
+
+                <div class="field field--wide">
+                  <label for="p-place">Where you meet</label>
+                  <input
+                    id="p-place"
+                    name="meetingPlace"
+                    required
+                    maxlength="200"
+                    placeholder="e.g. Robinsons Mall La Union, ground floor"
+                  />
+                  <p class="field-error" data-error-for="meetingPlace" hidden></p>
+                </div>
+
+                <div class="field field--wide">
+                  <label for="p-schedule">When you meet</label>
+                  <input
+                    id="p-schedule"
+                    name="meetingSchedule"
+                    required
+                    maxlength="160"
+                    placeholder="e.g. Every Saturday, 10:00 AM – 2:00 PM"
+                  />
+                  <p class="field-error" data-error-for="meetingSchedule" hidden></p>
+                </div>
+
+                <div class="field">
+                  <label for="p-contact">Officer name</label>
+                  <input id="p-contact" name="contactName" required maxlength="120" />
+                  <p class="field-error" data-error-for="contactName" hidden></p>
+                </div>
+
+                <div class="field">
+                  <label for="p-email">Officer email</label>
+                  <input id="p-email" name="contactEmail" type="email" required />
+                  <p class="field-error" data-error-for="contactEmail" hidden></p>
+                </div>
+
+                <div class="field">
+                  <label for="p-phone">Officer mobile</label>
+                  <input id="p-phone" name="contactPhone" inputmode="tel" maxlength="24" />
+                  <p class="hint">Not published — used by Chess United to reach you.</p>
+                </div>
+
+                <div class="field">
+                  <label for="p-facebook">Facebook page</label>
+                  <input id="p-facebook" name="facebook" placeholder="https://facebook.com/…" maxlength="240" />
+                  <p class="field-error" data-error-for="facebook" hidden></p>
+                </div>
+
+                <div class="field field--wide">
+                  <label for="p-notes">Anything else?</label>
+                  <textarea id="p-notes" name="notes" maxlength="600" placeholder="Fees, membership process, who to look for on the day."></textarea>
+                </div>
+              </div>
+
+              <h3 class="mt-3">Your next tournament (optional)</h3>
+              <p class="lede">Fill this in and the date appears with your club in the directory.</p>
+
+              <div class="form-grid">
+                <div class="field field--wide">
+                  <label for="p-event-title">Tournament name</label>
+                  <input id="p-event-title" name="eventTitle" maxlength="140" />
+                </div>
+
+                <div class="field">
+                  <label for="p-event-date">Date</label>
+                  <input id="p-event-date" name="eventDate" type="date" />
+                  <p class="field-error" data-error-for="eventDate" hidden></p>
+                </div>
+
+                <div class="field">
+                  <label for="p-event-venue">Venue</label>
+                  <input id="p-event-venue" name="eventVenue" maxlength="180" />
+                </div>
+
+                <div class="field field--wide">
+                  <label for="p-event-details">Divisions, fees, prizes</label>
+                  <textarea id="p-event-details" name="eventDetails" maxlength="400"></textarea>
+                </div>
+              </div>
+
+              <p class="form-status" data-form-status hidden></p>
+
+              <div class="form-actions">
+                <button class="btn" type="submit" data-busy="Sending…">
+                  <Icon name="check" size={16} /> Send club details
+                </button>
+              </div>
+            </form>
+
+            <div class="form-success" data-success hidden>
+              <template data-success-template>
+                <h3>Thank you — we have your club.</h3>
+                <p>
+                  A Chess United officer checks the details before they appear in the directory
+                  above. That usually means a quick look at your club's page or poster to be sure
+                  players will find you where you said.
+                </p>
+                <p>
+                  Once it is approved, your club and your tournament dates show up on this page
+                  for anyone searching for a table near them.
+                </p>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="tiers-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Local partners</p>
+            <h2 id="tiers-title">The clubs and organisations already behind us.</h2>
+          </div>
+          <p class="lede">
+            The tiers below are reproduced from the club's Tournament 1.0 partners poster.
+          </p>
+        </div>
+
+        <dl class="partner-tiers">
+          {partnerTiers.map((tier) => (
+            <div class="partner-tier">
+              <dt>{tier.tier}</dt>
+              <dd>
+                {tier.partners.map((partner) => <span class="partner-chip">{partner}</span>)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section class="cta-band" aria-labelledby="partners-cta">
+      <div class="wrap cta-inner">
+        <div>
+          <h2 id="partners-cta" class="display-lg">Bring your club in.</h2>
+          <p>One form, and your table shows up wherever players are looking.</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn" href="#add">Send club details</a>
+          <a class="btn btn--light" href="/events/">See the schedule</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

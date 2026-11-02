@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
-import { site, officerGroups, partnerTiers, globalHubs, globalNetworks, globalMarkers } from '../data/site';
+import { site, officerGroups, partnerTiers, globalHubs, globalNetworks, globalMarkers, team } from '../data/site';
 import { photos, sponsors } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
@@ -220,7 +220,7 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
       </div>
     </section>
 
-    <section class="section" aria-labelledby="officers-title">
+    <section class="section" id="officers" aria-labelledby="officers-title">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -243,7 +243,19 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
             <div class="team-grid">
               {group.officers.map((person) => (
                 <article class={`team-card reveal${person.open ? ' team-card--open' : ''}`}>
-                  <p class="team-initials" aria-hidden="true">{person.open ? '+' : initials(person.name)}</p>
+                  {person.photo ? (
+                    <img
+                      class="team-photo"
+                      src={person.photo}
+                      width="320"
+                      height="320"
+                      alt={person.photoAlt ?? `Portrait of ${person.name}, ${person.role}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <p class="team-initials" aria-hidden="true">{person.open ? '+' : initials(person.name)}</p>
+                  )}
                   <h3>{person.name}</h3>
                   <p>{person.role}</p>
                   {person.note && <p class="team-note">{person.note}</p>}
@@ -252,6 +264,43 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
             </div>
           </div>
         ))}
+      </div>
+    </section>
+
+    <section class="section section--paper" id="team" aria-labelledby="team-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Behind the board</p>
+            <h2 id="team-title">The Chess United<br />team.</h2>
+          </div>
+          <p class="lede">
+            The people who build, document and run the club — from the website and the
+            membership system to the photos and the highlight reels.
+          </p>
+        </div>
+
+        <div class="team-grid">
+          {team.map((person) => (
+            <article class="team-card reveal">
+              {person.photo ? (
+                <img
+                  class="team-photo"
+                  src={person.photo}
+                  width="320"
+                  height="320"
+                  alt={person.photoAlt ?? `Portrait of ${person.name}, ${person.role}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <p class="team-initials" aria-hidden="true">{initials(person.name)}</p>
+              )}
+              <h3>{person.name}</h3>
+              <p>{person.role}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
 

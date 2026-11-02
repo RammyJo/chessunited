@@ -16,7 +16,10 @@ export interface Props {
     | 'chat'
     | 'share'
     | 'spark'
-    | 'info';
+    | 'info'
+    | 'facebook'
+    | 'instagram'
+    | 'youtube';
   size?: number;
   class?: string;
 }
@@ -40,6 +43,12 @@ const paths: Record<string, string> = {
   share: '<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="M8.3 10.8l7.4-4M8.3 13.2l7.4 4"/>',
   spark: '<path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5h.01"/>',
+  facebook:
+    '<path fill="currentColor" stroke="none" d="M13.6 21v-7.1h2.4l.45-2.9h-2.85V9.15c0-.84.23-1.42 1.44-1.42h1.53V5.13c-.27-.04-1.19-.11-2.26-.11-2.24 0-3.77 1.36-3.77 3.87V11H8.1v2.9h2.44V21h3.06Z"/>',
+  instagram:
+    '<rect x="3.5" y="3.5" width="17" height="17" rx="4.6"/><circle cx="12" cy="12" r="3.9"/><circle cx="17.1" cy="6.9" r="1.15" fill="currentColor" stroke="none"/>',
+  youtube:
+    '<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path fill="currentColor" stroke="none" d="M10.4 9.3 15.4 12l-5 2.7V9.3Z"/>',
 };
 ---
 

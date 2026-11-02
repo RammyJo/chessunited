@@ -1,0 +1,206 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Club dashboard — Chess United"
+  description="Private dashboard for Chess United club officers: verify membership and tournament GCash references, pack and ship orders, and approve partner club listings."
+  noindex
+  canonical={false}
+>
+  <Fragment slot="head">
+    <script is:inline src="/scripts/admin.js" defer></script>
+  </Fragment>
+
+  <Header />
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Club officers</p>
+        <h1>Club dashboard.</h1>
+        <p class="lede">
+          Verify GCash reference numbers, pack and ship orders, and approve partner club listings.
+          This page is private: it stays out of search engines and needs the club's admin token.
+        </p>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="queue-title">
+      <div class="wrap">
+        <noscript>
+          <div class="note-box">
+            <strong>JavaScript is off.</strong> The dashboard reads the club's queue through this
+            page, so it needs JavaScript switched on. Nothing else on the site does.
+          </div>
+        </noscript>
+
+        <div data-admin-signin hidden>
+          <form class="form-card" data-admin-signin-form>
+            <h2>Sign in</h2>
+            <p class="lede">
+              Enter the club's admin token. It is checked on the club's server, and the session it
+              opens is held in a cookie this page's scripts cannot read.
+            </p>
+
+            <div class="form-grid form-grid--one">
+              <div class="field">
+                <label for="admin-token">Admin token</label>
+                <input
+                  id="admin-token"
+                  name="token"
+                  type="password"
+                  required
+                  autocomplete="current-password"
+                />
+              </div>
+            </div>
+
+            <p class="form-status" data-admin-status hidden></p>
+
+            <div class="form-actions">
+              <button class="btn" type="submit">
+                <Icon name="check" size={16} /> Sign in
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div data-admin-dashboard hidden>
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Queue</p>
+              <h2 id="queue-title">Waiting on the club.</h2>
+            </div>
+            <p class="lede">
+              Every membership, tournament entry, order and partner club that needs a decision.
+              Moving a record here is what the member or buyer sees next.
+            </p>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn" type="button" data-admin-reload>
+              <Icon name="download" size={16} /> Reload the queue
+            </button>
+            <button class="btn btn--ghost" type="button" data-admin-signout>Sign out</button>
+          </div>
+
+          <p class="form-status" data-admin-panel-status hidden></p>
+
+          <div class="admin-grid mt-3" data-admin-stats></div>
+
+          <div class="queue">
+            <section aria-labelledby="q-members">
+              <h3 id="q-members">Membership registrations</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Member no.</th>
+                      <th scope="col">Member</th>
+                      <th scope="col">Division</th>
+                      <th scope="col">Card</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody data-queue-body="members"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section aria-labelledby="q-registrations">
+              <h3 id="q-registrations">Tournament entries</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Entry</th>
+                      <th scope="col">Player</th>
+                      <th scope="col">Division</th>
+                      <th scope="col">GCash ref</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Payment</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody data-queue-body="registrations"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section aria-labelledby="q-orders">
+              <h3 id="q-orders">Merchandise and NCF Tap Card orders</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Order</th>
+                      <th scope="col">Customer</th>
+                      <th scope="col">Items</th>
+                      <th scope="col">Ship to</th>
+                      <th scope="col">Subtotal</th>
+                      <th scope="col">Payment</th>
+                      <th scope="col">Fulfilment</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody data-queue-body="orders"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section aria-labelledby="q-clubs">
+              <h3 id="q-clubs">Partner club submissions</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Club</th>
+                      <th scope="col">Where</th>
+                      <th scope="col">Meets</th>
+                      <th scope="col">Officer contact</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody data-queue-body="clubs"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section aria-labelledby="q-events">
+              <h3 id="q-events">Partner club tournament listings</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Tournament</th>
+                      <th scope="col">Club id</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Venue</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody data-queue-body="events"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <div class="note-box mt-3">
+            <strong>Printed membership IDs:</strong> a member who ticked the printed card has paid
+            ₱200 by GCash. Match the reference number against the club account before the ID is
+            printed, then hand the card and lanyard over at a Saturday session.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
