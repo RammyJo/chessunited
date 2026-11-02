@@ -169,7 +169,7 @@ if (!(await exists(sitemapFile))) {
   warnings.push('sitemap-0.xml not found (sitemap integration may name it differently)');
 } else {
   const sitemap = await readFile(sitemapFile, 'utf8');
-  for (const url of ['https://', '/events/', '/play/', '/gallery/', '/shop/', '/about/', '/visit/']) {
+  for (const url of ['https://', '/events/', '/gallery/', '/shop/', '/about/', '/visit/', '/membership/', '/partners/']) {
     if (!sitemap.includes(url)) warnings.push(`sitemap missing ${url}`);
   }
   if (sitemap.includes('/404')) warnings.push('sitemap includes /404');

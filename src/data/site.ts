@@ -75,7 +75,6 @@ export const site = {
   ] as SocialAccount[],
   nav: [
     { href: '/events/', label: 'Events' },
-    { href: '/play/', label: 'Weekly play' },
     { href: '/membership/', label: 'Membership' },
     { href: '/gallery/', label: 'Gallery' },
     { href: '/shop/', label: 'Merchandise' },
@@ -92,7 +91,7 @@ export const site = {
 export const membership = {
   printFee: 200,
   printIncludes: 'The printed membership ID card and a club lanyard',
-  cardPath: '/membership/card/',
+  cardPath: '/membership/?m=',
 };
 
 /* ---------------------------------------------------------------------------

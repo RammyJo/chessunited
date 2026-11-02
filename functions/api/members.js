@@ -91,6 +91,6 @@ export async function onRequestPost({ request, env }) {
         ? `Printed ID and lanyard: ${MEMBER_PRINT_FEE} pesos, payable by GCash. The club checks your reference number before printing.`
         : 'No printed card requested — your digital card is ready to use right away.',
     },
-    cardUrl: `/membership/card/?m=${encodeURIComponent(memberNo)}`,
+    cardUrl: `/membership/?m=${encodeURIComponent(memberNo)}#card`,
   });
 }

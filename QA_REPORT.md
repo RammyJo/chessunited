@@ -138,8 +138,8 @@ Freebuff Sites. Checks were run against the live host, not localhost.
 
 | Check | Result |
 | --- | --- |
-| All routes | **PASS** — `/`, `/events/`, `/play/`, `/gallery/`, `/shop/`, `/about/`, `/visit/` return 200 `text/html` over HTTPS |
-| `robots.txt` / `sitemap-index.xml` | **PASS** — 200; robots points at the live sitemap; sitemap lists 7 public URLs and no `/404` |
+| All routes | **PASS** — `/`, `/events/`, `/gallery/`, `/shop/`, `/about/`, `/visit/`, `/membership/`, `/partners/` return 200 `text/html` over HTTPS |
+| `robots.txt` / `sitemap-index.xml` | **PASS** — 200; robots points at the live sitemap; sitemap lists 8 public URLs and no `/404` |
 | Calendar files | **PASS** — `/calendar/chess-united-tournament-2-0.ics` 200 `text/calendar`; `URL:` fields use the live host |
 | Canonical / Open Graph | **PASS** — canonical is the live production URL |
 | Security headers | **PASS** — CSP (`script-src` with 12 SHA-256 hashes, no `'unsafe-inline'`), `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, `COOP` |
@@ -334,8 +334,8 @@ files in the batch repeated earlier assets and were not re-added.
 | --- | --- |
 | New derivatives built by `npm run images` | **PASS** — 5 sources → 13 WebP, originals untouched in `Downloads` |
 | Top 10 standings transcribed into `src/data/site.ts` (20 names, both divisions) | **PASS** — poster text re-read from 1.6×–5× crops before typing |
-| Second weekly table (`weeklySessions`) propagated to home, play, visit, events, about, header, footer, 404, gallery CTA | **PASS** |
-| Public routes | **PASS** — 8 (`/`, `/events/`, `/play/`, `/gallery/`, `/shop/`, `/about/`, `/visit/`, `404.html`) |
+| Second weekly table (`weeklySessions`) propagated to home, visit, events, about, header, footer, 404, gallery CTA | **PASS** |
+| Public routes | **PASS** — 8 (`/`, `/events/`, `/gallery/`, `/shop/`, `/about/`, `/visit/`, `/membership/`, `/partners/`) + `404.html` |
 | `npm run qa:colors` | **PASS** — 15 colour literals, 0 outside the three brand hues |
 | Beige/cream neutrals removed | **PASS** — `--cream`/`--paper` replaced by pale azure `--surface` `#d7ecf7` and white `--card`; `manifest.webmanifest` `background_color` `#f3eddf` → `#4bbced` |
 | Yellow demotion | **PASS** — `#f7e42e` now appears only in `::selection` and the 9 px eyebrow dot; the 16 former fill/checkerboard/shadow/border uses became azure, azure-tint, ink or red |

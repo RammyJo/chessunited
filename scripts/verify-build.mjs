@@ -15,13 +15,11 @@ const read = (file) => readFile(path.join(DIST, file), 'utf8');
 const htmlFiles = [
   ['index.html', '/'],
   ['events/index.html', '/events/'],
-  ['play/index.html', '/play/'],
   ['gallery/index.html', '/gallery/'],
   ['shop/index.html', '/shop/'],
   ['about/index.html', '/about/'],
   ['visit/index.html', '/visit/'],
   ['membership/index.html', '/membership/'],
-  ['membership/card/index.html', '/membership/card/'],
   ['partners/index.html', '/partners/'],
   ['404.html', '/404.html'],
 ];
@@ -144,13 +142,11 @@ const sitemap = await read('sitemap-0.xml');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 for (const route of [
   '/events/',
-  '/play/',
   '/gallery/',
   '/shop/',
   '/about/',
   '/visit/',
   '/membership/',
-  '/membership/card/',
   '/partners/',
 ]) {
   if (!locs.some((loc) => loc === `${SITE}${route}`)) errors.push(`sitemap: missing ${route}`);
@@ -158,7 +154,8 @@ for (const route of [
 if (locs.some((loc) => loc.includes('/404'))) errors.push('sitemap: contains 404');
 if (locs.some((loc) => loc.includes('/admin'))) errors.push('sitemap: contains /admin');
 if (new Set(locs).size !== locs.length) errors.push('sitemap: has duplicate URLs');
-if (locs.length !== 10) errors.push(`sitemap: expected 10 URLs, found ${locs.length}`);
+// The public site is capped at eight pages: home plus these seven sections.
+if (locs.length !== 8) errors.push(`sitemap: expected 8 URLs, found ${locs.length}`);
 
 const manifest = JSON.parse(await read('manifest.webmanifest'));
 if (!manifest.name || !manifest.short_name || manifest.start_url !== '/') {
@@ -178,7 +175,7 @@ for (const file of ['fonts/OFL-ArchivoBlack.txt', 'fonts/OFL-Manrope.txt']) {
 
 console.log('Chess United — build verification');
 console.log('---------------------------------');
-console.log(`pages: ${htmlFiles.length} | sitemap URLs: ${locs.length} | inline hashes: ${inlineHashes.size}`);
+console.log(`pages: ${htmlFiles.length - 1} (+404) | sitemap URLs: ${locs.length} | inline hashes: ${inlineHashes.size}`);
 for (const warning of warnings) console.log(`WARN  ${warning}`);
 for (const error of errors) console.log(`FAIL  ${error}`);
 if (errors.length) {

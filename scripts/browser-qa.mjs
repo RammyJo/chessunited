@@ -22,11 +22,12 @@ const OUT = path.join(os.tmpdir(), 'chessunited-qa', 'screens');
 const pages = [
   ['home', '/'],
   ['events', '/events/'],
-  ['play', '/play/'],
   ['gallery', '/gallery/'],
   ['shop', '/shop/'],
   ['about', '/about/'],
   ['visit', '/visit/'],
+  ['membership', '/membership/'],
+  ['partners', '/partners/'],
   ['404', '/404.html'],
 ];
 

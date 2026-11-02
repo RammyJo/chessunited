@@ -55,11 +55,12 @@ the club's own posters. See `research/SOURCE_NOTES.md` for the full transcriptio
 ```
 /                 Home — positioning, next events, weekly session, gallery, shop, partners
 /events/          Tournament 2.0, Super Mario Cup, Tournament 1.0 recap, weekly session
-/play/            Weekly chess: schedule, what to expect, divisions, FAQ
 /gallery/         Real club photography with lightbox
-/shop/            Official merchandise price list and how to ask the club
+/shop/            Official merchandise price list and how to order
 /about/           The club, leadership, partners and sponsors
-/visit/           Venue, map links, joining the group, event-day checklist
+/visit/           Weekly chess, venue, map links, joining the group, event-day checklist
+/membership/      Online registration and the printable digital membership card
+/partners/        Partner-club directory and club intake form
 /404              Custom not-found page
 ```
 

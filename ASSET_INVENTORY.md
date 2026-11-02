@@ -78,8 +78,8 @@ source of any fact.
 | `t1` | `767745ad-7cf5-476d-b85c-c739721d54ec.jpg` | 2048×1535 / 215,460 | `tournament-1-0-560/900` — 45,184 / 82,284 | Events T1 recap poster |
 | `t2` | `b1200d6e-1a7a-4254-89ea-bdf2099befa4.jpg` | 1448×1086 / 205,507 | `tournament-2-0-560/900` — 77,248 / 145,740 | Events T2 poster; event JSON-LD image. Replaces `474a7a64-0373-4c0e-9fbc-e9c4458e4707.jpg` |
 | `mario` | `266a4f5c-3575-4d87-ab78-cea6c564fed5.jpg` | 2000×1414 / 228,918 | `super-mario-cup-560/900` — 49,706 / 89,854 | Events Mario poster; event JSON-LD image |
-| `weekly` | `fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg` | 1414×2000 / 160,107 | `weekly-chess-560/900` — 51,974 / 87,358 | Robinsons weekly poster, rendered on `/play/` |
-| `rovers` | `47e168d1-2072-42d6-b6e4-5b7df4b81366.jpg` | 1080×1920 / 127,282 | `weekly-rovers-560/900` — 61,062 / 107,330 | Rovers Coffee weekly poster, rendered on `/play/` |
+| `weekly` | `fa6dc7c9-6b2c-48be-b3fe-ca2519b1d1fc.jpg` | 1414×2000 / 160,107 | `weekly-chess-560/900` — 51,974 / 87,358 | Robinsons weekly poster, rendered on `/visit/` |
+| `rovers` | `47e168d1-2072-42d6-b6e4-5b7df4b81366.jpg` | 1080×1920 / 127,282 | `weekly-rovers-560/900` — 61,062 / 107,330 | Rovers Coffee weekly poster, rendered on `/visit/` |
 | `top10open` | `a943bad4-7e55-43c5-ac6c-dd43ea045cad.jpg` | 1414×2000 / 187,924 | `top10-open-560/900` — 61,336 / 104,014 | Events — Tournament 1.0 Open results |
 | `top10kids` | `c9e048a1-89fa-44e0-b4b1-1ffb7eeab5f5.jpg` | 1414×2000 / 210,798 | `top10-kiddies-560/900` — 68,978 / 115,286 | Events — Tournament 1.0 Kiddies results |
 | `merch` | `5a4d8f73-9107-4ae5-9db5-84e8a8a5636c.jpg` | 2000×1414 / 290,381 | `merch-price-list-560/900` — 60,788 / 114,734 | Merchandise price-list poster |

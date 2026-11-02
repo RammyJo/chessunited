@@ -183,7 +183,7 @@ const successTemplate = `
               <button class="btn" type="submit" data-busy="Sending…">
                 <Icon name="check" size={16} /> Register and get my card
               </button>
-              <a class="btn btn--ghost" href="/membership/card/">Look up a card</a>
+              <a class="btn btn--ghost" href="#card">Look up a card</a>
             </div>
           </form>
 
@@ -194,7 +194,102 @@ const successTemplate = `
       </div>
     </section>
 
-    <section class="section section--paper" aria-labelledby="how-card-title">
+    <section class="section section--paper" id="card" aria-labelledby="card-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Member lookup</p>
+            <h2 id="card-title">Find your card.</h2>
+          </div>
+          <p class="lede">
+            Every member gets a number, formatted like CU-2026-0137. Add it to this page's
+            address as <code>?m=</code> and the card appears below — the link your registration
+            gives you already carries it. Open it on your phone to show at the table, or print it;
+            the card is laid out to print cleanly on A4 or card stock.
+          </p>
+        </div>
+
+        <div class="mt-3" data-member-card>
+          <noscript>
+            <p class="note-box">
+              JavaScript is switched off, so the card cannot be looked up on this page. Ask in the
+              club group and an officer will confirm your membership number.
+            </p>
+          </noscript>
+
+          <div class="club-empty" data-card-loading hidden>Looking up your card…</div>
+
+          <div class="club-empty" data-card-empty>
+            <strong>No member number in this link.</strong> Append <code>?m=CU-2026-0137</code> to
+            the address, or register above to get a number.
+          </div>
+
+          <div class="club-empty" data-card-error hidden>
+            <strong data-card-error-message>That membership number was not found.</strong>
+            Check the digits, or ask in the club group. If you have not registered yet,
+            <a href="#register">the form takes a minute</a>.
+          </div>
+
+          <div data-card-body hidden>
+            <article class="member-card">
+              <div class="member-card-head">
+                <img src="/images/logo.webp" width="560" height="560" alt="" />
+                <div>
+                  <span>Chess United</span>
+                  <span>San Fernando · La Union</span>
+                </div>
+              </div>
+
+              <div class="member-card-body">
+                <dl>
+                  <div>
+                    <dt>Member</dt>
+                    <dd data-card-name>—</dd>
+                  </div>
+                  <div>
+                    <dt>Division</dt>
+                    <dd data-card-division>—</dd>
+                  </div>
+                  <div>
+                    <dt>Member since</dt>
+                    <dd data-card-since>—</dd>
+                  </div>
+                  <div>
+                    <dt>Status</dt>
+                    <dd><span class="member-card-status" data-card-status>—</span></dd>
+                  </div>
+                </dl>
+
+                <p class="member-card-number" data-card-number>—</p>
+              </div>
+
+              <div class="member-card-foot">
+                <span>chessunitedglobal.com</span>
+                <span data-card-print-note hidden>{formatPeso(membership.printFee)} printed ID</span>
+              </div>
+            </article>
+
+            <div class="card-actions">
+              <button class="btn" type="button" data-print-card>
+                <Icon name="download" size={16} /> Print this card
+              </button>
+              <a class="btn btn--ghost" href={site.groupUrl} target="_blank" rel="noopener">
+                Ask the club <Icon name="external" size={15} />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-box mt-3">
+          <strong>Want it in your hand?</strong> The official printed ID and the club lanyard are
+          {formatPeso(membership.printFee)} together. Pay by GCash with the reference number, and
+          collect it at a Saturday session — the club matches every reference by hand before
+          printing.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="how-card-title">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -246,7 +341,7 @@ const successTemplate = `
           <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
             Join the group <Icon name="external" size={15} />
           </a>
-          <a class="btn btn--light" href="/play/">Weekly play</a>
+          <a class="btn btn--light" href="/visit/">Weekly play</a>
         </div>
       </div>
     </section>

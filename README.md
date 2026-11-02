@@ -6,13 +6,14 @@ tables, the 2026 tournament calendar with the published Top 10 results, real clu
 photography, a merchandise area (jersey, ID kit and the official price list) and
 the club's Messenger community link.
 
-- **Public routes:** exactly eight — `/`, `/events/`, `/play/`, `/gallery/`,
-  `/shop/` (the merchandise area; the URL is unchanged so existing links and the
-  sitemap keep working), `/about/`, `/visit/` and the `404.html` fallback.
+- **Public routes:** exactly eight — `/`, `/events/`, `/gallery/`, `/shop/`
+  (the merchandise area; the URL is unchanged so existing links and the sitemap
+  keep working), `/about/`, `/visit/` (weekly play and how to visit),
+  `/membership/` (registration and the digital card lookup), `/partners/` and the
+  `404.html` fallback.
 
-- **Live site:** <https://chessunited.pages.dev> (Cloudflare Pages project
-  `chessunited`; mirror on the same build at
-  <https://site-88c41e329d7a4c7f97de7219774a18c9.freebuff.page>)
+- **Live site:** <https://chessunitedglobal.com> (Cloudflare Pages project
+  `chessunited`; also on <https://chessunited.pages.dev>)
 - **Stack:** Astro 7 static output, TypeScript content data, one small vanilla JS
   file, self-hosted fonts, pre-optimized WebP images.
 - **Runtime dependencies:** none beyond static files. No cookies, no forms,
@@ -27,10 +28,10 @@ the club's Messenger community link.
 | Accessibility / SEO / best practices | **VERIFIED** — Lighthouse 100 a11y/SEO, 96+ best practices on the live site |
 | Performance | **VERIFIED** — Lighthouse mobile 95–99, desktop 100 |
 | Static, browser, CSP and calendar checks | **VERIFIED** — see `QA_REPORT.md` |
-| Live deployment (Cloudflare Pages, project `chessunited`) | **VERIFIED** — `chessunited.pages.dev`, latest production build 2026-10-26 (see `wrangler pages deployment list --project-name chessunited`) |
-| GitHub repository | **VERIFIED** — <https://github.com/RammyJo/chessunited>, branch `main`, pushed 2026-10-26 |
-| Spaceship domain + DNS | **PENDING** — no domain registered or supplied |
-| Custom canonical domain | **PENDING** — the site canonicalises to its `pages.dev` host |
+| Live deployment (Cloudflare Pages, project `chessunited`) | **VERIFIED** — live at <https://chessunitedglobal.com> (also on `chessunited.pages.dev`) |
+| GitHub repository | **VERIFIED** — <https://github.com/RammyJo/chessunited>, branch `main` |
+| Spaceship domain + DNS | **VERIFIED** — `chessunitedglobal.com` connected to Cloudflare |
+| Custom canonical domain | **VERIFIED** — canonicals, sitemap and `robots.txt` use `https://chessunitedglobal.com` |
 
 ## Quick start
 
@@ -79,7 +80,7 @@ src/
   layouts/
     Base.astro     Metadata, canonical, Open Graph, fonts, JSON-LD, scripts
   components/      Header, footer, icons, event card, gallery/lightbox
-  pages/           Home, events, play, gallery, shop (merchandise), about, visit, 404
+  pages/           Home, events, gallery, shop (merchandise), about, visit, membership, partners, 404
   styles/
     global.css     Design system and responsive layout
 public/
