@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
+import GcashPayment from '../components/GcashPayment.astro';
 import { site, merch, couriers, formatPeso } from '../data/site';
 import { photos, merchPhotos } from '../data/images';
 
@@ -46,12 +47,7 @@ const groups = merch.map((group) => ({
 const products: Product[] = groups.flatMap((group) => group.items);
 const missingPhotos = products.filter((item) => !item.photo).length;
 
-/* What a courier costs is added to the order automatically as soon as the club
-   publishes the amount. Until then the page says the club quotes it, because a
-   guessed shipping fee on a live shop is worse than none. The numbers that
-   actually price an order live in functions/api/_catalog.js. */
-const feeLabel = (fee: number | null) =>
-  fee === null ? 'shipping quoted by the club' : `${formatPeso(fee)} shipping`;
+const feeLabel = (fee: number | null) => fee === null ? 'calculated before payment' : `${formatPeso(fee)} shipping`;
 
 /* Held as a string so Astro does not read `{{…}}` in markup as a JS expression.
    forms.js fills these tokens from the JSON the API returns. */
@@ -61,8 +57,7 @@ const orderTemplate = `
   <p class="success-code">{{order.orderNo}}</p>
   <p>{{order.fulfilmentMessage}}</p>
   <p>
-    A club officer checks availability and confirms payment and handover details by email.
-    Please wait for confirmation before paying.
+    Your payment has been submitted for verification. A club officer checks receipt in GCash and confirms the handover details. Do not pay again.
   </p>
 `;
 ---
@@ -115,8 +110,7 @@ const orderTemplate = `
           </p>
           <div class="note-box mt-2">
             <strong>How pricing works:</strong> the club charges its published list price for the
-            items. The courier fee is added to the order automatically once the club publishes what
-            each courier costs. Pickup has no shipping fee.
+            items. Choose a courier and delivery location to see the shipping fee and full total before paying. Each unit ships in a separately measured parcel. Pickup has no shipping fee.
           </div>
           <div class="hero-actions">
             <a class="btn" href="#products">
@@ -178,7 +172,7 @@ const orderTemplate = `
           <div class="note-box">
             <strong>Personalisation:</strong> the sample back carries a name and a number. The
             published list prices a sublimation shirt at ₱600 but does not say what personalisation
-            costs, so put your name and number in the order notes and the club confirms the total.
+            costs, so contact the club before ordering a personalised version. Checkout covers the published standard design.
           </div>
         </div>
       </div>
@@ -370,16 +364,15 @@ const orderTemplate = `
               <dl class="cart-review-fees">
                 <div>
                   <dt>Shipping</dt>
-                  <dd class="amount" data-cart-shipping>Quoted by the club</dd>
+                  <dd class="amount" data-cart-shipping>Choose location</dd>
                 </div>
                 <div class="cart-review-fees--total">
                   <dt>Total</dt>
                   <dd class="amount" data-cart-grand>₱0</dd>
                 </div>
               </dl>
-              <p class="cart-review-note" data-cart-shipping-note>
-                The club adds the courier fee for the parcel and confirms the total before you pay.
-              </p>
+              <p class="cart-review-note" data-cart-shipping-note role="status">Choose a courier and location to calculate delivery.</p>
+              <button class="btn btn--sm btn--ghost" type="button" data-shipping-refresh>Refresh delivery total</button>
             </div>
 
             {/* cart.js writes one field per cart line into this block — product,
@@ -426,7 +419,7 @@ const orderTemplate = `
 
               <div class="field" data-delivery-field>
                 <label for="o-country">Country</label>
-                <input id="o-country" name="country" value="Philippines" maxlength="80" autocomplete="country-name" />
+                <input id="o-country" name="country" readonly value="Philippines" maxlength="80" autocomplete="country-name" />
               </div>
 
               <div class="field field--wide" data-delivery-field>
@@ -436,15 +429,14 @@ const orderTemplate = `
               </div>
 
               <div class="field" data-delivery-field>
-                <label for="o-city">City or municipality</label>
-                <input id="o-city" name="city" required minlength="2" maxlength="80" autocomplete="address-level2" />
-                <p class="field-error" data-error-for="city" hidden></p>
-              </div>
-
-              <div class="field" data-delivery-field>
-                <label for="o-province">Province or state</label>
-                <input id="o-province" name="province" required minlength="2" maxlength="80" autocomplete="address-level1" />
+                <label for="o-province">Province</label>
+                <select id="o-province" name="province" data-shipping-province required><option value="">Choose a province</option></select>
                 <p class="field-error" data-error-for="province" hidden></p>
+              </div>
+              <div class="field" data-delivery-field>
+                <label for="o-city">City or municipality</label>
+                <select id="o-city" name="city" data-shipping-city required><option value="">Choose province first</option></select>
+                <p class="field-error" data-error-for="city" hidden></p>
               </div>
 
               <div class="field" data-delivery-field>
@@ -454,24 +446,19 @@ const orderTemplate = `
 
               <div class="field field--wide">
                 <label for="o-notes">Order notes <span class="hint">optional</span></label>
-                <textarea id="o-notes" name="notes" maxlength="400" placeholder="Name and number for the back of a jersey, colours, or anything else the club should know."></textarea>
+                <textarea id="o-notes" name="notes" maxlength="400" placeholder="Delivery instructions or pickup preference. Contact the club before ordering custom work."></textarea>
               </div>
             </div>
 
-            <div class="pay-box mt-3">
-              <strong>Paying by GCash</strong>
-              <ol>
-                <li>Send the order first — the club confirms availability and the total. Pickup has no shipping fee.</li>
-                <li>Scan the club's GCash QR and pay that amount.</li>
-                <li>Orders are released after the club confirms payment.</li>
-              </ol>
-            </div>
-
+            <p class="note-box mt-3">Review your items, shipping and total above. Continue to GCash to pay that exact amount, then return to submit the order for verification.</p>
+            <input type="hidden" name="quoteId" data-shipping-quote-id />
+            <input type="hidden" name="destinationId" data-shipping-destination-id />
+            <input type="hidden" name="checkoutToken" data-checkout-token />
             <p class="form-status" data-form-status hidden></p>
 
             <div class="form-actions">
-              <button class="btn" type="submit" data-busy="Sending…">
-                <Icon name="check" size={16} /> Send my order
+              <button class="btn" type="submit" data-busy="Preparing payment…">
+                <Icon name="check" size={16} /> Continue to payment
               </button>
               <a class="btn btn--ghost" href="#products">Back to the catalogue</a>
             </div>
@@ -481,6 +468,19 @@ const orderTemplate = `
               here.
             </p>
           </form>
+
+          <div class="form-card" data-order-payment hidden tabindex="-1">
+            <p class="eyebrow">Payment</p><h3>Review and pay.</h3>
+            <p>Your order: <strong data-payment-order-no></strong></p>
+            <ul data-payment-items></ul>
+            <p>Items <strong data-payment-subtotal></strong> · Shipping <strong data-payment-shipping></strong></p>
+            <p data-payment-delivery></p>
+            <GcashPayment dynamic />
+            <p class="note-box mt-2">Your order is saved as awaiting payment. After sending the amount in GCash, submit it below. A club officer verifies receipt before marking it paid.</p>
+            <div class="field mt-2"><label for="payment-ref">GCash reference <span class="hint">optional, helps us match your payment</span></label><input id="payment-ref" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" data-order-payment-ref autocomplete="off" /></div>
+            <p data-order-payment-status class="form-status" role="status" hidden></p>
+            <div class="form-actions"><button class="btn" type="button" data-order-paid>I’ve paid — submit order</button><button class="btn btn--ghost" type="button" data-order-start-over>I haven’t paid — start a new checkout</button></div>
+          </div>
 
           <div class="form-success" data-success hidden>
             <template data-success-template set:html={orderTemplate}></template>

@@ -34,6 +34,7 @@ function google({header, occupied, lostReply=false, onWrite}={}) {
       return Response.json({access_token:'mock-token'});
     }
     assert.equal(u.hostname,'sheets.googleapis.com');assert.equal(init.headers.Authorization,'Bearer mock-token');
+    if(u.pathname.endsWith('/values:batchGet')) return Response.json({valueRanges:u.searchParams.getAll('ranges').map(range=>({range,values:[rows.get(range)||[]]}))});
     if(!u.pathname.includes('/values/')) return Response.json({sheets:['Orders','Registrations','Memberships'].map((title,index)=>({properties:{title,sheetId:index+1,gridProperties:{rowCount:1000,columnCount:26}}}))});
     const range=decodeURIComponent(u.pathname.split('/values/')[1]);
     const title=range.split('!')[0];
@@ -61,7 +62,7 @@ test('missing/invalid credentials do not lose queued D1 records',async()=>{
 });
 test('JWT uses Google only; RAW writes preserve formulas, phone and reference strings',async()=>{
  const g=google();const client=await createSheetsClient({GOOGLE_SHEETS_SERVICE_ACCOUNT:credential},g.fetcher);await client.write('order',order);
- assert.equal(g.writes[0].range,"'Orders'!A2:S2");assert.equal(g.writes[0].values[3],order.full_name);assert.equal(g.writes[0].values[5],'09171234567');assert.equal(g.writes[0].values[9],'0012');
+ assert.equal(g.writes[0].range,"'Orders'!A2:X2");assert.equal(g.writes[0].values[3],order.full_name);assert.equal(g.writes[0].values[5],'09171234567');assert.equal(g.writes[0].values[9],'0012');
 });
 test('lost Google reply retries the same row without duplicate append',async()=>{
  const {env,sql}=database();const g=google({lostReply:true});await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,1);
@@ -89,7 +90,7 @@ test('Google Sheets management is private for both reads and writes',async()=>{
 test('tournament copies preserve leading-zero GCash references and member numbers',async()=>{
  const g=google();const client=await createSheetsClient({GOOGLE_SHEETS_SERVICE_ACCOUNT:credential},g.fetcher);
  await client.write('registration',{id:3,phone:'09171234567',gcash_ref:'0001234567890',member_no:'CU-2026-0001',amount:350});
- assert.equal(g.writes[0].range,"'Registrations'!A4:M4");assert.equal(g.writes[0].values[9],'0001234567890');assert.equal(g.writes[0].values[8],'CU-2026-0001');
+ assert.equal(g.writes[0].range,"'Registrations'!A4:N4");assert.equal(g.writes[0].values[9],'0001234567890');assert.equal(g.writes[0].values[8],'CU-2026-0001');
 });
 
 test('connection check prepares both owned tabs without adding customer records',async()=>{
@@ -108,8 +109,34 @@ test('membership inserts and officer updates mirror to Memberships and preserve 
  const {env,sql}=database();sql.exec("UPDATE sheets_sync SET pending=0,synced_at='2026-11-06 00:00:00'");
  sql.exec("INSERT INTO members(member_no,first_name,last_name,email,phone,printed_id,status) VALUES ('CU-2026-0001','Member','Test','member@example.invalid','09171234567',1,'active')");
  sql.exec(readFileSync(new URL('../migrations/0003_membership_sheets.sql',import.meta.url),'utf8'));
+ sql.exec('ALTER TABLE sheets_sync ADD COLUMN paid_snapshot TEXT; ALTER TABLE sheets_sync ADD COLUMN payment_checked_at INTEGER NOT NULL DEFAULT 0;');
  const prior=sql.prepare("SELECT * FROM sheets_sync WHERE kind='order'").get();assert.equal(prior.pending,0);assert.equal(prior.synced_at,'2026-11-06 00:00:00');
- const g=google();assert.equal((await drainSheets(env,{fetcher:g.fetcher})).processed,1);assert.equal(g.writes[0].range,"'Memberships'!A2:N2");assert.equal(g.writes[0].values[1],'CU-2026-0001');assert.equal(g.writes[0].values[6],'09171234567');
+ const g=google();assert.equal((await drainSheets(env,{fetcher:g.fetcher})).processed,1);assert.equal(g.writes[0].range,"'Memberships'!A2:O2");assert.equal(g.writes[0].values[1],'CU-2026-0001');assert.equal(g.writes[0].values[6],'09171234567');
  sql.exec("UPDATE members SET status='pending' WHERE id=1");assert.equal(sql.prepare("SELECT pending FROM sheets_sync WHERE kind='member'").get().pending,1);
  await drainSheets(env,{fetcher:g.fetcher});assert.equal(g.rows.size,1);assert.equal(g.rows.values().next().value[13],'pending');
+});
+
+test('officers can mark Paid and Not paid in Sheets and the next sync imports both', async()=>{
+ const {env,sql}=database();const g=google();await drainSheets(env,{fetcher:g.fetcher});
+ const row=g.rows.get("'Orders'!A2:X2");assert.equal(row[19],'Not paid');row[19]='Paid';
+ await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,0);
+ row[19]='Not paid';g.rows.set("'Orders'!A2:X2",row);
+ await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'pending');
+});
+test('newer dashboard payment edits win; wrong row IDs and invalid marks never change payments',async()=>{
+ const {env,sql}=database();const g=google();await drainSheets(env,{fetcher:g.fetcher});
+ sql.exec("UPDATE orders SET payment_status='paid' WHERE id=1");await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');assert.equal(g.rows.get("'Orders'!A2:X2")[19],'Paid');
+ const row=g.rows.get("'Orders'!A2:X2");row[0]='999';row[19]='Not paid';await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');
+ row[0]=1;row[19]='anything';await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');
+});
+test('Sheets payment edits verify tournaments, paid printed cards, and never charge free memberships',async()=>{
+ const {env,sql}=database();const g=google();
+ sql.exec("INSERT INTO members(member_no,first_name,last_name,email,phone,printed_id,status) VALUES ('CU-2026-0001','Printed','Test','printed@example.invalid','09171234567',1,'active'),('CU-2026-0002','Digital','Test','digital@example.invalid','09171234567',0,'active')");
+ sql.exec("INSERT INTO registrations(event_slug,full_name,email,phone,division,gcash_ref,amount) VALUES ('event','Test','test@example.com','09171234567','Open','1234567890123',350)");
+ await drainSheets(env,{fetcher:g.fetcher});await drainSheets(env,{fetcher:g.fetcher});
+ assert.equal(g.rows.get("'Memberships'!A3:O3")[14],'Not required');
+ for(const range of ["'Memberships'!A2:O2","'Memberships'!A3:O3","'Registrations'!A2:N2"]){const row=g.rows.get(range);row[row.length-1]='Paid';}
+ await drainSheets(env,{fetcher:g.fetcher});
+ assert.equal(sql.prepare('SELECT payment_status FROM registrations').get().payment_status,'verified');assert.equal(sql.prepare('SELECT payment_status FROM members WHERE printed_id=1').get().payment_status,'paid');assert.equal(sql.prepare('SELECT payment_status FROM members WHERE printed_id=0').get().payment_status,'pending');
+ assert.equal(g.rows.get("'Memberships'!A3:O3")[14],'Not required');
 });

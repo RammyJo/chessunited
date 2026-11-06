@@ -19,7 +19,7 @@ export async function onRequestGet(context) {
     const [members, registrations, orders, clubs, events] = await Promise.all([
       env.DB.prepare(
         `SELECT id, member_no, first_name, last_name, email, phone, city, province, division,
-                printed_id, gcash_ref, status, created_at
+                printed_id, gcash_ref, payment_status, status, created_at
            FROM members
           ORDER BY id DESC
           LIMIT 200`,
@@ -34,7 +34,7 @@ export async function onRequestGet(context) {
       env.DB.prepare(
         `SELECT id, order_no, full_name, email, phone, ship_address, ship_city, ship_province,
                 ship_postcode, ship_country, courier, items_json, subtotal, shipping_note,
-                gcash_ref, payment_status, fulfilment_status, tracking_no, created_at
+                gcash_ref, payment_status, fulfilment_status, tracking_no, shipping_fee, total, payment_claimed_at, created_at
            FROM orders
           ORDER BY id DESC
           LIMIT 200`,

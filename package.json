@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Official website for Chess United — a community chess club in San Fernando City, La Union.",
+  "description": "Official website for Chess United \u2014 a community chess club in San Fernando City, La Union.",
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/make_calendar.mjs && astro build && node scripts/postbuild.mjs && node scripts/make_worker.mjs",
@@ -17,7 +17,9 @@
     "qa:csp": "node scripts/csp-check.mjs",
     "test": "node scripts/qa.mjs",
     "test:sheets": "node --test tests/sheets.test.mjs && node tests/sheets-runtime.mjs",
-    "qa:colors": "node scripts/color-audit.mjs"
+    "qa:colors": "node scripts/color-audit.mjs",
+    "test:shipping": "node --test tests/shipping.test.mjs",
+    "qa:checkout": "node scripts/checkout-qa.mjs"
   },
   "dependencies": {
     "astro": "^7.4.2"

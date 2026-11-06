@@ -3,7 +3,7 @@
 -- Apply locally:  npx wrangler d1 execute chess-united --local --file=./schema.sql
 -- Apply remotely: npx wrangler d1 execute chess-united --remote --file=./schema.sql
 --
--- Money is stored in whole pesos. Timestamps are ISO-ish UTC strings.
+-- Prices are in Philippine pesos; delivery totals may include centavos. Timestamps are ISO-ish UTC strings.
 
 CREATE TABLE IF NOT EXISTS members (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS members (
   -- The printed ID + lanyard is a paid option at PHP 200.
   printed_id     INTEGER NOT NULL DEFAULT 0,
   gcash_ref      TEXT,
+  payment_status TEXT    NOT NULL DEFAULT 'pending',
   status         TEXT    NOT NULL DEFAULT 'active',    -- active | pending | rejected
   created_at     TEXT    NOT NULL DEFAULT (datetime('now'))
 );
@@ -60,6 +61,11 @@ CREATE TABLE IF NOT EXISTS orders (
   payment_status    TEXT    NOT NULL DEFAULT 'pending',
   fulfilment_status TEXT    NOT NULL DEFAULT 'new',    -- new | packed | shipped | delivered
   tracking_no       TEXT,
+  shipping_fee      REAL,
+  total             REAL,
+  shipping_quote_json TEXT,
+  payment_token_hash TEXT,
+  payment_claimed_at TEXT,
   created_at        TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -108,6 +114,8 @@ CREATE TABLE IF NOT EXISTS sheets_sync (
   attempts INTEGER NOT NULL DEFAULT 0,
   last_error TEXT,
   synced_at TEXT,
+  paid_snapshot TEXT,
+  payment_checked_at INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (kind, record_id)
 );
 CREATE INDEX IF NOT EXISTS idx_sheets_pending ON sheets_sync(pending, kind, record_id);
@@ -176,3 +184,13 @@ BEGIN
 END;
 
 INSERT OR IGNORE INTO sheets_sync(kind, record_id) SELECT 'member', id FROM members;
+CREATE TABLE IF NOT EXISTS shipping_settings (
+ id INTEGER PRIMARY KEY CHECK (id = 1), config_json TEXT NOT NULL DEFAULT '{}', revision INTEGER NOT NULL DEFAULT 1
+);
+INSERT OR IGNORE INTO shipping_settings(id) VALUES(1);
+CREATE TABLE IF NOT EXISTS shipping_quotes (
+ id TEXT PRIMARY KEY, basket_json TEXT NOT NULL, courier TEXT NOT NULL, destination_id TEXT NOT NULL,
+ shipping_fee REAL NOT NULL, subtotal REAL NOT NULL, details_json TEXT NOT NULL, config_revision INTEGER NOT NULL,
+ expires_at INTEGER NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS orders_payment_token ON orders(payment_token_hash) WHERE payment_token_hash IS NOT NULL;

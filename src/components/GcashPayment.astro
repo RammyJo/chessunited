@@ -1,0 +1,25 @@
+---
+interface Props { amount?: number; dynamic?: boolean; }
+const {amount,dynamic=false}=Astro.props;
+---
+<div class="pay-box gcash-payment mt-3" data-gcash-panel data-gcash-dynamic={dynamic || undefined}>
+  <div>
+    <h3>Pay with GCash</h3>
+    <p class="gcash-amount" data-gcash-amount aria-live="polite">{amount === undefined ? 'Choose your options to see the amount.' : `₱${amount.toLocaleString('en-PH')}`}</p>
+    <p>Recipient: <strong>GI*****I CY***E R.</strong></p>
+    <ol>
+      <li>Save this QR to your phone, or scan it using a second device.</li>
+      <li>Open GCash → QR → Upload. Select the saved QR and enter the exact amount shown here.</li>
+      <li>Check the recipient and amount in GCash, then send. Return here to submit your details.</li>
+    </ol>
+    <p class="hint">The button opens GCash. You still need to upload the QR and complete the payment in the app. The club verifies receipt before marking it paid.</p>
+    <div class="form-actions">
+      <a class="btn btn--sm" href="/images/gcash-payment-qr.png" download="Chess-United-GCash-QR.png">Save payment QR</a>
+      <a class="btn btn--sm btn--ghost" href="https://gcash.onelink.me/GWEy?pid=smart_banner_v2&amp;deep_link_value=home&amp;af_dp=gcash%3A%2F%2Fcom.mynt.gcash%2Fapp" target="_blank" rel="noopener noreferrer">Open GCash</a>
+    </div>
+  </div>
+  <img class="gcash-qr" src="/images/gcash-payment-qr.png" width="450" height="450" alt="Chess United GCash payment QR for GI*****I CY***E R. Save and upload in GCash." loading="lazy" decoding="async" />
+</div>
+<style>
+.gcash-payment{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:1.5rem;align-items:start}.gcash-amount{font-size:1.6rem;font-weight:800}.gcash-qr{width:100%;height:auto;background:white;border:8px solid white;border-radius:8px;max-width:280px}.gcash-payment ol{padding-left:1.25rem}.gcash-payment li+li{margin-top:.5rem}@media(max-width:700px){.gcash-payment{grid-template-columns:1fr}.gcash-qr{width:220px;justify-self:center}}
+</style>

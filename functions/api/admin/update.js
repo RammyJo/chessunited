@@ -71,6 +71,19 @@ export async function onRequestPost(context) {
       sets.push('tracking_no = ?');
       values.push(trackingNo);
     }
+  } else if (kind === 'member') {
+    if (body.paymentStatus !== undefined) {
+      const payment = clean(body.paymentStatus, 20);
+      if (!ORDER_PAYMENT.includes(payment)) return fail('Unknown payment status.', 422);
+      const member = await env.DB.prepare('SELECT printed_id FROM members WHERE id = ?').bind(id).first();
+      if (!member?.printed_id) return fail('This membership has no printed-card payment due.', 422);
+      sets.push('payment_status = ?'); values.push(payment);
+    }
+    if (body.status !== undefined) {
+      const status = clean(body.status, 20);
+      if (!rule.values.includes(status)) return fail('Unknown status.', 422);
+      sets.push('status = ?'); values.push(status);
+    }
   } else {
     const status = clean(body.status, 20);
     if (!rule.values.includes(status)) return fail('Unknown status.', 422);

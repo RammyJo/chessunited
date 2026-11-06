@@ -11,6 +11,7 @@ import {
   noDb,
 } from './_utils.js';
 import { CATALOG, COURIERS, priceItems } from './_catalog.js';
+import { tokenHash, orderResult } from './_checkout.js';
 
 /**
  * POST /api/orders — place a merchandise order.
@@ -18,9 +19,8 @@ import { CATALOG, COURIERS, priceItems } from './_catalog.js';
  * Body: fullName, email, phone, address, city, province, postcode, country,
  *       courier, items: [{ id, qty, size? }], notes?
  *
- * No card details and no GCash reference reach this endpoint. The order is
- * saved as unpaid and a club officer matches the GCash payment by hand before
- * the parcel goes out.
+ * Saves a payment draft with a server-locked delivery total. The buyer submits
+ * the draft after paying via /api/orders/payment; only officers mark it paid.
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -28,6 +28,11 @@ export async function onRequestPost(context) {
 
   const body = await readJson(request);
   if (!body) return fail('Send a JSON body.');
+
+  const hash = await tokenHash(body.checkoutToken);
+  if (!hash) return fail('Reopen checkout to start a secure payment session.', 422);
+  const prior = await env.DB.prepare('SELECT * FROM orders WHERE payment_token_hash = ?').bind(hash).first();
+  if (prior) return json({ ok: true, order: orderResult(prior) });
 
   const fullName = clean(body.fullName, 120);
   const email = clean(body.email, 160).toLowerCase();
@@ -49,6 +54,7 @@ export async function onRequestPost(context) {
   if (!isPhone(phoneRaw)) fields.phone = 'Use a PH mobile number, e.g. 09171234567.';
   if (!pickup && address.length < 8) fields.address = 'Enter the street address the parcel ships to.';
   if (!pickup && city.length < 2) fields.city = 'Enter a city or municipality.';
+  if (!pickup && country.toLowerCase() !== 'philippines') fields.country = 'Delivery is within the Philippines.';
   if (!pickup && province.length < 2) fields.province = 'Enter a province or state.';
   if (!Object.hasOwn(COURIERS, courier)) fields.courier = 'Choose a courier or pickup.';
   if (!lines.length) fields.items = 'Add at least one item to the order.';
@@ -57,6 +63,14 @@ export async function onRequestPost(context) {
   }
   if (Object.keys(fields).length) return fail('Please check the highlighted fields.', 422, fields);
 
+  const quote = await env.DB.prepare('SELECT * FROM shipping_quotes WHERE id = ?').bind(clean(body.quoteId, 80)).first();
+  const setting = await env.DB.prepare('SELECT revision FROM shipping_settings WHERE id=1').first();
+  if (!quote || quote.expires_at < Date.now() || quote.config_revision !== setting?.revision || quote.courier !== courier || quote.basket_json !== JSON.stringify(lines) || quote.destination_id !== (pickup ? '' : clean(body.destinationId, 30))) return fail('Your total has expired or your basket changed. Refresh the delivery total before paying.', 409);
+  const details = JSON.parse(quote.details_json);
+  const destination = details.destination;
+  if (!pickup && (city !== destination.city || province !== destination.province)) return fail('Choose the delivery location again to refresh the total.', 409);
+  const shippingFee = quote.shipping_fee;
+  const total = Math.round((subtotal + shippingFee) * 100) / 100;
   const orderNo = makeOrderNo();
 
   try {
@@ -64,8 +78,8 @@ export async function onRequestPost(context) {
       `INSERT INTO orders
          (order_no, full_name, email, phone, ship_address, ship_city, ship_province,
           ship_postcode, ship_country, courier, items_json, subtotal, shipping_note,
-          payment_method, payment_status, fulfilment_status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'gcash', 'pending', 'new')`,
+          payment_method, payment_status, fulfilment_status, shipping_fee, total, shipping_quote_json, payment_token_hash)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'gcash', 'pending', 'awaiting_payment', ?, ?, ?, ?)`,
     )
       .bind(
         orderNo,
@@ -81,27 +95,18 @@ export async function onRequestPost(context) {
         JSON.stringify(lines),
         subtotal,
         notes,
+        shippingFee, total, quote.details_json, hash,
       )
       .run();
   } catch (error) {
-    console.error('order insert failed', error);
+    // A retry may have won the unique payment-session insert. Return its draft.
+    const existing = await env.DB.prepare('SELECT * FROM orders WHERE payment_token_hash = ?').bind(hash).first();
+    if (existing) return json({ ok: true, order: orderResult(existing) });
+    console.error('order insert failed');
     return fail('Could not save the order. Please try again.', 500);
   }
 
   scheduleSheetsSync(context);
-  return json({
-    ok: true,
-    order: {
-      orderNo,
-      lines,
-      subtotal,
-      courier: COURIERS[courier].label,
-      shippingFee: COURIERS[courier].fee,
-      shipTo: pickup ? 'Arrange pickup with the club' : [city, province, country].filter(Boolean).join(', '),
-      fulfilmentMessage: pickup ? 'Pick up — no shipping fee. The club will contact you to arrange the place and time.' : `Delivery to ${[city, province, country].filter(Boolean).join(', ')} by ${COURIERS[courier].label}.`,
-      total: COURIERS[courier].fee === null ? null : subtotal + COURIERS[courier].fee,
-      paymentStatus: 'pending',
-      fulfilmentStatus: 'new',
-    },
-  });
+  const saved = await env.DB.prepare('SELECT * FROM orders WHERE payment_token_hash = ?').bind(hash).first();
+  return json({ ok: true, order: orderResult(saved) });
 }

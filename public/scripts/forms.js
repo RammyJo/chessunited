@@ -17,7 +17,7 @@
   const fill = (template, data) =>
     template.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, key) => {
       const value = get(data, key);
-      return value === undefined || value === null ? '' : String(value);
+      return value === undefined || value === null ? '' : String(value).replace(/[&<>"']/g, char => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
     });
 
   const peso = (amount) => '₱' + Number(amount).toLocaleString('en-PH');
@@ -170,6 +170,11 @@
           return;
         }
 
+        if (endpoint === '/api/orders') {
+          document.dispatchEvent(new CustomEvent('cu:order-prepared', { detail: body }));
+          return;
+        }
+
         if (success && template) {
           const html = fill(template.innerHTML, body);
           const holder = document.createElement('div');
@@ -194,7 +199,7 @@
         showErrors('Could not reach the club’s server. Check your connection and try again.');
       } finally {
         if (button) {
-          button.disabled = false;
+          button.disabled = endpoint === '/api/orders' && !form.querySelector('[data-shipping-quote-id]')?.value;
           if (idleLabel) button.textContent = idleLabel;
         }
       }

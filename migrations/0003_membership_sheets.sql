@@ -15,7 +15,7 @@ CREATE TABLE sheets_sync_v2 (
   synced_at TEXT,
   PRIMARY KEY (kind, record_id)
 );
-INSERT INTO sheets_sync_v2 SELECT * FROM sheets_sync;
+INSERT INTO sheets_sync_v2(kind,record_id,version,pending,attempts,last_error,synced_at) SELECT kind,record_id,version,pending,attempts,last_error,synced_at FROM sheets_sync;
 DROP TABLE sheets_sync;
 ALTER TABLE sheets_sync_v2 RENAME TO sheets_sync;
 CREATE INDEX idx_sheets_pending ON sheets_sync(pending, kind, record_id);

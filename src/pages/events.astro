@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
+import GcashPayment from '../components/GcashPayment.astro';
 import AddToCalendar from '../components/AddToCalendar.astro';
 import { site, events, upcomingEvents, formatPeso, gcash, mapsUrl } from '../data/site';
 import { photos } from '../data/images';
@@ -242,7 +243,7 @@ const breadcrumbJsonLd = {
                     <label for={`r-${event.slug}-division`}>Division</label>
                     <select id={`r-${event.slug}-division`} name="division" required>
                       {event.divisions.map((division) => (
-                        <option value={division.name}>
+                        <option value={division.name} data-entry-fee={division.fee}>
                           {division.name} — {division.ages} · {formatPeso(division.fee)} entry
                         </option>
                       ))}
@@ -318,14 +319,7 @@ const breadcrumbJsonLd = {
                   </div>
                 </div>
 
-                <div class="pay-box mt-3">
-                  <strong>Paying by GCash</strong>
-                  <ol>
-                    <li>Scan the GCash QR printed on the {event.shortName} poster.</li>
-                    <li>Pay the entry fee for the division you chose — the amount is in the list above.</li>
-                    <li>Copy the {gcash.referenceLength}-digit reference number and paste it in the form.</li>
-                  </ol>
-                </div>
+                <GcashPayment dynamic />
 
                 <p class="form-status" data-form-status hidden></p>
 

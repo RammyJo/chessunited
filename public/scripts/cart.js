@@ -240,7 +240,7 @@
     if (form) form.dispatchEvent(new Event('input', { bubbles: true }));
   };
 
-  const deliveryInputs = form ? Array.from(form.querySelectorAll('[data-delivery-field] input')) : [];
+  const deliveryInputs = form ? Array.from(form.querySelectorAll('[data-delivery-field] input, [data-delivery-field] select')) : [];
   deliveryInputs.forEach(input => { input.dataset.deliveryRequired = String(input.required); });
   const renderShipping = () => {
     const pickup = courierSelect?.value === 'pickup';
@@ -251,20 +251,20 @@
     });
     const pickupNote = form?.querySelector('[data-pickup-note]');
     if (pickupNote) pickupNote.hidden = !pickup;
-    const fee = courierFee();
-    const total = subtotal();
-    if (shippingEl) shippingEl.textContent = pickup ? '₱0 — pick up' : fee === null ? 'Quoted by the club' : peso(fee);
-    if (grandEl) grandEl.textContent = fee === null ? '—' : peso(total + fee);
-    if (shippingNote) shippingNote.hidden = fee !== null;
+
   };
 
   let checkingOut = false;
+  let paying = false;
+  document.addEventListener('cu:order-payment', () => { paying = true; checkingOut = false; renderCheckout(); });
+  document.addEventListener('cu:order-complete', () => { paying = false; checkingOut = false; });
+  document.addEventListener('cu:order-restart', () => { paying = false; checkingOut = keys().length > 0; renderCheckout(); });
   const renderCheckout = () => {
     const hasLines = keys().length > 0;
     if (!hasLines) checkingOut = false;
-    if (emptyPrompt) emptyPrompt.hidden = checkingOut;
+    if (emptyPrompt) emptyPrompt.hidden = checkingOut || paying;
     if (!form) return;
-    form.hidden = !checkingOut;
+    form.hidden = !checkingOut || paying;
     if (checkingOut && success) success.hidden = true;
   };
 
@@ -357,7 +357,7 @@
   if (checkout) checkout.addEventListener('click', (event) => {
     event.preventDefault();
     closeCart();
-    checkingOut = keys().length > 0;
+    checkingOut = !paying && keys().length > 0;
     renderCheckout();
     if (checkingOut && form) {
       form.scrollIntoView({ behavior: 'instant', block: 'start' });

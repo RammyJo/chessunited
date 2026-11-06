@@ -114,8 +114,10 @@
         ),
       );
       tr.appendChild(td(chip(row.status)));
+      tr.appendChild(td(el('strong', null, !row.printed_id ? 'Not required' : row.payment_status === 'paid' ? 'Paid' : 'Not paid')));
       tr.appendChild(
         td(actions(
+          row.printed_id && action(row.payment_status === 'paid' ? 'Mark not paid' : 'Mark paid', { kind: 'member', id: row.id, payment: row.payment_status === 'paid' ? 'pending' : 'paid' }),
           action('Approve', { kind: 'member', id: row.id, status: 'active' }),
           action('Reject', { kind: 'member', id: row.id, status: 'rejected' }),
         )),
@@ -145,7 +147,8 @@
       tr.appendChild(td(chip(row.payment_status)));
       tr.appendChild(
         td(actions(
-          action('Verify', { kind: 'registration', id: row.id, status: 'verified' }),
+          action('Mark paid', { kind: 'registration', id: row.id, status: 'verified' }),
+          action('Mark not paid', { kind: 'registration', id: row.id, status: 'pending' }),
           action('Reject', { kind: 'registration', id: row.id, status: 'rejected' }),
         )),
       );
@@ -182,7 +185,7 @@
         ),
       );
 
-      tr.appendChild(td(el('span', 'cell-nowrap', peso(row.subtotal))));
+      tr.appendChild(td(el('strong', 'cell-nowrap', peso(row.total)), line('div', null, 'Items ' + peso(row.subtotal)), line('div', null, 'Shipping ' + peso(row.shipping_fee)), line('div', null, row.gcash_ref ? 'GCash ref ' + row.gcash_ref : ''), line('div', null, row.payment_claimed_at ? 'Buyer submitted payment for verification' : '')));
 
       const tracking = el('input');
       tracking.type = 'text';
@@ -196,7 +199,8 @@
       tr.appendChild(td(chip(row.fulfilment_status), tracking));
       tr.appendChild(
         td(actions(
-          action('Paid', { kind: 'order', id: row.id, payment: 'paid' }),
+          action('Mark paid', { kind: 'order', id: row.id, payment: 'paid' }),
+          action('Mark not paid', { kind: 'order', id: row.id, payment: 'pending' }),
           action(row.courier === 'pickup' ? 'Ready for pickup' : 'Packed', { kind: 'order', id: row.id, fulfilment: 'packed' }),
           row.courier !== 'pickup' && action('Shipped', { kind: 'order', id: row.id, fulfilment: 'shipped', tracking: 'true' }),
           action(row.courier === 'pickup' ? 'Collected' : 'Delivered', { kind: 'order', id: row.id, fulfilment: 'delivered' }),
@@ -223,6 +227,7 @@
         ),
       );
       tr.appendChild(td(chip(row.status)));
+      tr.appendChild(td(el('strong', null, !row.printed_id ? 'Not required' : row.payment_status === 'paid' ? 'Paid' : 'Not paid')));
       tr.appendChild(
         td(actions(
           action('Approve', { kind: 'partner-club', id: row.id, status: 'approved' }),
@@ -242,6 +247,7 @@
       tr.appendChild(td(el('span', 'cell-nowrap', text(row.event_date))));
       tr.appendChild(td(text(row.venue)));
       tr.appendChild(td(chip(row.status)));
+      tr.appendChild(td(el('strong', null, !row.printed_id ? 'Not required' : row.payment_status === 'paid' ? 'Paid' : 'Not paid')));
       tr.appendChild(
         td(actions(
           action('Approve', { kind: 'partner-event', id: row.id, status: 'approved' }),
@@ -294,8 +300,9 @@
     if (!sheetsStatus || !sheetsButton || sheetsButton.disabled) return;
     sheetsButton.disabled = true;
     if (sheetsCheck) sheetsCheck.disabled = true;
-    if (sync) sheetsStatus.textContent = 'Copying saved orders and registrations to Google Sheets…';
+    if (sync) sheetsStatus.textContent = 'Syncing payments and saved records with Google Sheets…';
     try {
+      let checked = 0;
       for (let batch = 0; batch < (sync ? 20 : 1); batch++) {
         const response = await fetch('/api/admin/sheets' + (check ? '?check=1' : ''), { method: sync || check ? 'POST' : 'GET' });
         const status = await response.json();
@@ -308,16 +315,17 @@
           sheetsStatus.textContent = 'Connected. Orders, Registrations and Memberships tabs are ready. Select Sync now to copy any waiting records.';
           break;
         }
+        checked += status.result?.checked || 0;
         const issue = status.result?.issue || status.lastError;
         sheetsStatus.textContent = `${status.pending} waiting to sync. ${status.lastSynced ? 'Last copied: ' + status.lastSynced + ' UTC.' : 'No records copied yet.'}${issue ? ' Sync needs attention (' + issue + '). Records remain saved; retry after resolving the connection.' : ''}`;
-        if (!sync || issue || status.result?.busy || !status.pending || !status.result?.processed || dashboard.hidden) break;
+        if (!sync || issue || status.result?.busy || (!status.pending && checked >= status.total) || (!status.result?.processed && !status.result?.checked) || dashboard.hidden) break;
       }
     } catch {
       sheetsStatus.textContent = 'Could not check Google Sheets. Your saved orders and entries are unaffected.';
     } finally { sheetsButton.disabled = false; if (sheetsCheck) sheetsCheck.disabled = false; }
   };
   if (sheetsCheck) sheetsCheck.addEventListener('click', () => refreshSheets(false, true));
-  if (sheetsButton) sheetsButton.addEventListener('click', () => refreshSheets(true));
+  if (sheetsButton) sheetsButton.addEventListener('click', async () => { await refreshSheets(true); await load(); });
 
   const load = async () => {
     setStatus(panelStatus, 'Loading the queue…');

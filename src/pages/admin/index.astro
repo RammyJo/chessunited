@@ -12,7 +12,8 @@ import Icon from '../../components/Icon.astro';
   canonical={false}
 >
   <Fragment slot="head">
-    <script is:inline src="/scripts/admin.js?v=membership-sync" defer></script>
+    <script is:inline src="/scripts/admin.js?v=gcash-checkout" defer></script>
+    <script is:inline src="/scripts/admin-shipping.js?v=gcash-checkout" defer></script>
   </Fragment>
 
   <Header />
@@ -92,6 +93,7 @@ import Icon from '../../components/Icon.astro';
 
           <div class="note-box mt-3" aria-labelledby="sheets-title">
             <h3 id="sheets-title">Google Sheets</h3>
+            <p>Officers can edit the <strong>paid</strong> dropdown directly in Sheets: Paid or Not paid. Select Sync now here to import the changes. Use filter views instead of moving or sorting rows.</p>
             <p data-sheets-status role="status">Checking spreadsheet sync…</p>
             <div class="form-actions">
               <button class="btn btn--sm btn--ghost" type="button" data-sheets-check>Check connection</button>
@@ -99,6 +101,17 @@ import Icon from '../../components/Icon.astro';
               <a class="text-link" href="https://docs.google.com/spreadsheets/d/1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoCLbI/edit" target="_blank" rel="noopener">Open spreadsheet</a>
             </div>
           </div>
+
+          <details class="note-box mt-3" data-shipping-settings>
+            <summary><strong>Delivery setup — dispatch locations and measured parcels</strong></summary>
+            <p>Choose the actual dispatch location and enter each product’s packed weight in kg and length, width and height in cm. Each unit is quoted as a separate parcel using the courier’s public calculator, including valuation. Leave all four measurements empty to keep that product available for pickup only.</p>
+            <p>Suggested dispatch location: San Fernando City, La Union. Confirm it before saving. LBC uses the smallest official package that fits the entered packed dimensions; leave enough weight allowance for its outer box. J&amp;T uses EZ parcel service.</p>
+            <form data-shipping-settings-form>
+              <div class="form-grid"><div class="field"><label for="shipping-origin-jt">J&amp;T dispatch location</label><select id="shipping-origin-jt" data-shipping-origin="jt" required></select></div><div class="field"><label for="shipping-origin-lbc">LBC dispatch location</label><select id="shipping-origin-lbc" data-shipping-origin="lbc" required></select></div></div>
+              <div class="table-wrap mt-2"><table><thead><tr><th>Product</th><th>Packed kg</th><th>Length cm</th><th>Width cm</th><th>Height cm</th></tr></thead><tbody data-shipping-products></tbody></table></div>
+              <p data-shipping-settings-status role="status"></p><button type="submit" class="btn btn--sm">Save delivery setup</button>
+            </form>
+          </details>
 
           <div class="admin-grid mt-3" data-admin-stats></div>
 
@@ -114,6 +127,7 @@ import Icon from '../../components/Icon.astro';
                       <th scope="col">Division</th>
                       <th scope="col">Card</th>
                       <th scope="col">Status</th>
+                      <th scope="col">Paid</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
@@ -152,7 +166,7 @@ import Icon from '../../components/Icon.astro';
                       <th scope="col">Customer</th>
                       <th scope="col">Items</th>
                       <th scope="col">Delivery / pickup</th>
-                      <th scope="col">Subtotal</th>
+                      <th scope="col">Total</th>
                       <th scope="col">Payment</th>
                       <th scope="col">Fulfilment</th>
                       <th scope="col">Actions</th>
