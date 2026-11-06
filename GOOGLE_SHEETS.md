@@ -16,7 +16,7 @@ https://docs.google.com/spreadsheets/d/1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoC
 
 ## Storage and retries
 
-Apply `migrations/0001_google_sheets.sql` to the existing D1 database before deploying the functions. It adds only the sync queue, a lease row, tracking triggers and an initial queue entry for each existing source record. `schema.sql` includes the same migration for new databases.
+Apply `migrations/0001_google_sheets.sql` and `migrations/0002_sheets_connection_check.sql` to the existing D1 database before deploying the functions. It adds only the sync queue, a lease row, tracking triggers and an initial queue entry for each existing source record. `schema.sql` includes the same migration for new databases.
 
 Triggers commit queue changes atomically with orders/registrations. A global 120-second lease serializes sheet writes. Revision checks keep edits made during a copy queued for the next pass. Remote rows are updated at `D1 id + 1`, so retries after ambiguous network failures cannot append duplicates. Values use Google's RAW input mode to preserve phone/reference strings and avoid evaluating user-entered formulas.
 
@@ -32,3 +32,7 @@ Each background pass has a 22-second network budget and handles up to three jobs
 - `POST /api/admin/sheets`: authenticated bounded retry. `?check=1` verifies Google access and prepares tabs.
 
 Tests do not use a real Google credential. End-to-end verification requires the production secret and the connection check above. Error logs/status never include credential contents or customer data.
+
+## Operator activation check
+
+A platform operator with D1 write access can request a one-off check by setting `requested = 1` in the singleton `sheets_connection_check` row. The next public directory GET services that request with `waitUntil`. It cannot request checks or reveal their results; no Google request is made unless an operator has queued a check. Verification prepares headers only, creates no customer records, and stores a safe result/timestamp in D1. A lease protects concurrent invocations. This allows activation checks without extracting credentials or bypassing the officer sign-in.

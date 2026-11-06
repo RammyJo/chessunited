@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
-import { createSheetsClient, drainSheets, sheetsConfig, syncStatus, SHEET_COLUMNS } from '../functions/api/_sheets.js';
+import { createSheetsClient, drainSheets, sheetsConfig, syncStatus, SHEET_COLUMNS, runRequestedSheetsCheck } from '../functions/api/_sheets.js';
 import { onRequest as adminSheets } from '../functions/api/admin/sheets.js';
 
 const pair = await crypto.subtle.generateKey({name:'RSASSA-PKCS1-v1_5',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'}, true, ['sign','verify']);
@@ -94,4 +94,11 @@ test('tournament copies preserve leading-zero GCash references and member number
 
 test('connection check prepares both owned tabs without adding customer records',async()=>{
  const g=google();const client=await createSheetsClient({GOOGLE_SHEETS_SERVICE_ACCOUNT:credential},g.fetcher);await client.verify();assert.equal(g.rows.size,0);assert.equal(g.writes.length,0);
+});
+
+test('connection check requires an operator request and never exposes its result publicly',async()=>{
+ const {env,sql}=database();let calls=0;await runRequestedSheetsCheck(env,async()=>{calls++;});assert.equal(calls,0);
+ sql.exec('UPDATE sheets_connection_check SET requested=1');const g=google();await runRequestedSheetsCheck(env,g.fetcher);
+ const state=sql.prepare('SELECT * FROM sheets_connection_check').get();assert.equal(state.requested,0);assert.ok(state.verified_at);assert.equal(state.last_error,null);
+ await runRequestedSheetsCheck(env,async()=>{calls++;});assert.equal(calls,0);
 });

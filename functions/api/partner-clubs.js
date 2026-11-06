@@ -1,3 +1,4 @@
+import { scheduleRequestedSheetsCheck } from './_sheets.js';
 import { json, fail, readJson, clean, isEmail, hasDb, noDb } from './_utils.js';
 
 /**
@@ -10,7 +11,8 @@ import { json, fail, readJson, clean, isEmail, hasDb, noDb } from './_utils.js';
  *        approves it.
  */
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet(context) {
+  const { env } = context;
   if (!hasDb(env)) return noDb();
 
   try {
@@ -53,6 +55,7 @@ export async function onRequestGet({ env }) {
       events: byClub.get(club.id) ?? [],
     }));
 
+    scheduleRequestedSheetsCheck(context);
     return json({ ok: true, count: results.length, clubs: results });
   } catch (error) {
     console.error('partner club read failed', error);

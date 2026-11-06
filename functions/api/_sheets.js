@@ -93,9 +93,9 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
   };
 }
 
-export async function verifySheets(env) {
+export async function verifySheets(env, fetcher = fetch) {
   try {
-    const client = await createSheetsClient(env);
+    const client = await createSheetsClient(env, fetcher);
     await client.verify();
     return { verified: true };
   } catch (error) { return { verified: false, issue: error instanceof SyncError ? error.message : 'sync_internal_error' }; }
@@ -148,4 +148,23 @@ export async function drainSheets(env, { fetcher = fetch } = {}) {
 export function scheduleSheetsSync(context) {
   if (!sheetsConfig(context.env).configured) return;
   context.waitUntil(drainSheets(context.env).catch(() => console.error('Google Sheets background sync deferred; D1 queue retained.')));
+}
+
+/** A platform operator may queue a one-off check in D1 without accessing secrets.
+ * Public requests only service an already requested check; they cannot request
+ * one or observe its result. The result stays in D1/private admin status.
+ */
+export async function runRequestedSheetsCheck(env, fetcher = fetch) {
+  const owner = crypto.randomUUID();
+  const claimed = await env.DB.prepare('UPDATE sheets_connection_check SET owner = ?, lease_until = ? WHERE id = 1 AND requested = 1 AND lease_until < ? RETURNING id').bind(owner, Date.now() + 120000, Date.now()).first();
+  if (!claimed) return;
+  const result = await verifySheets(env, fetcher);
+  await env.DB.prepare(`UPDATE sheets_connection_check SET requested = 0, owner = NULL, lease_until = 0,
+    verified_at = CASE WHEN ? = 1 THEN datetime('now') ELSE NULL END, last_error = ? WHERE id = 1 AND owner = ?`)
+    .bind(result.verified ? 1 : 0, result.issue || null, owner).run();
+}
+
+export function scheduleRequestedSheetsCheck(context) {
+  if (!context.env.GOOGLE_SHEETS_SERVICE_ACCOUNT) return;
+  context.waitUntil(runRequestedSheetsCheck(context.env).catch(() => console.error('Requested Sheets check deferred.')));
 }
