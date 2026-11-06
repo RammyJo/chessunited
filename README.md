@@ -1,24 +1,30 @@
 # Chess United — official website
 
-A fast, static website for **Chess United**, a community chess club in San
-Fernando City, La Union, Philippines. It publishes the two weekly Saturday
-tables, the 2026 tournament calendar with the published Top 10 results, real club
-photography, a merchandise area (jersey, ID kit and the official price list) and
-the club's Messenger community link.
+A fast website for **Chess United**, a community chess club in San Fernando
+City, La Union, Philippines. It publishes the two weekly Saturday tables, the
+2026 tournament calendar with the published Top 10 results, real club
+photography, an online merchandise shop with a cart, membership registration and
+a digital club card, the partner-club directory and the club's Messenger
+community link. Pages are prerendered by Astro; the forms are handled by Cloudflare
+Pages Functions backed by a D1 database.
 
-- **Public routes:** exactly eight — `/`, `/events/`, `/gallery/`, `/shop/`
+- **Public routes:** eight pages — `/`, `/events/`, `/gallery/`, `/shop/`
   (the merchandise area; the URL is unchanged so existing links and the sitemap
   keep working), `/about/`, `/visit/` (weekly play and how to visit),
-  `/membership/` (registration and the digital card lookup), `/partners/` and the
-  `404.html` fallback.
+  `/membership/` (registration and the digital card lookup), `/partners/` — plus
+  the `404.html` fallback and `/admin/` (officers only, `noindex`).
 
 - **Live site:** <https://chessunitedglobal.com> (Cloudflare Pages project
   `chessunited`; also on <https://chessunited.pages.dev>)
-- **Stack:** Astro 7 static output, TypeScript content data, one small vanilla JS
-  file, self-hosted fonts, pre-optimized WebP images.
-- **Runtime dependencies:** none beyond static files. No cookies, no forms,
-  accounts or payments; the only third-party request is the Cloudflare host's own
-  cookieless analytics beacon.
+- **Stack:** Astro 7 static output, TypeScript content data, small vanilla JS
+  files, self-hosted fonts, pre-optimized WebP images, Cloudflare Pages
+  Functions + D1 for the forms, Cloudflare Pages for hosting.
+- **Data and payments:** the four public forms (membership, tournament
+  registration, merchandise order, partner-club sign-up) write to the
+  `chess-united` D1 database and are reviewed in `/admin/`. Merchandise is paid by
+  GCash: the buyer pastes a reference number and a club officer matches it by
+  hand. **No card details are ever collected or stored**, and nothing ships until
+  the club has checked the payment.
 
 ## Status
 
@@ -32,6 +38,8 @@ the club's Messenger community link.
 | GitHub repository | **VERIFIED** — <https://github.com/RammyJo/chessunited>, branch `main` |
 | Spaceship domain + DNS | **VERIFIED** — `chessunitedglobal.com` connected to Cloudflare |
 | Custom canonical domain | **VERIFIED** — canonicals, sitemap and `robots.txt` use `https://chessunitedglobal.com` |
+| Pages Functions + D1 (`chess-united`) | **VERIFIED LIVE** — `/api/*` responds on the domain, the D1 binding is connected and `POST /api/admin/queue` is 401 without the admin cookie |
+| `www.chessunitedglobal.com` | **NOT RESOLVING** — no DNS record exists for `www` yet; `chessunitedglobal.com` is the only published host |
 
 ## Quick start
 
@@ -76,7 +84,7 @@ npx.cmd --yes lighthouse@13.5.0 http://127.0.0.1:4321/ --view
 src/
   data/
     site.ts        Events, results, weekly tables, fees, merch, team, partners, group URL
-    images.ts      Photo/poster paths, responsive srcsets, alt text, captions
+    images.ts      Photo/poster/product paths, srcsets, alt text, captions
   layouts/
     Base.astro     Metadata, canonical, Open Graph, fonts, JSON-LD, scripts
   components/      Header, footer, icons, event card, gallery/lightbox
@@ -85,10 +93,22 @@ src/
     global.css     Design system and responsive layout
 public/
   images/          Optimized photos, posters, brand assets
+    merch/         One photo per product, named <product-id>.webp; each photo used by
+                   the shop also needs its line in src/data/images.ts (`merchPhotos`)
   fonts/           Self-hosted WOFF2 + OFL licenses
-  scripts/         boot.js + site.js (menu, countdown, lightbox, copy)
+  scripts/         boot.js, site.js (menu, countdown, lightbox, copy),
+                   forms.js (form submit, subtotal, card and directory lookups),
+                   cart.js (shop cart, drawer, localStorage), admin.js (officer queue)
   calendar/        Generated .ics files
   manifest.webmanifest
+functions/
+  api/             Pages Functions: /api/members, /api/registrations, /api/orders,
+                   /api/members/[number], /api/partner-clubs, /api/admin/*
+  api/_catalog.js  Server-side price list, courier and tournament data
+  api/_utils.js    Validation, JSON helpers and the signed admin cookie
+schema.sql         D1 tables: members, registrations, orders, partner_clubs,
+                   partner_events
+wrangler.toml      D1 binding and the secrets the Functions expect
 sites/
   worker.generated.js  Built Worker: static assets + headers + 404 (gitignored)
 deploy.json            Deployment manifest for Freebuff Sites / Cloudflare
@@ -113,17 +133,52 @@ guessing.
 
 1. Edit `src/data/site.ts` for events, `weeklySessions`, results, merch, team and partners.
 2. Edit `src/data/images.ts` for photo paths, `alt` text and captions.
-3. If an event date/time/fee changes, also update `scripts/make_calendar.mjs`
+3. Merchandise photos: save one as `public/images/merch/<product-id>.webp` using the `id`
+   from the `merch` list, then add `'<product-id>': '/images/merch/<product-id>.webp'` to
+   `merchPhotos` in `src/data/images.ts`. Until a product has an entry its card keeps the
+   placeholder, so the page never ships a broken image and the club can publish photos
+   one at a time.
+4. Merchandise prices live in two places on purpose — `src/data/site.ts` is what the
+   buyer sees and `functions/api/_catalog.js` is what the club is charged by. Change
+   both together; the server ignores any price the browser sends.
+5. If an event date/time/fee changes, also update `scripts/make_calendar.mjs`
    (the calendar generator has its own small event list) and run `npm run build`.
-4. Mark completed events `status: 'past'` and future ones `status: 'upcoming'`.
+6. Mark completed events `status: 'past'` and future ones `status: 'upcoming'`.
    The site is static; statuses do not flip automatically after the date.
-5. Run `npm run check`, `npm run build`, `npm run qa`, `npm run qa:browser` and
+7. Run `npm run check`, `npm run build`, `npm run qa`, `npm run qa:browser` and
    `npm run qa:csp`.
+
+## Backend
+
+The Functions in `functions/api/` are the only place anything is written, and they
+write to the Cloudflare D1 database `chess-united` using `schema.sql`.
+
+| Endpoint | Method | What it does |
+| --- | --- | --- |
+| `/api/members` | POST | Membership registration; mints `CU-<year>-<nnnn>` |
+| `/api/registrations` | POST | Tournament entry |
+| `/api/orders` | POST | Merchandise order; re-prices the items server-side and mints an order number |
+| `/api/members/{number}` | GET | Public card lookup for `?m=CU-YYYY-NNNN` |
+| `/api/partner-clubs` | GET | Partner-club directory for the partners page |
+| `/api/admin/queue` | GET | Pending members, registrations and orders (admin cookie required) |
+| `/api/admin/session` | POST | Officer login; sets the `cu_admin` cookie |
+| `/api/admin/update` | POST | Change a record's status (admin cookie required) |
+
+`wrangler.toml` binds the D1 database and documents the secrets. The Functions read
+`ADMIN_TOKEN` from Pages secrets, and optionally `RESEND_API_KEY` and `MAIL_FROM`
+for email; without them the site still works and the officer queue is the
+notification path. Secrets are set with
+`npx wrangler pages secret put <NAME> --project-name chessunited` — never in a file.
+`/admin/` is `noindex` and reachable only with that cookie.
+
+Locally, `astro dev` does not serve `functions/`. Use
+`npx wrangler pages dev dist --d1 DB=chess-united` against a built `dist/` to
+exercise the API, and keep the production database free of test records.
 
 ### Deployment URL
 
 `SITE_URL` controls canonical links, Open Graph URLs, the sitemap, `robots.txt`
-and the calendar links. It defaults to the live production URL in
+and the calendar links. Its default is the live production URL in
 [`scripts/site-url.mjs`](scripts/site-url.mjs):
 
 ```powershell
@@ -131,13 +186,13 @@ $env:SITE_URL = "https://your-final-domain.example"
 npm run build
 ```
 
-Build with the final URL **before** deploying. The default is the current live
-host, `https://chessunited.pages.dev`; change it in one place —
-`scripts/site-url.mjs` — when a club domain is connected.
+Build with the final URL **before** deploying. The default is the club's live
+domain, `https://chessunitedglobal.com`; if the site ever moves, change it in that
+one place — `scripts/site-url.mjs` — and `astro.config.mjs` reads the same value.
 
 ## Deployment
 
-The site is **live** on Cloudflare Pages: <https://chessunited.pages.dev>
+The site is **live** on Cloudflare Pages: <https://chessunitedglobal.com>
 
 ```powershell
 npm run check; npm run build; npm run qa; npm run qa:csp

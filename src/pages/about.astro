@@ -6,7 +6,7 @@ import Icon from '../components/Icon.astro';
 import { site, officerGroups, partnerTiers, globalHubs, globalNetworks, globalMarkers, team } from '../data/site';
 import { photos, sponsors } from '../data/images';
 
-const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 
 const breadcrumbJsonLd = {
@@ -56,10 +56,10 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
           <h2 id="story-title" class="display-md">Chess, united.</h2>
           <div class="prose mt-2">
             <p>
-              Chess United runs two weekly Saturday tables — Robinsons Mall La Union in the
-              afternoon and Rovers Coffee in the morning — and organises age-division tournaments
-              with cash prizes. The first, Tournament 1.0, was held at Rovers Coffee in October
-              2026; the next is at Robinsons Mall La Union in November.
+              Chess United runs a weekly Saturday table at Robinsons Mall La Union and organises
+              age-division tournaments with cash prizes. The first tournament, Tournament 1.0, was
+              held at Rovers Coffee in October 2026; the next is at Robinsons Mall La Union in
+              November.
             </p>
             <p>
               The idea is in the name. Kids and adults, learning and competition, in the same
@@ -370,7 +370,7 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
       <div class="wrap cta-inner">
         <div>
           <h2 id="about-cta" class="display-lg">Meet us at the board.</h2>
-          <p>Saturdays from 10 AM — Robinsons Mall La Union and Rovers Coffee.</p>
+          <p>Saturdays from 10 AM — Robinsons Mall La Union.</p>
         </div>
         <div class="cta-actions">
           <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">

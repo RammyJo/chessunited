@@ -1,16 +1,18 @@
 # QA report — Chess United website
 
-Date: **2026-10-27** (first recorded 2026-10-23; §5a–§5f are dated 2026-10-23 to
-2026-10-26, §5g is the security pass)  
+Date: **2026-10-27** (first recorded 2026-10-23; §5a–§5g are dated 2026-10-23 to
+2026-10-26, §5g is the security pass, §9 is the live re-check on 2026-11-04)  
 Build: `npm run build` → `dist/` (8 HTML pages)  
 Environment: Windows 11, Node **24.21.0**, npm **11.19.0**, Chrome
 **155.0.8059.85**, Lighthouse **13.5.0**, Python 3.14.7 + Pillow (image pipeline
 only).
 
-Overall verdict: **released and verified live**. All automated checks pass, all
-indexable pages meet the Lighthouse targets, and the production deployment was
-verified on 2026-10-23 (see §5a). Only the club's own domain remains **PENDING**,
-because no domain has been registered or supplied.
+Overall verdict: **released and verified live on the club's own domain**. All
+automated checks in §1 passed on the 2026-10-27 build, and the 2026-11-04 re-check
+(§9) confirmed the domain, the canonical host and the live `/api/` backend. The
+merchandise cart added on 2026-11-05 has **not** been through §1 yet — it needs a
+`npm run check`, `build`, `qa`, `qa:csp` and `qa:colors` pass and a browser pass on
+`/shop/` before it is released.
 
 ## 1. Automated results
 
@@ -502,10 +504,13 @@ Cloudflare's own WAF/bot settings for the project were not enumerated.
 
 These are outside what automated QA can prove:
 
-- **Custom domain, DNS and its TLS.** The site is live on Cloudflare's
-  `chessunited.pages.dev` host. No club domain has been registered or attached, so
-  apex/`www` behaviour, DNS records at Spaceship and domain-level TLS are
-  untested. See `DOMAIN_SETUP.md`.
+- **`www` behaviour.** `chessunitedglobal.com` is live and canonical, but
+  `www.chessunitedglobal.com` has no DNS record, so it does not resolve at all and
+  no redirect was testable. DNS records at the registrar and domain-level TLS
+  settings were not enumerated from here. See `DOMAIN_SETUP.md`.
+- **Form submissions were never exercised end to end.** The endpoints respond and
+  validate, but no registration or order has been pushed through the real
+  database, so the write path and the admin queue are unproven in production.
 - **Cloudflare's beacon in a normal network.** In this environment the
   host-injected analytics script cannot resolve; see §5a.
 - **Cross-browser testing.** Only Chrome 155 was used. Safari, Firefox and older
@@ -550,10 +555,142 @@ npx.cmd --yes lighthouse@13.5.0 http://127.0.0.1:4321/ --preset=desktop --only-c
 
 ## 8. Release recommendation
 
-**Released.** The site is live at <https://chessunited.pages.dev>, verified over
-HTTPS, and meets the Lighthouse targets on every indexable page. The open items
-are automatic deploys (the repository exists at
+**Released** for everything in the 2026-10-27 build: the site is live at
+<https://chessunitedglobal.com>, verified over HTTPS, and meets the Lighthouse
+targets on every indexable page. The 2026-11-04 re-check in §9 confirms the domain,
+the canonical host and the live API.
+
+**Not yet released:** the merchandise catalogue and cart (§10, 2026-11-05). Run the
+§7 commands against it, preview `/shop/` on desktop and mobile, and only then deploy.
+
+The standing open items are automatic deploys (the repository exists at
 <https://github.com/RammyJo/chessunited> but is not yet linked to the Pages
-project), the club's own domain,
-cross-browser and assistive-technology testing, and routine content upkeep (event
-dates and poster prices).
+project), the missing `www` record, the stale Freebuff mirror, cross-browser and
+assistive-technology testing, and routine content upkeep (event dates and poster
+prices).
+
+## 9. Live re-check — 2026-11-04
+
+Verified from outside, against the running site. No build was run for this section:
+the machine used had no Node toolchain, so this is black-box HTTP evidence, not a
+`npm run qa` pass.
+
+| Check | Result |
+| --- | --- |
+| `https://chessunitedglobal.com/` | **PASS** — 200 over HTTPS, CSP and security headers present |
+| Canonical host | **PASS** — canonical, `og:url`, `robots.txt` sitemap and `.ics` links all use `chessunitedglobal.com` |
+| `https://www.chessunitedglobal.com` | **FAIL** — NXDOMAIN. No DNS record exists, so `www.` is unreachable rather than redirected |
+| `GET /api/admin/queue` without a cookie | **PASS** — 401, no data disclosed |
+| `GET /api/members/…`, `/api/partner-clubs` | Reachable; POST-only endpoints answer 404 on `GET` as designed |
+| D1 `chess-united` | **Connected**, and **empty** — no members, registrations or orders recorded yet |
+| `scripts/site-url.mjs` default | **Was wrong** — defaulted to `chessunited.pages.dev`, so a plain build would have shipped canonicals, `og:url`, sitemap and `.ics` URLs pointing at the `pages.dev` host while the live site used the domain. Now defaults to `https://chessunitedglobal.com`, and the eight `Astro.site ??` fallbacks in the pages and `Base.astro` were updated to match |
+| Home hero preload | **Was wasteful** — a second preload asked for `hero.jpg` while the responsive preload already named the WebP srcset, so every cold visit downloaded an unused JPEG and Cloudflare's Early Hints advertised it too. The redundant `<link rel="preload" as="image">` is removed |
+| Committed Cloudflare account id | **Removed** from `DEPLOYMENT.md`; an account id is not a secret but has no reason to be public in a repository |
+| Documentation | README, PROJECT_PLAN, DEPLOYMENT, DOMAIN_SETUP and COSTS all still asserted "no forms, no database, no payments, no domain". They now describe the live backend, the domain and the shop |
+| Freebuff mirror | **Stale** — still serves an older build whose canonical points at `chessunited.pages.dev`. Republish from the current `dist/` or retire it |
+
+Nothing was written to the production database during this check: no test
+registration, order or member record was submitted.
+
+## 10. Merchandise catalogue and cart — 2026-11-05
+
+`/shop/` is now a shop rather than a price list:
+
+- A product grid grouped by the club's own categories, one card per item with its
+  photo, name, note, published price, a quantity field and **Add to cart**.
+- Product photos are `public/images/merch/<product-id>.webp`, and each photo the shop
+  uses is declared in `merchPhotos` in `src/data/images.ts` alongside every other
+  image path on the site. A product with no entry shows a labelled placeholder
+  instead of a broken image, so the club can publish photos one at a time. The
+  club's photos had not arrived when this was written, so all 21 cards ship with
+  the placeholder tile.
+- A **Cart** button in the header, rendered only on `/shop/`, with a live item count.
+  The drawer slides in, keeps its contents in `localStorage` across visits, supports
+  −/+ and remove, and traps focus like the mobile menu.
+- The order form no longer repeats the price list as a table of number inputs. It
+  shows the cart as a review block, and the same hidden quantity fields feed
+  `/api/orders`, so the API contract is unchanged and the server still re-prices the
+  order itself.
+- `public/scripts/forms.js` could never show the "tap card is quoted" note, because a
+  missing `data-item-price` attribute read as `Number(null)` → `0`. It now reads as
+  no price at all.
+
+### Gates run on this machine — 2026-11-05
+
+Astro 7.4.2 / Node 24.11.1 against a clean `dist/` built with the default
+`SITE_URL`. A headless Chrome build was downloaded locally (outside the repo) to
+run the two browser checks.
+
+| Gate | Result |
+| --- | --- |
+| `npm run check` | **PASS** — 16 files, 0 errors |
+| `npm run build` | **PASS** — 10 pages, 12 inline hashes allow-listed, `_headers` + `robots.txt` for `chessunitedglobal.com` |
+| `npm run qa` | **PASS** — 800 links, 133 images, 14 JSON-LD blocks, 0 errors |
+| `verify-build` | **PASS** after a checker fix — its duplicate-id pattern `\bid="` also matched `data-product-id="tshirt"` and `data-item-id="tshirt"`, so it reported a duplicate id on every product. The pattern now requires whitespace before `id=`, which is how real ids appear in the emitted HTML. Re-checked separately: no page has a duplicate real id and no `<label for>` points at a missing id |
+| `npm run qa:csp` | **PASS** — nine routes, `boot.js` runs on every one, no policy violations. `cart.js` is an external file, so `script-src 'self'` covers it without a hash |
+| `npm run qa:colors` | **PASS** — 0 off-palette literals |
+| `npm run qa:browser` | 18 page/viewport checks, **2 failures, both environmental**: `/partners/` logs a console 404 for `GET /api/partner-clubs`, because `astro preview` serves static files only and that endpoint is a Pages Function. The endpoint is live in production (section 9). No layout or overflow failures on desktop or mobile |
+
+### Cart behaviour checked in a real browser
+
+Driven with headless Chrome against the built `dist/`, on desktop (1280×900) and
+mobile (390×840):
+
+- 21 cards, 21 quantity fields, 21 **Add to cart** buttons and the 21 hidden
+  `qty.<id>` fields the API expects — one per product, so the catalogue the buyer
+  sees and the payload the server receives cannot drift.
+- Add 2 T-shirts + 3 caps → badge 5, drawer lines `₱600` / `₱450`, subtotal `₱1,050`,
+  `localStorage` `{"tshirt":2,"cap":3}`, hidden fields `2` and `3`.
+- Steppers: +Cap → `₱1,200`; −T-shirt → `₱900`. Both keep the drawer, the review
+  block, the badge, the hidden fields and storage in step.
+- A requested quantity of 500 clamps to 99 (₱11,880), matching the server's 1–99 cap.
+- Remove Mug → the line, its hidden field and its storage entry disappear.
+- An emptied cart shows "Nothing in the cart yet", hides the review list, returns the
+  subtotal to `₱0` and hides the badge.
+- A reload restores the cart, and each product card's own quantity field is synced to
+  it. An id that is no longer in the catalogue (`junk`) is dropped on load instead of
+  being sent to the order endpoint.
+- A quote-only cart (NCF tap card) reads `₱0 + tap card, quoted` and prices the line
+  as `—` rather than `₱0`.
+- Opening the drawer moves focus to its first control, sets `aria-expanded`, drops
+  `inert`, locks page scroll and traps Tab; Escape closes it and returns focus to the
+  Cart button. The same sequence holds with `prefers-reduced-motion: reduce`, where
+  the transition collapses to `1e-06s`.
+- At 390px the drawer is exactly the viewport width, the "Cart" text label is hidden,
+  and nothing widens the document — `scrollWidth` never exceeds `innerWidth` with the
+  drawer open or closed.
+- `/events/` and the other routes carry no cart markup at all: no button, no drawer.
+- Submitting the order form posts `items: [{ id: "cap", qty: 2 }]` with the `qty.*`
+  fields stripped from the payload, and an empty cart posts `items: []`, which the
+  server answers with the field error "Add at least one item to the order." —
+  `forms.js` renders that into the `[data-error-for="items"]` slot.
+
+Still to confirm against the deployed site, because `astro preview` runs no
+Functions and no order was written to the production database:
+
+- [ ] A real order through `/api/orders`: the club's GCash reference and total in the
+      success panel, and the cart clearing when that panel appears (`cart.js` watches
+      the `[data-success]` `hidden` attribute for it).
+- [ ] Product photos from the club, each added to `merchPhotos`, replacing the 21
+      placeholder tiles.
+- [ ] `/partners/` directory populated — it reads `/api/partner-clubs`, which a static
+      preview cannot serve.
+- [ ] `www.chessunitedglobal.com` (section 9) and the stale Freebuff mirror.
+
+## 11. Live check after the shop deployment — 2026-11-05
+
+`dist/` went to the `chessunited` Pages project as a manual Wrangler deploy (that
+project has no Git connection, so pushing does not publish anything). Checked from
+outside against `https://chessunitedglobal.com`:
+
+| Check | Result |
+| --- | --- |
+| `/shop/` | **PASS** — 200, and the served HTML carries 21 `product-card` blocks, the header `cart-button` and the `data-cart-drawer` panel |
+| `/scripts/cart.js` | **PASS** — 200; it answered 404 before this deploy |
+| Canonical and hero preload | **PASS** — the home canonical is `https://chessunitedglobal.com/` and the only image preload is the responsive WebP `imagesrcset`; the unused `hero.jpg` preload is gone |
+| `/api/admin/queue` without a cookie | **PASS** — 401, so the Functions bundle deployed with the pages |
+| Response headers | **PASS** — CSP, `X-Content-Type-Options: nosniff`, Cloudflare `server` |
+
+No test order, registration or member record was submitted, so the production
+database is untouched and the first real order remains unverified.
+

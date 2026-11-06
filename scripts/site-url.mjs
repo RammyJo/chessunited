@@ -2,10 +2,9 @@
  * Single source of truth for the absolute site URL used by canonical links,
  * Open Graph tags, the sitemap, robots.txt and the calendar files.
  *
- * Override at build time with SITE_URL when the site moves to another host
- * (for example a custom club domain).
+ * Override at build time with SITE_URL when the site moves to another host.
  */
-const raw = process.env.SITE_URL || 'https://chessunited.pages.dev';
+const raw = process.env.SITE_URL || 'https://chessunitedglobal.com';
 
 // SITE_URL is pasted into canonical tags, og:url, the sitemap, robots.txt and the
 // downloadable .ics files, so a typo here ships a broken or unsafe URL everywhere.

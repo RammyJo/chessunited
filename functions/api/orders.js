@@ -9,16 +9,17 @@ import {
   hasDb,
   noDb,
 } from './_utils.js';
-import { COURIERS, priceItems } from './_catalog.js';
+import { CATALOG, COURIERS, priceItems } from './_catalog.js';
 
 /**
- * POST /api/orders — place a merchandise or NCF Tap Card order.
+ * POST /api/orders — place a merchandise order.
  *
  * Body: fullName, email, phone, address, city, province, postcode, country,
- *       courier, items: [{ id, qty }], gcashRef?, notes?
+ *       courier, items: [{ id, qty, size? }], notes?
  *
- * No card details ever reach this endpoint. The order is saved as unpaid and
- * the club verifies the GCash reference by hand before shipping.
+ * No card details and no GCash reference reach this endpoint. The order is
+ * saved as unpaid and a club officer matches the GCash payment by hand before
+ * the parcel goes out.
  */
 export async function onRequestPost({ request, env }) {
   if (!hasDb(env)) return noDb();
@@ -35,10 +36,9 @@ export async function onRequestPost({ request, env }) {
   const postcode = clean(body.postcode, 16);
   const country = clean(body.country, 80) || 'Philippines';
   const courier = clean(body.courier, 12).toLowerCase();
-  const gcashRef = clean(body.gcashRef, 20).replace(/[\s-]/g, '');
   const notes = clean(body.notes, 400);
 
-  const { lines, subtotal, quote } = priceItems(body.items);
+  const { lines, subtotal } = priceItems(body.items);
 
   const fields = {};
   if (fullName.length < 3) fields.fullName = 'Enter the full name for the parcel.';
@@ -47,10 +47,10 @@ export async function onRequestPost({ request, env }) {
   if (address.length < 8) fields.address = 'Enter the street address the parcel ships to.';
   if (city.length < 2) fields.city = 'Enter a city or municipality.';
   if (province.length < 2) fields.province = 'Enter a province or state.';
-  if (!COURIERS[courier]) fields.courier = 'Choose a courier.';
+  if (!Object.hasOwn(COURIERS, courier)) fields.courier = 'Choose a courier.';
   if (!lines.length) fields.items = 'Add at least one item to the order.';
-  if (gcashRef && !/^\d{13}$/.test(gcashRef)) {
-    fields.gcashRef = 'A GCash reference number is 13 digits.';
+  else if (lines.some(({ id, size }) => size && !CATALOG[id].options.values.includes(size))) {
+    fields.items = 'Choose an available T-shirt size.';
   }
   if (Object.keys(fields).length) return fail('Please check the highlighted fields.', 422, fields);
 
@@ -61,8 +61,8 @@ export async function onRequestPost({ request, env }) {
       `INSERT INTO orders
          (order_no, full_name, email, phone, ship_address, ship_city, ship_province,
           ship_postcode, ship_country, courier, items_json, subtotal, shipping_note,
-          payment_method, gcash_ref, payment_status, fulfilment_status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'gcash', ?, 'pending', 'new')`,
+          payment_method, payment_status, fulfilment_status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'gcash', 'pending', 'new')`,
     )
       .bind(
         orderNo,
@@ -78,7 +78,6 @@ export async function onRequestPost({ request, env }) {
         JSON.stringify(lines),
         subtotal,
         notes,
-        gcashRef,
       )
       .run();
   } catch (error) {
@@ -92,8 +91,8 @@ export async function onRequestPost({ request, env }) {
       orderNo,
       lines,
       subtotal,
-      quote,
       courier: COURIERS[courier].label,
+      shippingFee: COURIERS[courier].fee,
       shipTo: [city, province, country].filter(Boolean).join(', '),
       paymentStatus: 'pending',
       fulfilmentStatus: 'new',

@@ -214,10 +214,15 @@ export const posters = {
   sponsors: '/images/posters/partners-1-0-900.webp',
   program: '/images/posters/program-1-0-892.webp',
   qr: '/images/posters/community-qr-760.webp',
-  rovers: '/images/posters/weekly-rovers-900.webp',
   top10Open: '/images/posters/top10-open-900.webp',
   top10Kiddies: '/images/posters/top10-kiddies-900.webp',
 };
+
+/* Merchandise product photos, keyed by the product `id` from the `merch` list in
+   site.ts. Save the file as public/images/merch/<id>.webp and add its line here.
+   An id that is not listed gets the card's placeholder tile, so the club can
+   publish product photos one at a time and the page never ships a broken image. */
+export const merchPhotos: Record<string, string> = {};
 
 export const galleryHome = [photos.table19, photos.hall, photos.medals, photos.flatlay, photos.medalist, photos.hall2];export const galleryAll = [
   photos.table19,

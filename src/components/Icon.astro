@@ -19,7 +19,8 @@ export interface Props {
     | 'info'
     | 'facebook'
     | 'instagram'
-    | 'youtube';
+    | 'youtube'
+    | 'cart';
   size?: number;
   class?: string;
 }
@@ -49,6 +50,8 @@ const paths: Record<string, string> = {
     '<rect x="3.5" y="3.5" width="17" height="17" rx="4.6"/><circle cx="12" cy="12" r="3.9"/><circle cx="17.1" cy="6.9" r="1.15" fill="currentColor" stroke="none"/>',
   youtube:
     '<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path fill="currentColor" stroke="none" d="M10.4 9.3 15.4 12l-5 2.7V9.3Z"/>',
+  cart:
+    '<path d="M4 8h16l-1.4 8.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8.6 8 12 3.6 15.4 8"/>',
 };
 ---
 

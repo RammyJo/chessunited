@@ -7,7 +7,7 @@ import Gallery from '../components/Gallery.astro';
 import { site } from '../data/site';
 import { galleryAll } from '../data/images';
 
-const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 
 const breadcrumbJsonLd = {
@@ -76,7 +76,7 @@ const breadcrumbJsonLd = {
       <div class="wrap cta-inner">
         <div>
           <h2 id="gallery-cta" class="display-lg">Bring your game.</h2>
-          <p>Every Saturday at Robinsons Mall La Union and Rovers Coffee.</p>
+          <p>Every Saturday at Robinsons Mall La Union, from 10 AM to 2 PM.</p>
         </div>
         <div class="cta-actions">
           <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">

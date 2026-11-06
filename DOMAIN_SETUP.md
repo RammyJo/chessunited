@@ -1,14 +1,19 @@
 # Domain setup — Spaceship → Cloudflare
 
-Status: **PENDING**. No domain name, Spaceship account access or DNS permission
-was supplied. Nothing has been purchased, transferred or changed.
+Status: **DONE for the apex, `www` still open.** `chessunitedglobal.com` is on
+Cloudflare DNS, attached to the Pages project `chessunited`, and is the canonical
+host: canonical tags, Open Graph, the sitemap, `robots.txt` and the `.ics` files all
+publish <https://chessunitedglobal.com>. `www.chessunitedglobal.com` has **no DNS
+record**, so `www.` does not resolve at all — the runbook in sections 3 and 6 is
+what remains.
 
-The site is currently live on Cloudflare's own `pages.dev` domain:
-<https://chessunited.pages.dev> (Cloudflare Pages project `chessunited`). A club
-domain is the next step, and it does not require rebuilding the site — only a
-domain, a DNS change and a new `SITE_URL` build. Because the host is already a
-Cloudflare Pages project, attaching a domain later is **Custom domains → Set up a
-domain** in that project, not a new deployment.
+The `pages.dev` hostname still answers
+(<https://chessunited.pages.dev>) because Cloudflare keeps it for every project. It
+is not canonical and does not redirect; the club domain is the address to publish.
+Because the host is a Cloudflare Pages project, attaching another domain later is
+**Custom domains → Set up a domain** in that project, not a new deployment — but
+after any host change, rebuild with the new `SITE_URL` (section 5) or the metadata
+will keep pointing at the old host.
 
 Two paths exist once a domain is registered at **Spaceship**:
 
@@ -175,13 +180,15 @@ Check:
 - If email breaks, restore the missing MX/SPF/DKIM/DMARC records in Cloudflare
   first; do not wait for propagation if the records are simply absent.
 
-## 9. What has not been done
+## 9. What is still open
 
-- No domain was purchased or transferred.
-- No nameserver was changed.
-- No DNS record was created.
-- No Cloudflare zone, Pages custom domain or TLS setting was changed.
-- No club domain is attached; the live URL is the `chessunited.pages.dev` host.
-  Canonical tags, Open Graph, the sitemap, `robots.txt` and the `.ics` files all
-  use that host today. After a domain is attached, change `SITE_URL` in
-  `scripts/site-url.mjs`, rebuild and redeploy.
+- **`www` does not resolve.** No DNS record exists for `www.chessunitedglobal.com`,
+  so a visitor typing it gets an error rather than a redirect. Add the record in the
+  Cloudflare dashboard and redirect `www` to the apex (section 3, step 4), then
+  re-run the checks in section 6.
+- **`pages.dev` answers without redirecting.** Both hosts serve the same content and
+  only the apex is canonical. That is tolerable, but a Redirect Rule from
+  `chessunited.pages.dev` to the domain is cleaner if the dashboard offers one.
+- The mail records for the domain were not inventoried here. If the club adds email
+  on this domain later, keep MX/SPF/DKIM/DMARC intact (section 0).
+- No verification token, API key or account id is stored in this repository.

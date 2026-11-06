@@ -1,0 +1,25 @@
+---
+import Icon from './Icon.astro';
+import { googleCalendarUrl, type Event } from '../data/site';
+
+type Props = { event: Event; link: string };
+const { event, link } = Astro.props;
+---
+
+{
+  event.ics && (
+    <span class="add-to-calendar">
+      <a href={event.ics}>
+        <Icon name="calendar" size={13} /> Add to calendar
+      </a>
+      <span class="add-to-calendar-sep" aria-hidden="true">·</span>
+      <a
+        href={googleCalendarUrl(event, link)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Google Calendar
+      </a>
+    </span>
+  )
+}

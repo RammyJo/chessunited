@@ -4,11 +4,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import EventCard from '../components/EventCard.astro';
+import AddToCalendar from '../components/AddToCalendar.astro';
 import Gallery from '../components/Gallery.astro';
 import { site, upcomingEvents, merch, partnerTiers, weeklySessions } from '../data/site';
 import { heroImage, photos, galleryHome } from '../data/images';
 
-const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 
 const clubJsonLd = {
@@ -77,9 +78,12 @@ const eventJsonLd = upcomingEvents.map((event) => ({
   })),
 }));
 
+/* The countdown below is pinned to Tournament 2.0, so the calendar link follows
+   the same event rather than whichever happens to be first. */
+const countdownEvent = upcomingEvents.find((event) => event.slug === 'tournament-2-0');
+
 const tickerItems = [
   'Every Saturday · 10 AM – 2 PM · Robinsons Mall La Union',
-  'Every Saturday morning · 10 AM – noon · Rovers Coffee',
   'Tournament 2.0 · 7 November · Robinsons Mall',
   'Super Mario Cup · 5 December · ₱50,000',
   'Chess for everyone',
@@ -103,7 +107,6 @@ const shopPreview = merch
     imagesrcset={heroImage.srcset}
     imagesizes="(max-width: 980px) 92vw, 46vw"
   />
-  <link slot="head" rel="preload" as="image" href={heroImage.jpg} />
 
   <Header />
 
@@ -151,7 +154,7 @@ const shopPreview = merch
           </div>
           <div class="hero-sticker" aria-hidden="true">
             <strong>Every<br />Saturday</strong>
-            <small>Two tables · 10 AM</small>
+            <small>Robinsons Mall · 10 AM</small>
           </div>
           <a class="hero-ticket" href="/events/#tournament-2-0">
             <span class="hero-ticket-date">
@@ -208,9 +211,9 @@ const shopPreview = merch
             <div><strong data-mins>--</strong><span>mins</span></div>
             <div><strong data-secs>--</strong><span>secs</span></div>
           </div>
-          <a class="text-link" href="/calendar/chess-united-tournament-2-0.ics" download>
-            <Icon name="download" size={15} /> Add to calendar
-          </a>
+          {countdownEvent && (
+            <AddToCalendar event={countdownEvent} link={abs('/events/#tournament-2-0')} />
+          )}
         </div>
       </div>
     </section>
@@ -221,14 +224,14 @@ const shopPreview = merch
           <p class="eyebrow eyebrow--light">Every Saturday</p>
           <h2 id="weekly-title" class="display-lg">The board is <em>always</em> set.</h2>
           <p>
-            Chess United runs two tables every Saturday: the long afternoon session at Robinsons
-            Mall La Union and the morning session at Rovers Coffee. Kids, teens, adults,
-            first-timers — the club's promise is in its tagline: chess for everyone.
+            Chess United plays every Saturday at Robinsons Mall La Union — the long afternoon
+            table, from 10 AM to 2 PM. Kids, teens, adults, first-timers — the club's promise is in
+            its tagline: chess for everyone.
           </p>
           <div class="weekly-actions">
             <a class="btn" href="/visit/#first-saturday">What to expect</a>
             <a class="text-link" href="/visit/">
-              Find the tables <Icon name="arrow" size={14} class="arrow" />
+              Find the table <Icon name="arrow" size={14} class="arrow" />
             </a>
           </div>
         </div>

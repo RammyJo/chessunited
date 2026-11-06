@@ -59,7 +59,10 @@ for (const [file, route] of htmlFiles) {
     if (!pattern.test(html)) errors.push(`${route}: missing ${name}`);
   }
 
-  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
+  // `\bid="` is not enough: a hyphen is a word boundary, so it also matches
+  // data-product-id="tshirt" and data-item-id="tshirt" and reports those as a
+  // duplicate id. Real id attributes always follow whitespace in emitted HTML.
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
   const duplicate = ids.find((id, index) => ids.indexOf(id) !== index);
   if (duplicate) errors.push(`${route}: duplicate id "${duplicate}"`);
 

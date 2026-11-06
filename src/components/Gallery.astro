@@ -9,12 +9,29 @@ export interface Props {
 
 const { photos, variant = 'full' } = Astro.props as Props;
 const eagerCount = variant === 'full' ? 1 : 0;
+
+/* On the photo wall each frame is cut to the photograph inside it: portraits
+   stand two rows tall, panoramics lie two columns wide, and the opening shot
+   leads at both. One more photograph — the merch table — is given the same
+   lead-sized frame so the wall has a second peak halfway down.
+
+   The frame areas are chosen so the sixteen photographs always cover a whole
+   number of rows at every breakpoint (4 + 4 + 14 × 2 = 36 cells, which divides
+   by the 6, 3 and 2 column layouts). Any other mix leaves holes in the grid. */
+const featureKey = 'flatlay';
+const shape = (photo: Photo, index: number) => {
+  if (variant !== 'full') return '';
+  if (index === 0) return 'gallery-item--lead';
+  if (photo.key === featureKey) return 'gallery-item--feature';
+  if (photo.portrait) return 'gallery-item--tall';
+  return 'gallery-item--wide';
+};
 ---
 
 <div class={`gallery-grid gallery-grid--${variant}`}>
   {photos.map((photo, index) => (
     <button
-      class="gallery-item"
+      class:list={['gallery-item', shape(photo, index)]}
       type="button"
       data-lightbox
       data-full={photo.full}
@@ -25,7 +42,13 @@ const eagerCount = variant === 'full' ? 1 : 0;
       <img
         src={photo.src}
         srcset={photo.srcset}
-        sizes="(max-width: 520px) 60vw, (max-width: 760px) 50vw, 33vw"
+        sizes={
+          variant === 'full'
+            ? shape(photo, index) === 'gallery-item--tall'
+              ? '(max-width: 520px) 46vw, (max-width: 900px) 23vw, 14vw'
+              : '(max-width: 520px) 96vw, (max-width: 900px) 47vw, 29vw'
+            : '(max-width: 520px) 60vw, (max-width: 760px) 50vw, 33vw'
+        }
         width={photo.width}
         height={photo.height}
         alt={photo.alt}

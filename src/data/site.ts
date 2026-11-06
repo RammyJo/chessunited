@@ -59,7 +59,7 @@ export const site = {
   legalName: 'Chess United',
   tagline: 'Chess for everyone.',
   description:
-    'Community chess in San Fernando City, La Union. Weekly Saturday play at two tables, plus age-division tournaments with cash prizes.',
+    'Community chess in San Fernando City, La Union. Weekly Saturday play at Robinsons Mall La Union, plus age-division tournaments with cash prizes.',
   city: 'San Fernando City',
   region: 'La Union',
   country: 'Philippines',
@@ -106,29 +106,21 @@ export const gcash = {
 };
 
 /* ---------------------------------------------------------------------------
-   Shipping — how the club sends things out.
-   The NCF Tap Card travels nationwide by LBC or J&T Express; merchandise goes
-   anywhere in the world by FedEx, UPS, DHL, LBC or Philippine Post.
+   Shipping — the club ships nationwide for now. `fee` is what each courier
+   costs to add to an order; the club has not given the amounts yet, so a null
+   fee is shown as quoted rather than guessed. The same numbers live in
+   `functions/api/_catalog.js`, which is what actually prices an order.
    --------------------------------------------------------------------------- */
 export type Courier = {
   id: string;
   label: string;
-  scope: 'ph' | 'intl';
   note: string;
+  fee: number | null;
 };
 
 export const couriers: Courier[] = [
-  { id: 'lbc', label: 'LBC', scope: 'ph', note: 'Nationwide, and worldwide for merchandise.' },
-  { id: 'jt', label: 'J&T Express', scope: 'ph', note: 'Nationwide.' },
-  { id: 'fedex', label: 'FedEx', scope: 'intl', note: 'International merchandise.' },
-  { id: 'ups', label: 'UPS', scope: 'intl', note: 'International merchandise.' },
-  { id: 'dhl', label: 'DHL', scope: 'intl', note: 'International merchandise.' },
-  {
-    id: 'phlpost',
-    label: 'Philippine Post',
-    scope: 'intl',
-    note: 'International merchandise, economy service.',
-  },
+  { id: 'lbc', label: 'LBC', note: 'Nationwide.', fee: null },
+  { id: 'jt', label: 'J&T Express', note: 'Nationwide.', fee: null },
 ];
 
 
@@ -339,7 +331,8 @@ export type WeeklySession = {
   blurb: string;
 };
 
-/* Two standing weekly tables, each published on its own club poster. */
+/* The standing weekly table, published on the club's own poster. The second
+   Saturday table the club used to run is no longer on the schedule. */
 export const weeklySessions: WeeklySession[] = [
   {
     name: 'Robinsons Mall La Union',
@@ -352,29 +345,22 @@ export const weeklySessions: WeeklySession[] = [
     posterWidth: 900,
     posterHeight: 1273,
     blurb:
-      'The main weekly session: a four-hour table in the mall for kids, teens and adults, whether you are learning the moves or preparing for tournament day.',
-  },
-  {
-    name: 'Rovers Coffee',
-    when: 'Every Saturday morning',
-    time: '10:00 AM – 12:00 PM',
-    venue: 'Rovers Coffee',
-    address:
-      'Rovers Coffee, MacArthur Highway, opposite Saint Louis College, Barangay Lingsat, San Fernando City, La Union',
-    mapsQuery: 'Rovers Coffee, MacArthur Highway, San Fernando City, La Union',
-    poster: '/images/posters/weekly-rovers-900.webp',
-    posterWidth: 900,
-    posterHeight: 1600,
-    blurb:
-      'The morning table at the coffee shop that hosted Tournament 1.0 — a two-hour session for anyone who wants to play before the day gets busy.',
+      'The weekly session: a four-hour table in the mall for kids, teens and adults, whether you are learning the moves or preparing for tournament day.',
   },
 ];
 
 export const upcomingEvents = events.filter((e) => e.status === 'upcoming');
 
 /* `id` is the key the order form posts and the key `functions/api/_catalog.js`
-   prices server-side. The two lists must stay in step. */
-export type MerchItem = { id: string; name: string; price: number; note?: string };
+   prices server-side. The two lists must stay in step. `sizes` is the list of
+   sizes a buyer chooses on the card; the price is the same for every size. */
+export type MerchItem = {
+  id: string;
+  name: string;
+  price: number;
+  note?: string;
+  sizes?: string[];
+};
 export type MerchGroup = { name: string; blurb: string; items: MerchItem[] };
 
 export const merch: MerchGroup[] = [
@@ -382,7 +368,7 @@ export const merch: MerchGroup[] = [
     name: 'Apparel',
     blurb: 'Club colours for tournament day and everywhere else.',
     items: [
-      { id: 'tshirt', name: 'T-shirt', price: 300, note: 'medium only' },
+      { id: 'tshirt', name: 'T-shirt', price: 300, sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
       { id: 'polo-shirt', name: 'Polo shirt', price: 400 },
       { id: 'sublimation-shirt', name: 'Sublimation shirt', price: 600 },
       { id: 'cap', name: 'Cap', price: 150 },
@@ -423,20 +409,6 @@ export const merch: MerchGroup[] = [
     ],
   },
 ];
-
-/* ---------------------------------------------------------------------------
-   NCF Tap Card — ordered through the site and shipped nationwide by LBC or
-   J&T Express. The club has not published a price, so it is listed without one
-   and the club confirms the total before the buyer pays.
-   --------------------------------------------------------------------------- */
-export const ncfTapCard = {
-  id: 'ncf-tap-card',
-  name: 'NCF Tap Card',
-  price: null as number | null,
-  blurb:
-    'The National Chess Federation tap card, sold through Chess United. Shipped anywhere in the Philippines by LBC or J&T Express.',
-  couriers: ['lbc', 'jt'],
-};
 
 /* ---------------------------------------------------------------------------
    Confirmed but not yet published in full: the club has announced the date and
@@ -614,3 +586,30 @@ export const formatPeso = (amount: number) =>
 
 export const mapsUrl = (query: string) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+
+/* Google's event template opens in the visitor's browser and files the event
+   under whichever Google account is already signed in — the closest a static
+   site gets to "add to my calendar". Anyone who lives in a different calendar
+   app takes the .ics instead. */
+const utcStamp = (date: string, time: string) => {
+  const utc = new Date(`${date}T${time}:00+08:00`);
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return (
+    `${utc.getUTCFullYear()}${pad(utc.getUTCMonth() + 1)}${pad(utc.getUTCDate())}` +
+    `T${pad(utc.getUTCHours())}${pad(utc.getUTCMinutes())}00Z`
+  );
+};
+
+export const googleCalendarUrl = (event: Event, link: string) => {
+  const fees = event.divisions
+    .map((division) => `${division.name} (${division.ages}) registration ${formatPeso(division.fee)}`)
+    .join('; ');
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: event.name,
+    dates: `${utcStamp(event.date, event.start)}/${utcStamp(event.date, event.end)}`,
+    details: `${event.dateLabel}, ${event.timeLabel} at ${event.venue}. ${fees}. ${link}`,
+    location: event.address,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};

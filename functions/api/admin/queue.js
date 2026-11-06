@@ -6,7 +6,7 @@ import { json, fail, isAdmin, requireAdmin, hasDb, noDb } from '../_utils.js';
  * Returned in one payload so the dashboard needs a single request:
  *  - members       new memberships, with the printed-ID requests flagged
  *  - registrations tournament entries whose GCash reference needs matching
- *  - orders        merchandise and NCF Tap Card orders to pack and ship
+ *  - orders        merchandise orders to pack and ship
  *  - clubs         partner club submissions plus their tournament listings
  */
 export async function onRequestGet({ request, env }) {

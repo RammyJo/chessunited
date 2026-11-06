@@ -1,27 +1,31 @@
 # Deployment — Cloudflare
 
-Status: **DEPLOYED AND VERIFIED** (2026-10-24, brand-palette build).
+Status: **DEPLOYED AND VERIFIED** on the club's own domain (last re-checked 2026-11-05,
+after the merchandise shop went live — see `QA_REPORT.md` section 11).
 
 | Item | Value |
 | --- | --- |
-| Production URL | <https://chessunited.pages.dev> |
+| Production URL | <https://chessunitedglobal.com> |
 | Host | Cloudflare Pages — project **`chessunited`**, direct upload |
-| Account | The club administrator's Cloudflare account (`a1535c96f8ebe5df3bbd767a4367914c`) |
+| Account | The club administrator's Cloudflare account (id kept out of this repo; find it in the dashboard under **Manage account**) |
 | Production branch | `main` |
-| Deployment | `757c7a52` — 94 files uploaded, `wrangler pages deploy` reported success |
-| Mirror | <https://site-88c41e329d7a4c7f97de7219774a18c9.freebuff.page> (Freebuff Sites, same `dist/`) |
-| Custom domain | **PENDING** — no domain registered; see `DOMAIN_SETUP.md` |
+| Pages Functions | `functions/api/**` are deployed with the assets and bound to the D1 database `chess-united` |
+| Mirror | <https://site-88c41e329d7a4c7f97de7219774a18c9.freebuff.page> (Freebuff Sites, same `dist/`) — **serves an older build**; see §9 |
+| Custom domain | **LIVE** — `chessunitedglobal.com` is connected and is the canonical host; `www` has no DNS record yet, see `DOMAIN_SETUP.md` |
 
 ## 0. What is deployed
 
 Two Cloudflare targets serve the same `dist/` build:
 
 1. **Cloudflare Pages, project `chessunited`** — the production host, served at
-   `https://chessunited.pages.dev`. Uploaded directly from `dist/` with Wrangler,
-   so `dist/_headers` (CSP, security and cache rules) applies natively.
+   `https://chessunitedglobal.com` (and `https://chessunited.pages.dev`). Uploaded
+   directly from `dist/` with Wrangler, so `dist/_headers` (CSP, security and cache
+   rules) applies natively. The `functions/` directory next to `dist/` is detected
+   automatically, so one `wrangler pages deploy` ships both the pages and the API.
 2. **Freebuff Sites** — the mirror, a managed Worker plus static assets declared
    in `deploy.json`. `scripts/make_worker.mjs` embeds the same `_headers` rules
-   into the Worker so both hosts answer identically.
+   into the Worker so both hosts answer identically. The mirror carries static files
+   only: it has no Pages Functions and no D1, so its forms cannot submit.
 
 Wrangler's OAuth session is stored in the user's own Wrangler config
 (`%APPDATA%\xdg.config\.wrangler\config\default.toml`), never in this repo. No
@@ -58,10 +62,14 @@ Mirror (Freebuff Sites): deploy `dist/` again with `deploy.json`. Publishing is
 a separate step from deploying: a new deployment does not re-publish an
 environment that was taken offline.
 
-If the site moves to a custom domain, set `SITE_URL` in
-`scripts/site-url.mjs` (or the `SITE_URL` environment variable), rebuild and
-redeploy so canonical, Open Graph, sitemap, `robots.txt` and calendar URLs match.
-The committed default is already `https://chessunited.pages.dev`.
+If the site moves to another host, set `SITE_URL` in `scripts/site-url.mjs` (or the
+`SITE_URL` environment variable), rebuild and redeploy so canonical, Open Graph,
+sitemap, `robots.txt` and calendar URLs match. The committed default is already
+`https://chessunitedglobal.com`, so a plain `npm run build` is correct for this site.
+
+`npm run build` regenerates `dist/`; it does not touch the database or the secrets.
+The D1 schema is applied separately (section 9) and only needs to run again when
+`schema.sql` changes.
 
 ## 0b. Rollback
 
@@ -72,15 +80,15 @@ previous commit, run `npm ci && npm run build`, and deploy again.
 
 ---
 
-The original Cloudflare Pages plan below still applies if the club later hosts
-the same `dist/` on its own Cloudflare account. Cloudflare Pages serves the same
-static output, supports the `_headers` file directly, and gives HTTPS and a free
-`*.pages.dev` URL.
+The plan below is the general Cloudflare Pages procedure, kept because it is still
+what the project uses. Cloudflare Pages serves the same static output, supports the
+`_headers` file directly, runs the `functions/` API against the bound D1 database,
+and gives HTTPS and a free `*.pages.dev` URL next to the custom domain.
 
 ## 1. Before deploying
 
 1. Confirm the final production URL. The current live URL is
-   `https://chessunited.pages.dev` (the default in `scripts/site-url.mjs`).
+   `https://chessunitedglobal.com` (the default in `scripts/site-url.mjs`).
 2. Build with that URL:
 
    ```powershell
@@ -130,8 +138,7 @@ preview hostname.
 ## 3. Direct upload with Wrangler — **done, this is how the site ships**
 
 The source now lives in <https://github.com/RammyJo/chessunited> on `main`, and
-this direct-upload path is still how `chessunited.pages.dev` was created and is
-kept up to date.
+this direct-upload path is still how the site is shipped.
 
 ```powershell
 npx.cmd wrangler login                    # browser consent, ~2 min window
@@ -169,7 +176,8 @@ To make every push deploy itself:
 2. Pick `RammyJo/chessunited` and the `main` branch when the Cloudflare GitHub
    app asks for repository access.
 3. Apply the build settings from section 2 and add `SITE_URL` as a **production**
-   environment variable set to `https://chessunited.pages.dev`.
+   environment variable set to `https://chessunitedglobal.com` (the build default
+   already matches, so this only pins it).
 4. Deploy. Pushes to `main` then create deployments on their own; other branches
    can create previews.
 
@@ -206,6 +214,7 @@ curl.exe -I https://<final-host>/events/
 curl.exe https://<final-host>/robots.txt
 curl.exe https://<final-host>/sitemap-index.xml
 curl.exe -I https://<final-host>/calendar/chess-united-tournament-2-0.ics
+curl.exe https://<final-host>/api/admin/queue
 ```
 
 Check:
@@ -214,13 +223,17 @@ Check:
 - [ ] `Content-Security-Policy` is present and there are no browser console CSP
       errors.
 - [ ] `/robots.txt` points at the final sitemap URL.
-- [ ] `/sitemap-index.xml` lists 7 public pages and no `/404`.
+- [ ] `/sitemap-index.xml` lists the 8 public pages and no `/404` or `/admin/`.
 - [ ] `/calendar/*.ics` returns `text/calendar` and opens in a calendar app.
 - [ ] The Messenger group link and both Maps links open.
 - [ ] The Visit-page QR scans to the club's Messenger group.
 - [ ] A nonexistent URL returns the custom 404 with HTTP 404 and `noindex`.
+- [ ] `GET /api/admin/queue` without the admin cookie returns **401**, not a page.
+- [ ] `/shop/` adds an item to the cart, keeps it across a reload, and the cart
+      totals agree with the price list and with what `/api/orders` reports.
 - [ ] Lighthouse production run meets the targets in `QA_REPORT.md`.
-- [ ] No mixed content, no third-party requests, no unexpected cookies.
+- [ ] No mixed content and no third-party requests; the only cookie is the
+      officer-only `cu_admin` on `/admin/`.
 
 Then record the production URL, deployment ID and date in `QA_REPORT.md` and
 update `SITE_URL` if the host changed.
@@ -231,12 +244,51 @@ Cloudflare Pages keeps deployment history. In the dashboard, open the project �
 **Deployments** → choose the last known-good deployment → **Rollback**. For a
 direct upload, rebuild the previous commit or `dist/` and upload again.
 
-## 8. What is not included
+## 7. Rollback
 
-- The Git repository exists and `main` is pushed, but no CI workflow or automatic
-  deploy is wired up yet, so every release is a manual `wrangler pages deploy`.
-  Connecting the repository to the Pages project (section 4) fixes that.
-- No custom domain or DNS record exists yet; the site runs on its `pages.dev`
-  host, which is live and verified.
+Cloudflare Pages keeps deployment history. In the dashboard, open the project →
+**Deployments** → choose the last known-good deployment → **Rollback**. For a
+direct upload, rebuild the previous commit or `dist/` and upload again.
+
+Rolling back files does not roll back data. The D1 database keeps every
+registration, order and member recorded since, and the admin queue shows them
+whatever build is live. Only roll `schema.sql` changes back with care, because the
+Functions read those columns directly.
+
+## 8. Secrets and the database — one-time setup
+
+These are set once on the Cloudflare account, not on every deploy.
+
+```powershell
+npx.cmd wrangler d1 execute chess-united --remote --file=./schema.sql
+npx.cmd wrangler pages secret put ADMIN_TOKEN --project-name chessunited
+# optional, for confirmation emails:
+npx.cmd wrangler pages secret put RESEND_API_KEY --project-name chessunited
+npx.cmd wrangler pages secret put MAIL_FROM --project-name chessunited
+```
+
+- The D1 database `chess-united` and its binding live in `wrangler.toml`; the
+  database id there is an identifier, not a credential, but keep the Cloudflare
+  account id out of the repository.
+- `ADMIN_TOKEN` is the officer passphrase for `/admin/`. It is a secret: paste it at
+  the prompt, never into a file, commit, log or chat.
+- `schema.sql` is `CREATE TABLE IF NOT EXISTS`, so re-running it is safe.
+- Without the optional email secrets the site still works; the officer queue at
+  `/admin/` is the notification path.
+- Do not write test rows into the production database. Use a local D1
+  (`--local`) if a test record is unavoidable.
+
+## 9. What still needs doing
+
+- The Freebuff mirror serves an older build than Cloudflare Pages, and that build
+  canonicalises to `chessunited.pages.dev` instead of the club domain. Republish it
+  from the current `dist/`, or retire it — a stale second host is an SEO and
+  support problem.
+- `www.chessunitedglobal.com` has no DNS record, so `www.` does not resolve at all.
+  Add the record and a redirect to the apex in the Cloudflare dashboard.
+- The repository is not connected to the Pages project, so every release is still a
+  manual `wrangler pages deploy`. Section 4 is the one-time fix.
+- Event `status` in `src/data/site.ts` is hand-maintained: a finished tournament
+  keeps showing as upcoming until someone edits the file.
 - No API token is stored. Authorization is the interactive Wrangler OAuth
   session on the machine that deploys.

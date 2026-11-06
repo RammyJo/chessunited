@@ -7,6 +7,9 @@ const isActive = (href: string) => {
   const clean = href.replace(/\/+$/, '') || '/';
   return clean === '/' ? path === '/' : path === clean || path.startsWith(clean + '/');
 };
+/* The cart belongs to the merchandise area only, so the button is not rendered
+   anywhere else in the site. */
+const isShop = path === '/shop';
 ---
 
 <header class="site-header" data-header>
@@ -29,6 +32,22 @@ const isActive = (href: string) => {
       Join the group
       <Icon name="external" size={15} />
     </a>
+
+    {isShop && (
+      <button
+        class="cart-button"
+        type="button"
+        id="cart-button"
+        aria-label="Open cart"
+        aria-expanded="false"
+        aria-controls="cart-drawer"
+        data-cart-open
+      >
+        <Icon name="cart" size={18} />
+        <span class="cart-label">Cart</span>
+        <span class="cart-count" data-cart-count hidden>0</span>
+      </button>
+    )}
 
     <button
       class="menu-toggle"
@@ -68,7 +87,7 @@ const isActive = (href: string) => {
 
   <div class="mobile-menu-foot">
     <strong>Every Saturday · from 10 AM</strong>
-    Robinsons Mall La Union · Rovers Coffee
+    Robinsons Mall La Union
     <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
       Join the Messenger group
       <Icon name="external" size={15} />

@@ -29,7 +29,6 @@
   const collect = (form) => {
     const data = {};
     for (const [name, value] of new FormData(form).entries()) {
-      if (name.startsWith('qty.')) continue;
       data[name] = typeof value === 'string' ? value.trim() : value;
     }
     $$('[data-bool]', form).forEach((input) => {
@@ -39,14 +38,18 @@
       data[input.name] = Number(input.value);
     });
 
+    // The order lines are written by cart.js and carry no field name on purpose:
+    // the items array below is what the server prices, never the FormData.
     const itemInputs = $$('[data-item-id]', form);
     if (itemInputs.length) {
       const items = [];
       itemInputs.forEach((input) => {
         const qty = Number.parseInt(input.value, 10);
-        if (Number.isFinite(qty) && qty > 0) {
-          items.push({ id: input.getAttribute('data-item-id'), qty });
-        }
+        if (!Number.isFinite(qty) || qty <= 0) return;
+        const item = { id: input.getAttribute('data-item-id'), qty };
+        const size = (input.getAttribute('data-item-size') || '').trim();
+        if (size) item.size = size;
+        items.push(item);
       });
       data.items = items;
     }
@@ -62,27 +65,21 @@
     const outputs = $$('[data-subtotal]', form);
     if (!outputs.length) return;
 
-    const rows = $$('[data-item-id]', form);
+    /* The order lines come and go with the cart, so the rows are read again on
+       every input event instead of being captured once at page load. */
     const refresh = () => {
       let total = 0;
-      let quote = false;
-      rows.forEach((input) => {
+      $$('[data-item-id]', form).forEach((input) => {
         const qty = Number.parseInt(input.value, 10) || 0;
         const price = Number(input.getAttribute('data-item-price'));
-        if (!Number.isFinite(price)) {
-          if (qty > 0) quote = true;
-          return;
-        }
-        total += Math.max(qty, 0) * price;
+        if (Number.isFinite(price)) total += Math.max(qty, 0) * price;
       });
       outputs.forEach((node) => {
-        node.textContent = quote ? `${peso(total)} + tap card, quoted` : peso(total);
+        node.textContent = peso(total);
       });
-      const quoteNote = $('[data-quote-note]', form);
-      if (quoteNote) quoteNote.hidden = !quote;
     };
 
-    rows.forEach((input) => input.addEventListener('input', refresh));
+    form.addEventListener('input', refresh);
     refresh();
   });
 

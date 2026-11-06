@@ -3,10 +3,10 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
-import { site, merch, ncfTapCard, couriers, gcash, formatPeso } from '../data/site';
-import { photos } from '../data/images';
+import { site, merch, couriers, formatPeso } from '../data/site';
+import { photos, merchPhotos } from '../data/images';
 
-const origin = Astro.site ?? new URL('https://chessunited.pages.dev');
+const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 
 const breadcrumbJsonLd = {
@@ -18,10 +18,40 @@ const breadcrumbJsonLd = {
   ],
 };
 
-const totalItems = merch.reduce((count, group) => count + group.items.length, 0);
-const nationwide = couriers.filter((courier) => courier.scope === 'ph');
-const worldwide = couriers.filter((courier) => courier.scope === 'intl');
-const qty = (max: number) => ({ type: 'number' as const, min: '0', max: String(max), step: '1', inputmode: 'numeric' as const, value: '0' });
+/* Product photos are declared in src/data/images.ts next to every other image on
+   the site. A product without an entry keeps the card's placeholder tile, so the
+   club can publish photos one at a time and the page never ships a broken image. */
+const photoFor = (id: string) => merchPhotos[id] ?? null;
+
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  note?: string;
+  sizes?: string[];
+  group: string;
+  photo: string | null;
+};
+
+const groups = merch.map((group) => ({
+  name: group.name,
+  blurb: group.blurb,
+  items: group.items.map((item): Product => ({
+    ...item,
+    group: group.name,
+    photo: photoFor(item.id),
+  })),
+}));
+
+const products: Product[] = groups.flatMap((group) => group.items);
+const missingPhotos = products.filter((item) => !item.photo).length;
+
+/* What a courier costs is added to the order automatically as soon as the club
+   publishes the amount. Until then the page says the club quotes it, because a
+   guessed shipping fee on a live shop is worse than none. The numbers that
+   actually price an order live in functions/api/_catalog.js. */
+const feeLabel = (fee: number | null) =>
+  fee === null ? 'shipping quoted by the club' : `${formatPeso(fee)} shipping`;
 
 /* Held as a string so Astro does not read `{{…}}` in markup as a JS expression.
    forms.js fills these tokens from the JSON the API returns. */
@@ -31,16 +61,15 @@ const orderTemplate = `
   <p class="success-code">{{order.orderNo}}</p>
   <p>Shipping to {{order.shipTo}} by {{order.courier}}.</p>
   <p>
-    A club officer checks the GCash reference against the club account, confirms the
-    total including the shipping fee by email, then packs and sends the parcel. Nothing
-    ships before the payment is checked.
+    A club officer checks the order, confirms the total by email, then packs and sends
+    the parcel. Nothing ships before the payment lands in the club account.
   </p>
 `;
 ---
 
 <Base
   title="Official merchandise — Chess United"
-  description="Order Chess United merch online — shirts, caps, chess sets, clocks and the NCF Tap Card. Shipped worldwide by FedEx, UPS, DHL, LBC or Philippine Post."
+  description="Shop Chess United merch online — shirts, caps, chess sets and clocks. Pick a size, add to cart, pay by GCash, delivered nationwide by LBC or J&T Express."
   jsonLd={breadcrumbJsonLd}
 >
   <Header />
@@ -49,52 +78,121 @@ const orderTemplate = `
     <header class="page-hero">
       <div class="wrap">
         <p class="eyebrow">Official club merchandise</p>
-        <h1>Merchandise.</h1>
+        <h1>Shop the club.</h1>
         <p class="lede">
-          From the board to the bag: Chess United shirts, sets, clocks and small things. Build your
-          order on this page and the club ships it to you — nationwide by LBC or J&amp;T Express, and
-          anywhere in the world by FedEx, UPS, DHL, LBC or Philippine Post.
+          From the board to the bag: Chess United shirts, sets, clocks and small things. Add what
+          you want to the cart, tell the club where to send it, and pay by GCash — delivered
+          anywhere in the Philippines by LBC or J&amp;T Express.
         </p>
         <div class="page-hero-meta">
-          <span><Icon name="spark" size={15} /> {totalItems} items</span>
+          <span><Icon name="cart" size={15} /> {products.length} products</span>
           <span><Icon name="check" size={15} /> Pay by GCash</span>
-          <span><Icon name="pin" size={15} /> Ships worldwide</span>
+          <span><Icon name="pin" size={15} /> Nationwide delivery</span>
         </div>
       </div>
     </header>
 
-    <section class="section" aria-labelledby="kit-title">
+    <section class="section section--paper" id="prices" aria-labelledby="price-title">
+      <div class="wrap shop-teaser">
+        <div class="shop-photo reveal">
+          <img
+            src="/images/posters/merch-price-list-900.webp"
+            width="900"
+            height="636"
+            alt="Chess United official merchandise price list poster with shirts, chess sets, clocks and small items."
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="tag">Official price list</span>
+        </div>
+        <div>
+          <p class="eyebrow">The list</p>
+          <h2 id="price-title" class="display-md">Support the club. Look the part.</h2>
+          <p class="lede">
+            Every price in the catalogue below is reproduced from the club's own merchandise poster.
+            The poster advertises limited stocks, so the club confirms availability when it receives
+            your order.
+          </p>
+          <div class="note-box mt-2">
+            <strong>How pricing works:</strong> the club charges its published list price for the
+            items. The courier fee is added to the order automatically once the club publishes what
+            each courier costs.
+          </div>
+          <div class="hero-actions">
+            <a class="btn" href="#products">
+              <Icon name="cart" size={15} /> See the catalogue
+            </a>
+            <a class="btn btn--ghost" href={site.groupUrl} target="_blank" rel="noopener">
+              Ask the club <Icon name="external" size={15} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="jersey-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tournament day</p>
+            <h2 id="jersey-title" class="display-md">The club jersey.</h2>
+          </div>
+          <p class="lede">
+            White body, blue and red raglan sleeves, the crest on the chest and the knight on the
+            back — the sublimation design the club publishes for tournament wear.
+          </p>
+        </div>
+
+        <div class="shop-photo shop-photo--wide reveal">
+          <img
+            src={photos.jersey.src}
+            srcset={photos.jersey.srcset}
+            sizes="(max-width: 900px) 92vw, 70vw"
+            width={photos.jersey.width}
+            height={photos.jersey.height}
+            alt={photos.jersey.alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="tag">Sublimation jersey design</span>
+        </div>
+
+        <div class="jersey-facts">
+          <div class="price-list">
+            <div class="price-row">
+              <span class="name">Sublimation shirt</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱600</span>
+            </div>
+            <div class="price-row">
+              <span class="name">T-shirt</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱300</span>
+            </div>
+            <div class="price-row">
+              <span class="name">Polo shirt</span>
+              <span class="dots" aria-hidden="true"></span>
+              <span class="amount">₱400</span>
+            </div>
+          </div>
+          <div class="note-box">
+            <strong>Personalisation:</strong> the sample back carries a name and a number. The
+            published list prices a sublimation shirt at ₱600 but does not say what personalisation
+            costs, so put your name and number in the order notes and the club confirms the total.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="kit-title">
       <div class="wrap shop-teaser">
         <div>
           <p class="eyebrow">The kit in real life</p>
           <h2 id="kit-title" class="display-md">Shirt, cap, mug, notebook.</h2>
           <p class="lede">
             The club's printed range is worn at the tables, not kept in a box. Everything in this
-            picture is on the order list below — set the quantity on what you want and the club
-            sends it out.
+            picture is in the catalogue below — add it to the cart and the club sends it out.
           </p>
-          <div class="price-list mt-2">
-            <div class="price-row">
-              <span class="name">T-shirt<span class="item-note"> · medium only</span></span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱300</span>
-            </div>
-            <div class="price-row">
-              <span class="name">Cap</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱150</span>
-            </div>
-            <div class="price-row">
-              <span class="name">Mug</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱120</span>
-            </div>
-            <div class="price-row">
-              <span class="name">Notebook</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱150</span>
-            </div>
-          </div>
           <div class="badge-row mt-2">
             <span class="badge">Order online</span>
             <span class="badge">Limited stocks</span>
@@ -118,78 +216,177 @@ const orderTemplate = `
       </div>
     </section>
 
+    <section class="section" id="products" aria-labelledby="products-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">The catalogue</p>
+            <h2 id="products-title">Pick your kit.</h2>
+          </div>
+          <p class="lede">
+            Choose a size where there is one, set a quantity, add it to the cart — and the cart keeps
+            it, even if you close the page. The order form opens once the cart has something in it.
+          </p>
+        </div>
+
+        {groups.map((group) => (
+          <div class="product-category">
+            <div class="product-category-head">
+              <h3>{group.name}</h3>
+              <span>{group.items.length} products</span>
+            </div>
+            <p class="product-category-blurb">{group.blurb}</p>
+
+            <div class="product-grid">
+              {group.items.map((item) => (
+                <article
+                  class="product-card"
+                  data-product
+                  data-product-id={item.id}
+                  data-product-name={item.name}
+                  data-product-price={item.price}
+                  data-product-sizes={item.sizes?.join(',') ?? undefined}
+                >
+                  <div class="product-media">
+                    {item.photo ? (
+                      <img
+                        src={item.photo}
+                        width="600"
+                        height="600"
+                        alt={`${item.name} — Chess United merchandise`}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div class="product-placeholder">
+                        <Icon name="spark" size={28} />
+                        <span>{item.name}</span>
+                        <small>Photo coming</small>
+                      </div>
+                    )}
+                  </div>
+
+                  <h4 class="product-name">{item.name}</h4>
+                  <p class="product-note">{item.note || ' '}</p>
+                  <p class="product-price">{formatPeso(item.price)}</p>
+
+                  {item.sizes && item.sizes.length > 0 && (
+                    <div class="product-sizes" role="group" aria-labelledby={`sizes-${item.id}-label`}>
+                      <span class="product-sizes-label" id={`sizes-${item.id}-label`}>Size</span>
+                      <div class="product-size-choices">
+                        {item.sizes.map((size) => (
+                          <>
+                            <input
+                              class="product-size-input"
+                              type="radio"
+                              id={`size-${item.id}-${size}`}
+                              name={`size-${item.id}`}
+                              value={size}
+                              data-product-size={item.id}
+                            />
+                            <label class="product-size-chip" for={`size-${item.id}-${size}`}>{size}</label>
+                          </>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div class="product-buy">
+                    <label class="product-qty-label" for={`qty-${item.id}`}>
+                      Qty<span class="sr-only"> of {item.name}</span>
+                    </label>
+                    <input
+                      class="product-qty"
+                      id={`qty-${item.id}`}
+                      type="number"
+                      min="1"
+                      max="99"
+                      step="1"
+                      value="1"
+                      inputmode="numeric"
+                      data-product-qty={item.id}
+                    />
+                    <button class="btn btn--sm product-add" type="button" data-add-to-cart={item.id}>
+                      Add to cart
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {missingPhotos > 0 && (
+          <p class="merch-note">
+            {missingPhotos} of {products.length} products are still waiting for their photo. The
+            price and the order line are already correct — the picture appears as soon as the club
+            sends it.
+          </p>
+        )}
+      </div>
+    </section>
+
     <section class="section section--paper" id="order" aria-labelledby="order-title">
       <div class="wrap">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Build your order</p>
-            <h2 id="order-title">Order it online.</h2>
+            <p class="eyebrow">Checkout</p>
+            <h2 id="order-title">Send your order.</h2>
           </div>
           <p class="lede">
-            Set the quantity next to each item, add your shipping details, and choose the courier.
-            Pay by GCash, then paste the reference number — a club officer checks it before the
-            parcel leaves.
+            Open your cart and select Checkout. Enter your delivery address, choose the courier
+            and pay by GCash — a club officer checks the payment before the parcel leaves.
           </p>
         </div>
 
+        <noscript>
+          <p class="note-box">
+            <strong>No JavaScript:</strong> the cart and the live total need it. Turn it on to order
+            from this page, or send the club a message with the items, sizes and quantities you want
+            and the order will be taken the same way —
+            <a href={site.groupUrl} target="_blank" rel="noopener">in the club group</a>.
+          </p>
+        </noscript>
+
+        <p class="cart-locked" data-checkout-empty>
+          <Icon name="cart" size={16} />
+          <span>Add items from the catalogue, then select Checkout from your cart.</span>
+        </p>
+
         <div data-form-shell>
-          <form class="form-card" data-api="/api/orders">
+          <form class="form-card" data-api="/api/orders" hidden data-checkout-form>
             <h3>Merchandise order</h3>
-            <p class="lede">
-              Prices are the club's published list prices. Shipping is quoted by the club once the
-              courier and the destination are known.
-            </p>
 
-            <div class="order-groups">
-              {merch.map((group) => (
-                <div class="order-group">
-                  <h4>{group.name}</h4>
-                  {group.items.map((item) => (
-                    <div class="order-row">
-                      <span class="order-name">
-                        {item.name}{item.note ? ` · ${item.note}` : ''}
-                      </span>
-                      <span class="order-price">{formatPeso(item.price)}</span>
-                      <input
-                        name={`qty.${item.id}`}
-                        data-item-id={item.id}
-                        data-item-price={item.price}
-                        aria-label={`Quantity of ${item.name}`}
-                        {...qty(99)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              ))}
-
-              <div class="order-group">
-                <h4>{ncfTapCard.name}</h4>
-                <div class="order-row">
-                  <span class="order-name">National Chess Federation tap card</span>
-                  <span class="order-price">Price on request</span>
-                  <input
-                    name={`qty.${ncfTapCard.id}`}
-                    data-item-id={ncfTapCard.id}
-                    aria-label="Quantity of NCF Tap Card"
-                    {...qty(20)}
-                  />
-                </div>
+            <div class="cart-review">
+              <div class="cart-review-head">
+                <strong>Your cart</strong>
+                <button class="text-link" type="button" aria-expanded="false" aria-controls="cart-drawer" data-cart-open>Change it</button>
               </div>
+              <ul class="cart-review-lines" data-cart-summary></ul>
+              <p class="cart-review-total">
+                <strong>Items subtotal</strong>
+                <span class="amount" data-subtotal>₱0</span>
+              </p>
+              <dl class="cart-review-fees">
+                <div>
+                  <dt>Shipping</dt>
+                  <dd class="amount" data-cart-shipping>Quoted by the club</dd>
+                </div>
+                <div class="cart-review-fees--total">
+                  <dt>Total</dt>
+                  <dd class="amount" data-cart-grand>₱0</dd>
+                </div>
+              </dl>
+              <p class="cart-review-note" data-cart-shipping-note>
+                The club adds the courier fee for the parcel and confirms the total before you pay.
+              </p>
             </div>
 
-            <p class="lede mt-2">{ncfTapCard.blurb}</p>
-
-            <div class="subtotal-row">
-              <strong>Items subtotal</strong>
-              <span class="amount" data-subtotal>₱0</span>
-              <p class="subtotal-note">
-                Shipping is not included — the club quotes it with your order total.
-              </p>
-              <p class="subtotal-note" data-quote-note hidden>
-                The NCF Tap Card has no published price yet, so the club confirms that price along
-                with the shipping fee before you pay.
-              </p>
-            </div>
+            {/* cart.js writes one field per cart line into this block — product,
+                size and quantity. forms.js turns them into the items array that the
+                API re-prices on the server, so nothing the browser holds can change
+                what a buyer is charged. */}
+            <div data-order-lines hidden></div>
 
             <p class="field-error" data-error-for="items" hidden></p>
 
@@ -244,40 +441,28 @@ const orderTemplate = `
 
               <div class="field">
                 <label for="o-courier">Courier</label>
-                <select id="o-courier" name="courier" required>
-                  <optgroup label="Nationwide — Philippines">
-                    {nationwide.map((courier) => (
-                      <option value={courier.id}>{courier.label} — {courier.note}</option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Worldwide">
-                    {worldwide.map((courier) => (
-                      <option value={courier.id}>{courier.label} — {courier.note}</option>
-                    ))}
-                  </optgroup>
+                <select id="o-courier" name="courier" required data-courier-select>
+                  {couriers.map((courier) => (
+                    <option value={courier.id} data-courier-fee={courier.fee ?? undefined}>
+                      {courier.label} — {courier.note} · {feeLabel(courier.fee)}
+                    </option>
+                  ))}
                 </select>
                 <p class="field-error" data-error-for="courier" hidden></p>
               </div>
 
-              <div class="field">
-                <label for="o-ref">GCash reference number</label>
-                <input id="o-ref" name="gcashRef" inputmode="numeric" maxlength="20" placeholder={`${gcash.referenceLength} digits`} />
-                <p class="hint">Optional here — the club can also invoice you first.</p>
-                <p class="field-error" data-error-for="gcashRef" hidden></p>
-              </div>
-
               <div class="field field--wide">
                 <label for="o-notes">Order notes <span class="hint">optional</span></label>
-                <textarea id="o-notes" name="notes" maxlength="400" placeholder="Sizes, colours, or anything else the club should know."></textarea>
+                <textarea id="o-notes" name="notes" maxlength="400" placeholder="Name and number for the back of a jersey, colours, or anything else the club should know."></textarea>
               </div>
             </div>
 
             <div class="pay-box mt-3">
               <strong>Paying by GCash</strong>
               <ol>
-                <li>{gcash.instructions}</li>
-                <li>Send the items subtotal — the club adds the shipping fee and confirms the total.</li>
-                <li>Paste the reference number above. Nothing ships until the club has matched it.</li>
+                <li>Send the order first — the club emails you the total, items plus the courier fee.</li>
+                <li>Scan the club's GCash QR and pay that amount.</li>
+                <li>Nothing ships until the payment lands in the club account.</li>
               </ol>
             </div>
 
@@ -287,7 +472,7 @@ const orderTemplate = `
               <button class="btn" type="submit" data-busy="Sending…">
                 <Icon name="check" size={16} /> Send my order
               </button>
-              <a class="btn btn--ghost" href="#prices">See the price list</a>
+              <a class="btn btn--ghost" href="#products">Back to the catalogue</a>
             </div>
 
             <p class="hint mt-2">
@@ -298,99 +483,6 @@ const orderTemplate = `
 
           <div class="form-success" data-success hidden>
             <template data-success-template set:html={orderTemplate}></template>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="jersey-title">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Tournament day</p>
-            <h2 id="jersey-title" class="display-md">The club jersey.</h2>
-          </div>
-          <p class="lede">
-            White body, blue and red raglan sleeves, the crest on the chest and the knight on the
-            back — the sublimation design the club publishes for tournament wear.
-          </p>
-        </div>
-
-        <div class="shop-photo shop-photo--wide reveal">
-          <img
-            src={photos.jersey.src}
-            srcset={photos.jersey.srcset}
-            sizes="(max-width: 900px) 92vw, 70vw"
-            width={photos.jersey.width}
-            height={photos.jersey.height}
-            alt={photos.jersey.alt}
-            loading="lazy"
-            decoding="async"
-          />
-          <span class="tag">Sublimation jersey design</span>
-        </div>
-
-        <div class="jersey-facts">
-          <div class="price-list">
-            <div class="price-row">
-              <span class="name">Sublimation shirt</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱600</span>
-            </div>
-            <div class="price-row">
-              <span class="name">T-shirt<span class="item-note"> · medium only</span></span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱300</span>
-            </div>
-            <div class="price-row">
-              <span class="name">Polo shirt</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱400</span>
-            </div>
-          </div>
-          <div class="note-box">
-            <strong>Personalisation:</strong> the sample back carries a name and a number. The
-            published list prices a sublimation shirt at ₱600 but does not say what personalisation
-            costs, so put your name, number and size in the order notes and the club confirms the
-            total.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--paper" id="prices" aria-labelledby="price-title">
-      <div class="wrap shop-teaser">
-        <div class="shop-photo reveal">
-          <img
-            src="/images/posters/merch-price-list-900.webp"
-            width="900"
-            height="636"
-            alt="Chess United official merchandise price list poster with shirts, chess sets, clocks and small items."
-            loading="lazy"
-            decoding="async"
-          />
-          <span class="tag">Official price list</span>
-        </div>
-        <div>
-          <p class="eyebrow">The list</p>
-          <h2 id="price-title" class="display-md">Support the club. Look the part.</h2>
-          <p class="lede">
-            Every price on the order list above is reproduced from the club's own merchandise
-            poster. The poster advertises limited stocks, so the club confirms availability when it
-            receives your order.
-          </p>
-          <div class="note-box mt-2">
-            <strong>How pricing works:</strong> the club charges its published list price for the
-            items and quotes the shipping separately, because the fee depends on the courier and how
-            far the parcel travels.
-          </div>
-          <div class="hero-actions">
-            <a class="btn" href="#order">
-              <Icon name="arrow" size={15} /> Back to the order form
-            </a>
-            <a class="btn btn--ghost" href={site.groupUrl} target="_blank" rel="noopener">
-              Ask the club <Icon name="external" size={15} />
-            </a>
           </div>
         </div>
       </div>
@@ -445,7 +537,7 @@ const orderTemplate = `
         <div class="section-head">
           <div>
             <p class="eyebrow">How ordering works</p>
-            <h2 id="steps-title">Pick, pay, ship.</h2>
+            <h2 id="steps-title">Cart, checkout, ship.</h2>
           </div>
           <p class="lede">
             Three steps, and the club handles the rest by hand.
@@ -454,27 +546,27 @@ const orderTemplate = `
 
         <div class="value-grid">
           <article class="value-card">
-            <p class="value-num">01 / Pick</p>
-            <h3>Set the quantities.</h3>
+            <p class="value-num">01 / Cart</p>
+            <h3>Add what you want.</h3>
             <p>
-              Choose from the list above, add your shipping details and the courier you want — the
-              NCF Tap Card ships nationwide by LBC or J&amp;T Express.
+              Pick a size and a quantity on each product and add it to the cart. The cart stays with
+              you, and you can change it any time before you send the order.
             </p>
           </article>
           <article class="value-card">
-            <p class="value-num">02 / Pay</p>
-            <h3>Scan and paste the reference.</h3>
+            <p class="value-num">02 / Checkout</p>
+            <h3>Fill the form when you are ready.</h3>
             <p>
-              {gcash.instructions} A club officer matches the reference number to the club's GCash
-              account before anything is packed.
+              The order form opens as soon as the cart holds something. Give the address, choose the
+              courier, and the club confirms the total — items plus the courier fee — by email.
             </p>
           </article>
           <article class="value-card">
             <p class="value-num">03 / Ship</p>
             <h3>The club sends the parcel.</h3>
             <p>
-              Once the payment is checked, the club packs the order and sends it — LBC or J&amp;T
-              Express nationwide, FedEx, UPS, DHL, LBC or Philippine Post worldwide.
+              The club checks the payment in its GCash account, packs the order and sends it by LBC
+              or J&amp;T Express anywhere in the Philippines.
             </p>
           </article>
         </div>
@@ -488,14 +580,54 @@ const orderTemplate = `
           <p>Order online and the club ships it to your door.</p>
         </div>
         <div class="cta-actions">
-          <a class="btn" href="#order">
-            Build an order
+          <a class="btn" href="#products">
+            <Icon name="cart" size={16} /> Back to the catalogue
           </a>
           <a class="btn btn--light" href="/visit/">Visit us</a>
         </div>
       </div>
     </section>
   </main>
+
+  <div class="cart-scrim" data-cart-scrim hidden></div>
+
+  <aside
+    class="cart-drawer"
+    id="cart-drawer"
+    aria-labelledby="cart-drawer-title"
+    aria-hidden="true"
+    inert
+    data-cart-drawer
+  >
+    <div class="cart-drawer-head">
+      <h2 id="cart-drawer-title">Your cart</h2>
+      <button class="cart-close" type="button" aria-label="Close cart" data-cart-close>
+        <Icon name="close" size={20} />
+      </button>
+    </div>
+
+    <p class="cart-empty" data-cart-empty>
+      Nothing in the cart yet. Add something from the catalogue and it will wait for you here.
+    </p>
+
+    <ul class="cart-lines" data-cart-lines></ul>
+
+    <div class="cart-foot">
+      <p class="cart-total">
+        <strong>Items subtotal</strong>
+        <span class="amount" data-cart-total>₱0</span>
+      </p>
+      <p class="cart-hint">The courier fee is added by the club once it knows the destination.</p>
+      <div class="cart-actions">
+        <a class="btn" href="#order" data-cart-checkout>
+          <Icon name="arrow" size={15} /> Checkout
+        </a>
+        <button class="btn btn--ghost" type="button" data-cart-clear>Empty cart</button>
+      </div>
+    </div>
+  </aside>
+
+  <p class="sr-only" data-cart-status aria-live="polite" aria-atomic="true"></p>
 
   <Footer />
 </Base>
