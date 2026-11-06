@@ -34,7 +34,7 @@ function google({header, occupied, lostReply=false, onWrite}={}) {
       return Response.json({access_token:'mock-token'});
     }
     assert.equal(u.hostname,'sheets.googleapis.com');assert.equal(init.headers.Authorization,'Bearer mock-token');
-    if(!u.pathname.includes('/values/')) return Response.json({sheets:['Orders','Registrations'].map((title,index)=>({properties:{title,sheetId:index+1,gridProperties:{rowCount:1000,columnCount:26}}}))});
+    if(!u.pathname.includes('/values/')) return Response.json({sheets:['Orders','Registrations','Memberships'].map((title,index)=>({properties:{title,sheetId:index+1,gridProperties:{rowCount:1000,columnCount:26}}}))});
     const range=decodeURIComponent(u.pathname.split('/values/')[1]);
     const title=range.split('!')[0];
     if(init.method==='GET') return Response.json({values:range.endsWith('1:1')?[headers.get(title) || header || []]:[occupied || rows.get(range) || []]});
@@ -100,5 +100,16 @@ test('connection check requires an operator request and never exposes its result
  const {env,sql}=database();let calls=0;await runRequestedSheetsCheck(env,async()=>{calls++;});assert.equal(calls,0);
  sql.exec('UPDATE sheets_connection_check SET requested=1');const g=google();await runRequestedSheetsCheck(env,g.fetcher);
  const state=sql.prepare('SELECT * FROM sheets_connection_check').get();assert.equal(state.requested,0);assert.ok(state.verified_at);assert.equal(state.last_error,null);
+ assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,0);
  await runRequestedSheetsCheck(env,async()=>{calls++;});assert.equal(calls,0);
+});
+
+test('membership inserts and officer updates mirror to Memberships and preserve old sync history',async()=>{
+ const {env,sql}=database();sql.exec("UPDATE sheets_sync SET pending=0,synced_at='2026-11-06 00:00:00'");
+ sql.exec("INSERT INTO members(member_no,first_name,last_name,email,phone,printed_id,status) VALUES ('CU-2026-0001','Member','Test','member@example.invalid','09171234567',1,'active')");
+ sql.exec(readFileSync(new URL('../migrations/0003_membership_sheets.sql',import.meta.url),'utf8'));
+ const prior=sql.prepare("SELECT * FROM sheets_sync WHERE kind='order'").get();assert.equal(prior.pending,0);assert.equal(prior.synced_at,'2026-11-06 00:00:00');
+ const g=google();assert.equal((await drainSheets(env,{fetcher:g.fetcher})).processed,1);assert.equal(g.writes[0].range,"'Memberships'!A2:N2");assert.equal(g.writes[0].values[1],'CU-2026-0001');assert.equal(g.writes[0].values[6],'09171234567');
+ sql.exec("UPDATE members SET status='pending' WHERE id=1");assert.equal(sql.prepare("SELECT pending FROM sheets_sync WHERE kind='member'").get().pending,1);
+ await drainSheets(env,{fetcher:g.fetcher});assert.equal(g.rows.size,1);assert.equal(g.rows.values().next().value[13],'pending');
 });

@@ -101,7 +101,7 @@ CREATE INDEX IF NOT EXISTS idx_partner_event     ON partner_events(partner_club_
 -- Google Sheets mirror queue and transactional change tracking.
 -- Durable mirror queue. Triggers commit atomically with the source record.
 CREATE TABLE IF NOT EXISTS sheets_sync (
-  kind TEXT NOT NULL CHECK (kind IN ('order', 'registration')),
+  kind TEXT NOT NULL CHECK (kind IN ('order', 'registration', 'member')),
   record_id INTEGER NOT NULL,
   version INTEGER NOT NULL DEFAULT 1,
   pending INTEGER NOT NULL DEFAULT 1,
@@ -160,3 +160,19 @@ CREATE TABLE IF NOT EXISTS sheets_connection_check (
   last_error TEXT
 );
 INSERT OR IGNORE INTO sheets_connection_check(id) VALUES (1);
+
+-- Membership signups have their own private spreadsheet tab.
+CREATE TRIGGER IF NOT EXISTS sheets_members_insert
+AFTER INSERT ON members
+BEGIN
+  INSERT INTO sheets_sync(kind, record_id) VALUES ('member', NEW.id)
+  ON CONFLICT(kind, record_id) DO UPDATE SET version = version + 1, pending = 1, last_error = NULL;
+END;
+CREATE TRIGGER IF NOT EXISTS sheets_members_update
+AFTER UPDATE ON members
+BEGIN
+  INSERT INTO sheets_sync(kind, record_id) VALUES ('member', NEW.id)
+  ON CONFLICT(kind, record_id) DO UPDATE SET version = version + 1, pending = 1, last_error = NULL;
+END;
+
+INSERT OR IGNORE INTO sheets_sync(kind, record_id) SELECT 'member', id FROM members;

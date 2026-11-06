@@ -1,3 +1,4 @@
+import { scheduleSheetsSync } from './_sheets.js';
 import {
   json,
   fail,
@@ -20,7 +21,8 @@ import { MEMBER_PRINT_FEE } from './_catalog.js';
  *       division?, printedId? (true when ordering the PHP 200 printed ID + lanyard),
  *       gcashRef? (13 digits, required when printedId is set)
  */
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(context) {
+  const { request, env } = context;
   if (!hasDb(env)) return noDb();
 
   const body = await readJson(request);
@@ -78,6 +80,7 @@ export async function onRequestPost({ request, env }) {
     return fail('Could not save the registration. Please try again.', 500);
   }
 
+  scheduleSheetsSync(context);
   return json({
     ok: true,
     member: {

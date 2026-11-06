@@ -4,6 +4,7 @@ const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
 const enc = new TextEncoder();
 export const SHEET_COLUMNS = {
+  member: { title: 'Memberships', table: 'members', fields: ['id', 'member_no', 'created_at', 'first_name', 'last_name', 'email', 'phone', 'city', 'province', 'birth_year', 'division', 'printed_id', 'gcash_ref', 'status'] },
   order: { title: 'Orders', table: 'orders', fields: ['id', 'order_no', 'created_at', 'full_name', 'email', 'phone', 'ship_address', 'ship_city', 'ship_province', 'ship_postcode', 'ship_country', 'courier', 'items_json', 'subtotal', 'shipping_note', 'payment_method', 'payment_status', 'fulfilment_status', 'tracking_no'] },
   registration: { title: 'Registrations', table: 'registrations', fields: ['id', 'created_at', 'event_slug', 'full_name', 'email', 'phone', 'division', 'club', 'member_no', 'gcash_ref', 'amount', 'payment_status', 'notes'] },
 };
@@ -73,6 +74,7 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
     async verify() {
       await prepare('order', 2, true);
       await prepare('registration', 2, true);
+      await prepare('member', 2, true);
     },
     async write(kind, record) {
       const spec = SHEET_COLUMNS[kind];
@@ -93,9 +95,9 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
   };
 }
 
-export async function verifySheets(env, fetcher = fetch) {
+export async function verifySheets(env, fetcher = fetch, deadline = Date.now() + 22000) {
   try {
-    const client = await createSheetsClient(env, fetcher);
+    const client = await createSheetsClient(env, fetcher, deadline);
     await client.verify();
     return { verified: true };
   } catch (error) { return { verified: false, issue: error instanceof SyncError ? error.message : 'sync_internal_error' }; }
@@ -111,11 +113,10 @@ export async function syncStatus(env) {
 }
 
 /** Single lease serializes remote writes; revision checks retain concurrent D1 edits. */
-export async function drainSheets(env, { fetcher = fetch } = {}) {
+export async function drainSheets(env, { fetcher = fetch, deadline = Date.now() + 22000 } = {}) {
   const config = sheetsConfig(env);
   if (!config.configured) return { processed: 0, issue: config.issue };
   const owner = crypto.randomUUID();
-  const deadline = Date.now() + 22000;
   const lease = await env.DB.prepare('UPDATE sheets_sync_lock SET owner = ?, expires_at = ? WHERE id = 1 AND expires_at < ? RETURNING id').bind(owner, Date.now() + 120000, Date.now()).first();
   if (!lease) return { processed: 0, busy: true };
   let processed = 0;
@@ -158,10 +159,12 @@ export async function runRequestedSheetsCheck(env, fetcher = fetch) {
   const owner = crypto.randomUUID();
   const claimed = await env.DB.prepare('UPDATE sheets_connection_check SET owner = ?, lease_until = ? WHERE id = 1 AND requested = 1 AND lease_until < ? RETURNING id').bind(owner, Date.now() + 120000, Date.now()).first();
   if (!claimed) return;
-  const result = await verifySheets(env, fetcher);
+  const deadline = Date.now() + 22000;
+  const result = await verifySheets(env, fetcher, deadline);
   await env.DB.prepare(`UPDATE sheets_connection_check SET requested = 0, owner = NULL, lease_until = 0,
     verified_at = CASE WHEN ? = 1 THEN datetime('now') ELSE NULL END, last_error = ? WHERE id = 1 AND owner = ?`)
     .bind(result.verified ? 1 : 0, result.issue || null, owner).run();
+  if (result.verified) await drainSheets(env, { fetcher, deadline });
 }
 
 export function scheduleRequestedSheetsCheck(context) {

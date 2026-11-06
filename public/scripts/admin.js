@@ -294,18 +294,18 @@
     if (!sheetsStatus || !sheetsButton || sheetsButton.disabled) return;
     sheetsButton.disabled = true;
     if (sheetsCheck) sheetsCheck.disabled = true;
-    if (sync) sheetsStatus.textContent = 'Copying saved orders and entries to Google Sheets…';
+    if (sync) sheetsStatus.textContent = 'Copying saved orders and registrations to Google Sheets…';
     try {
       for (let batch = 0; batch < (sync ? 20 : 1); batch++) {
         const response = await fetch('/api/admin/sheets' + (check ? '?check=1' : ''), { method: sync || check ? 'POST' : 'GET' });
         const status = await response.json();
         if (!response.ok || !status.ok) throw new Error();
         if (!status.configured) {
-          sheetsStatus.textContent = 'Google Sheets needs its service-account credential. Your orders and entries are safely saved.';
+          sheetsStatus.textContent = 'Google Sheets needs its service-account credential. Your orders and registrations are safely saved.';
           break;
         }
         if (check && status.result?.verified) {
-          sheetsStatus.textContent = 'Connected. Orders and Registrations tabs are ready. Select Sync now to copy any waiting records.';
+          sheetsStatus.textContent = 'Connected. Orders, Registrations and Memberships tabs are ready. Select Sync now to copy any waiting records.';
           break;
         }
         const issue = status.result?.issue || status.lastError;

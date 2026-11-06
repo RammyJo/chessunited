@@ -1,6 +1,6 @@
 # Google Sheets mirror
 
-D1 remains the source of truth. Orders and tournament entries (including officer status/tracking changes) are copied to dedicated **Orders** and **Registrations** tabs in the private Chess United Merch spreadsheet:
+D1 remains the source of truth. Orders, tournament entries and membership signups (including officer status/tracking changes) are copied to dedicated **Orders**, **Registrations** (tournaments) and **Memberships** tabs in the private Chess United Merch spreadsheet:
 
 https://docs.google.com/spreadsheets/d/1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoCLbI/edit
 
@@ -16,13 +16,13 @@ https://docs.google.com/spreadsheets/d/1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoC
 
 ## Storage and retries
 
-Apply `migrations/0001_google_sheets.sql` and `migrations/0002_sheets_connection_check.sql` to the existing D1 database before deploying the functions. It adds only the sync queue, a lease row, tracking triggers and an initial queue entry for each existing source record. `schema.sql` includes the same migration for new databases.
+Apply `migrations/0001_google_sheets.sql` and `migrations/0002_sheets_connection_check.sql` and `migrations/0003_membership_sheets.sql` to the existing D1 database before deploying the functions. It adds only the sync queue, a lease row, tracking triggers and an initial queue entry for each existing source record. `schema.sql` includes the same migration for new databases.
 
 Triggers commit queue changes atomically with orders/registrations. A global 120-second lease serializes sheet writes. Revision checks keep edits made during a copy queued for the next pass. Remote rows are updated at `D1 id + 1`, so retries after ambiguous network failures cannot append duplicates. Values use Google's RAW input mode to preserve phone/reference strings and avoid evaluating user-entered formulas.
 
 The tabs are managed mirrors: do not sort/move/delete rows, insert rows, or change headers. Use separate tabs for analysis. A different record ID at the destination row or an incompatible header causes the sync to stop rather than overwrite unrelated data. Missing rows from deleted D1 records are not cleared: this integration copies inserts and updates, not deletions. Edits in Sheets do not flow back to D1.
 
-Each background pass has a 22-second network budget and handles up to three jobs. It runs after successful order/registration submissions, officer updates and dashboard queue loads. Failures remain queued. New activity or the officer's **Sync now** button retries them; there is no scheduled worker or guaranteed retry while the site/dashboard is idle. The button processes up to 20 batches per click. Reload to see background progress. Google failures never turn a saved D1 order into a failed customer submission.
+Each background pass has a 22-second network budget and handles up to three jobs. It runs after successful order, membership or tournament submissions, officer updates and dashboard queue loads. Failures remain queued. New activity or the officer's **Sync now** button retries them; there is no scheduled worker or guaranteed retry while the site/dashboard is idle. The button processes up to 20 batches per click. Reload to see background progress. Google failures never turn a saved D1 order into a failed customer submission.
 
 ## Checks
 
@@ -35,4 +35,4 @@ Tests do not use a real Google credential. End-to-end verification requires the 
 
 ## Operator activation check
 
-A platform operator with D1 write access can request a one-off check by setting `requested = 1` in the singleton `sheets_connection_check` row. The next public directory GET services that request with `waitUntil`. It cannot request checks or reveal their results; no Google request is made unless an operator has queued a check. Verification prepares headers only, creates no customer records, and stores a safe result/timestamp in D1. A lease protects concurrent invocations. This allows activation checks without extracting credentials or bypassing the officer sign-in.
+A platform operator with D1 write access can request a one-off check by setting `requested = 1` in the singleton `sheets_connection_check` row. The next public directory GET services that request with `waitUntil`. It cannot request checks or reveal their results; no Google request is made unless an operator has queued a check. Verification prepares headers, creates no customer records, stores a safe result/timestamp in D1, then processes a bounded batch of existing queued records. A lease protects concurrent invocations. This allows activation checks without extracting credentials or bypassing the officer sign-in.

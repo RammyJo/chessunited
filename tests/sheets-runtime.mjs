@@ -28,6 +28,13 @@ try {
  const savedPickup=await db.prepare("SELECT ship_address, ship_city, ship_country FROM orders WHERE courier = 'pickup'").first();assert.deepEqual(savedPickup,{ship_address:'',ship_city:'',ship_country:''});
  const pickupJob=await db.prepare("SELECT pending FROM sheets_sync WHERE record_id = (SELECT id FROM orders WHERE courier = 'pickup') AND kind = 'order'").first();assert.equal(pickupJob.pending,1);
  const invalidSize=await mf.dispatchFetch('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...withoutAddress,courier:'pickup',items:[{id:'tshirt',qty:1,size:'invalid'}]})});assert.equal(invalidSize.status,422);
+ const registration={eventSlug:'tournament-2-0',division:'Open Division',fullName:'Tournament Test',email:'tournament@example.invalid',phone:'09171234567',gcashRef:'0001234567890'};
+ const entry=await mf.dispatchFetch('https://example.com/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(registration)});assert.equal(entry.status,200);assert.equal((await entry.json()).registration.amount,350);
+ const entryJob=await db.prepare("SELECT pending FROM sheets_sync WHERE kind = 'registration'").first();assert.equal(entryJob.pending,1);
+ const duplicate=await mf.dispatchFetch('https://example.com/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(registration)});assert.equal(duplicate.status,409);
+ const member={firstName:'Member',lastName:'Test',email:'member@example.invalid',phone:'09171234567'};
+ const signup=await mf.dispatchFetch('https://example.com/api/members',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(member)});assert.equal(signup.status,200);assert.ok((await signup.json()).member.memberNo);
+ assert.equal((await db.prepare("SELECT pending FROM sheets_sync WHERE kind='member'").first()).pending,1);
  const retry=await mf.dispatchFetch('https://example.com/api/admin/sheets',{method:'POST',headers:{Cookie:cookie}});assert.equal((await retry.json()).result.issue,'missing_credential');
  console.log('PASS: Workers runtime order insert, transactional D1 queue, authenticated admin status/retry, missing credential, pickup totals/address handling, delivery validation and pickup sync queue. Local database only.');
 } finally {await mf.dispose();rmSync(temp,{recursive:true,force:true});}
