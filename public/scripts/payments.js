@@ -56,7 +56,7 @@
  const setPayStatus=s=>{payStatus.textContent=s;payStatus.hidden=!s;};
  const complete=order=>{
   token='';persist();prepared=null;panel.hidden=true;form.hidden=true;
-  success.replaceChildren();const h=document.createElement('h3');h.textContent='Order submitted for payment verification.';const p=document.createElement('p');p.textContent=`${order.orderNo} · Total ${peso(order.total)}. The club will verify receipt in GCash and confirm your handover. Do not pay again.`;success.append(h,p);success.hidden=false;success.scrollIntoView({behavior:'smooth',block:'center'});
+  success.replaceChildren();const h=document.createElement('h3');h.textContent=order.paymentStatus==='paid'?'Payment verified.':'Order submitted for payment verification.';const p=document.createElement('p');p.textContent=`${order.orderNo} · Total ${peso(order.total)}. ${order.paymentStatus==='paid'?'The club has verified your GCash payment and will arrange handover.':'The club will verify receipt in GCash and confirm your handover.'} Do not pay again.`;success.append(h,p);success.hidden=false;success.scrollIntoView({behavior:'smooth',block:'center'});
   document.dispatchEvent(new CustomEvent('cu:order-complete'));
  };
  const showPayment=order=>{
@@ -65,7 +65,7 @@
   $('[data-payment-order-no]',panel).textContent=order.orderNo;$('[data-payment-subtotal]',panel).textContent=peso(order.subtotal);$('[data-payment-shipping]',panel).textContent=peso(order.shippingFee);$('[data-payment-delivery]',panel).textContent=order.fulfilmentMessage;$('[data-gcash-amount]',panel).textContent=peso(order.total);setPayStatus('');
   document.dispatchEvent(new CustomEvent('cu:order-payment'));panel.focus();panel.scrollIntoView({behavior:'smooth',block:'start'});
  };
- document.addEventListener('cu:order-prepared',e=>{e.detail.order.submitted?complete(e.detail.order):showPayment(e.detail.order);});
+ document.addEventListener('cu:order-prepared',e=>{(e.detail.order.submitted||e.detail.order.paymentStatus==='paid')?complete(e.detail.order):showPayment(e.detail.order);});
  payButton.addEventListener('click',async()=>{
   if(!prepared||!token)return;if(ref.value&&!ref.checkValidity()){ref.reportValidity();return;}
   payButton.disabled=true;setPayStatus('Submitting for verification…');
@@ -73,7 +73,7 @@
  });
  $('[data-order-start-over]',panel).addEventListener('click',()=>{prepared=null;token='';persist();panel.hidden=true;ref.value='';document.dispatchEvent(new CustomEvent('cu:order-restart'));lastSignature='';schedule();});
  if(token){
-  fetch('/api/orders/payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'resume',checkoutToken:token})}).then(async r=>{const b=await r.json();if(r.status===404){token='';persist();return;}if(!r.ok)throw Error();b.order.submitted?complete(b.order):showPayment(b.order);}).catch(()=>message('A previous payment session is saved on this tab. Continue checkout to resume it. If you already paid, do not pay again.'));
+  fetch('/api/orders/payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'resume',checkoutToken:token})}).then(async r=>{const b=await r.json();if(r.status===404){token='';persist();return;}if(!r.ok)throw Error();(b.order.submitted||b.order.paymentStatus==='paid')?complete(b.order):showPayment(b.order);}).catch(()=>message('A previous payment session is saved on this tab. Continue checkout to resume it. If you already paid, do not pay again.'));
  }
  invalidate();
 })();

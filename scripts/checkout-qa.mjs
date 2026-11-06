@@ -1,7 +1,8 @@
 /** Browser checkout regressions. API fixtures only; no production records or payments. */
 import assert from 'node:assert/strict';
 import puppeteer from 'puppeteer-core';
-const browser=await puppeteer.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
+const browserArgs=['--no-sandbox'];if(process.env.QA_URL?.startsWith('https:')&&process.env.HTTPS_PROXY)browserArgs.push('--proxy-server='+process.env.HTTPS_PROXY);
+const browser=await puppeteer.launch({executablePath:'/usr/bin/chromium',args:browserArgs});
 try{
  const page=await browser.newPage();await page.setViewport({width:390,height:844,isMobile:true,hasTouch:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));let draft=null,submitted=false,token='',orderPosts=0;
@@ -34,6 +35,10 @@ try{
  await page.type('[data-order-payment-ref]','0001234567890');await page.click('[data-order-paid]');await page.waitForSelector('[data-success]:not([hidden])');assert.equal(submitted,true);
  assert.match(await page.$eval('[data-success]',e=>e.textContent),/payment verification/);
  assert.equal(await page.evaluate(()=>sessionStorage.getItem('cu_payment_session_v1')),null);
+ // If an officer already verified the transfer, a recovered session must not
+ // ask the buyer to pay again.
+ draft.paymentStatus='paid';submitted=false;await page.evaluate(t=>sessionStorage.setItem('cu_payment_session_v1',t),token);await page.reload({waitUntil:'networkidle0'});await page.waitForSelector('[data-success]:not([hidden])');assert.match(await page.$eval('[data-success]',e=>e.textContent),/Payment verified/);assert.equal(await page.$eval('[data-order-payment]',e=>e.hidden),true);
+
  await page.goto(base+'/events/',{waitUntil:'networkidle0'});const eventForm=await page.$('form[data-api="/api/registrations"]');assert.ok(eventForm);
  const amount=await eventForm.$eval('[data-gcash-amount]',e=>e.textContent);assert.ok(/₱[0-9]/.test(amount));const options=await eventForm.$$eval('[name="division"] option',es=>es.map(e=>e.value));await (await eventForm.$('select[name="division"]')).select(options[1]);const amount2=await eventForm.$eval('[data-gcash-amount]',e=>e.textContent);assert.notEqual(amount,amount2);
  await page.goto(base+'/membership/',{waitUntil:'networkidle0'});assert.equal(await page.$eval('[data-printed-payment]',e=>e.hidden),true);await page.click('#m-printed');assert.equal(await page.$eval('[data-printed-payment]',e=>e.hidden),false);assert.equal(await page.$eval('#m-ref',e=>e.required),true);
