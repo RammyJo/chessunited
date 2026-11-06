@@ -1,3 +1,4 @@
+import { scheduleSheetsSync } from './_sheets.js';
 import {
   json,
   fail,
@@ -21,7 +22,8 @@ import { TOURNAMENTS } from './_catalog.js';
  * pending until a club officer matches the reference number to the club's
  * GCash account.
  */
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(context) {
+  const { request, env } = context;
   if (!hasDb(env)) return noDb();
 
   const body = await readJson(request);
@@ -90,6 +92,7 @@ export async function onRequestPost({ request, env }) {
     return fail('Could not save the entry. Please try again.', 500);
   }
 
+  scheduleSheetsSync(context);
   return json({
     ok: true,
     registration: {

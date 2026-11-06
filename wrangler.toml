@@ -17,4 +17,6 @@ database_id = "41d6bcc5-6c5b-44a9-9e4b-3008f5861560"
 
 # Secrets (set with `npx wrangler pages secret put <NAME>`):
 #   ADMIN_TOKEN  — passphrase for the /admin/ dashboard
+#   GOOGLE_SHEETS_SERVICE_ACCOUNT — dedicated Google service-account JSON
+#   GOOGLE_SHEETS_SPREADSHEET_ID — optional override (defaults to Chess United Merch)
 #   (optional) RESEND_API_KEY / MAIL_FROM — for confirmation emails

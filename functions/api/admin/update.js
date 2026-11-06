@@ -1,3 +1,4 @@
+import { scheduleSheetsSync } from '../_sheets.js';
 import { json, fail, readJson, clean, isAdmin, requireAdmin, hasDb, noDb } from '../_utils.js';
 
 /**
@@ -32,7 +33,8 @@ const TABLES = {
   'partner-event': 'partner_events',
 };
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(context) {
+  const { request, env } = context;
   if (!hasDb(env)) return noDb();
   if (!(await isAdmin(request, env))) return requireAdmin(env);
 
@@ -86,6 +88,7 @@ export async function onRequestPost({ request, env }) {
       .run();
 
     if (!result.meta?.changes) return fail('That record no longer exists.', 404);
+    scheduleSheetsSync(context);
     return json({ ok: true, kind, id });
   } catch (error) {
     console.error('admin update failed', error);

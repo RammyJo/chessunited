@@ -12,7 +12,7 @@ import Icon from '../../components/Icon.astro';
   canonical={false}
 >
   <Fragment slot="head">
-    <script is:inline src="/scripts/admin.js" defer></script>
+    <script is:inline src="/scripts/admin.js?v=sheets-sync" defer></script>
   </Fragment>
 
   <Header />
@@ -89,6 +89,16 @@ import Icon from '../../components/Icon.astro';
           </div>
 
           <p class="form-status" data-admin-panel-status hidden></p>
+
+          <div class="note-box mt-3" aria-labelledby="sheets-title">
+            <h3 id="sheets-title">Google Sheets</h3>
+            <p data-sheets-status role="status">Checking spreadsheet sync…</p>
+            <div class="form-actions">
+              <button class="btn btn--sm btn--ghost" type="button" data-sheets-check>Check connection</button>
+              <button class="btn btn--sm" type="button" data-sheets-sync>Sync now</button>
+              <a class="text-link" href="https://docs.google.com/spreadsheets/d/1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoCLbI/edit" target="_blank" rel="noopener">Open spreadsheet</a>
+            </div>
+          </div>
 
           <div class="admin-grid mt-3" data-admin-stats></div>
 

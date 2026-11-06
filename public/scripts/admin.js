@@ -286,6 +286,38 @@
   /* Loading                                                                */
   /* ---------------------------------------------------------------------- */
 
+  const sheetsStatus = $('[data-sheets-status]');
+  const sheetsButton = $('[data-sheets-sync]');
+  const sheetsCheck = $('[data-sheets-check]');
+  const refreshSheets = async (sync = false, check = false) => {
+    if (!sheetsStatus || !sheetsButton || sheetsButton.disabled) return;
+    sheetsButton.disabled = true;
+    if (sheetsCheck) sheetsCheck.disabled = true;
+    if (sync) sheetsStatus.textContent = 'Copying saved orders and entries to Google Sheets…';
+    try {
+      for (let batch = 0; batch < (sync ? 20 : 1); batch++) {
+        const response = await fetch('/api/admin/sheets' + (check ? '?check=1' : ''), { method: sync || check ? 'POST' : 'GET' });
+        const status = await response.json();
+        if (!response.ok || !status.ok) throw new Error();
+        if (!status.configured) {
+          sheetsStatus.textContent = 'Google Sheets needs its service-account credential. Your orders and entries are safely saved.';
+          break;
+        }
+        if (check && status.result?.verified) {
+          sheetsStatus.textContent = 'Connected. Orders and Registrations tabs are ready. Select Sync now to copy any waiting records.';
+          break;
+        }
+        const issue = status.result?.issue || status.lastError;
+        sheetsStatus.textContent = `${status.pending} waiting to sync. ${status.lastSynced ? 'Last copied: ' + status.lastSynced + ' UTC.' : 'No records copied yet.'}${issue ? ' Sync needs attention (' + issue + '). Records remain saved; retry after resolving the connection.' : ''}`;
+        if (!sync || issue || status.result?.busy || !status.pending || !status.result?.processed || dashboard.hidden) break;
+      }
+    } catch {
+      sheetsStatus.textContent = 'Could not check Google Sheets. Your saved orders and entries are unaffected.';
+    } finally { sheetsButton.disabled = false; if (sheetsCheck) sheetsCheck.disabled = false; }
+  };
+  if (sheetsCheck) sheetsCheck.addEventListener('click', () => refreshSheets(false, true));
+  if (sheetsButton) sheetsButton.addEventListener('click', () => refreshSheets(true));
+
   const load = async () => {
     setStatus(panelStatus, 'Loading the queue…');
     try {
@@ -296,6 +328,7 @@
         return;
       }
       render(payload);
+      await refreshSheets();
       setStatus(panelStatus, '');
     } catch {
       setStatus(panelStatus, 'Could not reach the club’s server.', 'bad');

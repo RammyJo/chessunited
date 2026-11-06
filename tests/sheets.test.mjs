@@ -1,0 +1,97 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync } from 'node:fs';
+import { createSheetsClient, drainSheets, sheetsConfig, syncStatus, SHEET_COLUMNS } from '../functions/api/_sheets.js';
+import { onRequest as adminSheets } from '../functions/api/admin/sheets.js';
+
+const pair = await crypto.subtle.generateKey({name:'RSASSA-PKCS1-v1_5',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'}, true, ['sign','verify']);
+const pem = '-----BEGIN PRIVATE KEY-----\n'+Buffer.from(await crypto.subtle.exportKey('pkcs8',pair.privateKey)).toString('base64')+'\n-----END PRIVATE KEY-----';
+const credential = JSON.stringify({type:'service_account',client_email:'test@example-project.iam.gserviceaccount.com',private_key:pem,token_uri:'https://untrusted.invalid/token'});
+const order = {id:1,order_no:'ORD-TEST',created_at:'2026-11-06',full_name:'=IMPORTXML("https://example.org")',email:'test@example.com',phone:'09171234567',ship_address:'Test only street',ship_city:'City',ship_province:'Province',ship_postcode:'0012',ship_country:'Philippines',courier:'lbc',items_json:'[]',subtotal:300,shipping_note:'',payment_method:'gcash',payment_status:'pending',fulfilment_status:'new',tracking_no:''};
+function database() {
+  const sql = new DatabaseSync(':memory:');
+  sql.exec(readFileSync(new URL('../schema.sql',import.meta.url),'utf8'));
+  // Applying the deployment migration twice must be harmless.
+  sql.exec(readFileSync(new URL('../migrations/0001_google_sheets.sql',import.meta.url),'utf8'));
+  const DB={prepare(query){ return {bind(...params){return statement(params);},...statement([])};
+    function statement(params){return {first:async()=>sql.prepare(query).get(...params)||null,all:async()=>({results:sql.prepare(query).all(...params)}),run:async()=>({meta:sql.prepare(query).run(...params)})};}
+  }};
+  sql.prepare(`INSERT INTO orders (${Object.keys(order).join(',')}) VALUES (${Object.keys(order).map(()=>'?').join(',')})`).run(...Object.values(order));
+  return {DB,sql,env:{DB,GOOGLE_SHEETS_SERVICE_ACCOUNT:credential}};
+}
+function google({header, occupied, lostReply=false, onWrite}={}) {
+  const rows=new Map();const headers=new Map();const writes=[];let fail=lostReply;
+  const fetcher=async(url,init={})=>{
+    const u=new URL(url);
+    if(u.hostname==='oauth2.googleapis.com'){
+      assert.equal(url,'https://oauth2.googleapis.com/token');
+      const assertion=init.body.get('assertion'); const [head,payload,sig]=assertion.split('.');
+      const claims=JSON.parse(Buffer.from(payload,'base64url'));
+      assert.equal(claims.scope,'https://www.googleapis.com/auth/spreadsheets');
+      assert.equal(claims.aud,url);
+      assert.ok(await crypto.subtle.verify('RSASSA-PKCS1-v1_5',pair.publicKey,Buffer.from(sig,'base64url'),new TextEncoder().encode(head+'.'+payload)));
+      return Response.json({access_token:'mock-token'});
+    }
+    assert.equal(u.hostname,'sheets.googleapis.com');assert.equal(init.headers.Authorization,'Bearer mock-token');
+    if(!u.pathname.includes('/values/')) return Response.json({sheets:['Orders','Registrations'].map((title,index)=>({properties:{title,sheetId:index+1,gridProperties:{rowCount:1000,columnCount:26}}}))});
+    const range=decodeURIComponent(u.pathname.split('/values/')[1]);
+    const title=range.split('!')[0];
+    if(init.method==='GET') return Response.json({values:range.endsWith('1:1')?[headers.get(title) || header || []]:[occupied || rows.get(range) || []]});
+    assert.equal(u.searchParams.get('valueInputOption'),'RAW');
+    const values=JSON.parse(init.body).values[0];
+    if(range.endsWith('A1')) headers.set(title,values);
+    else {rows.set(range,values);writes.push({range,values});if(onWrite)onWrite();if(fail){fail=false;throw new Error('Reply lost after Google committed the write');}}
+    return Response.json({updatedRows:1});
+  };
+  return {fetcher,rows,writes};
+}
+
+test('D1 triggers retain inserts, updates and transaction rollbacks', async()=>{
+ const {sql}=database();assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,1);
+ sql.exec('UPDATE sheets_sync SET pending=0');sql.exec("UPDATE orders SET payment_status='paid' WHERE id=1");
+ const job=sql.prepare('SELECT * FROM sheets_sync').get();assert.equal(job.version,2);assert.equal(job.pending,1);
+ sql.exec('BEGIN');sql.exec("UPDATE orders SET payment_status='refunded' WHERE id=1");sql.exec('ROLLBACK');assert.equal(sql.prepare('SELECT version FROM sheets_sync').get().version,2);
+ sql.exec("INSERT INTO registrations(event_slug,full_name,email,phone,division,gcash_ref,amount) VALUES ('event','Test','test@example.com','09171234567','Open','1234567890123',350)");
+ assert.equal(sql.prepare("SELECT pending FROM sheets_sync WHERE kind='registration'").get().pending,1);
+});
+test('missing/invalid credentials do not lose queued D1 records',async()=>{
+ const {env,sql}=database();delete env.GOOGLE_SHEETS_SERVICE_ACCOUNT;assert.equal((await drainSheets(env)).issue,'missing_credential');assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,1);
+ assert.equal(sheetsConfig({GOOGLE_SHEETS_SERVICE_ACCOUNT:'bad'}).configured,false);
+});
+test('JWT uses Google only; RAW writes preserve formulas, phone and reference strings',async()=>{
+ const g=google();const client=await createSheetsClient({GOOGLE_SHEETS_SERVICE_ACCOUNT:credential},g.fetcher);await client.write('order',order);
+ assert.equal(g.writes[0].range,"'Orders'!A2:S2");assert.equal(g.writes[0].values[3],order.full_name);assert.equal(g.writes[0].values[5],'09171234567');assert.equal(g.writes[0].values[9],'0012');
+});
+test('lost Google reply retries the same row without duplicate append',async()=>{
+ const {env,sql}=database();const g=google({lostReply:true});await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,1);
+ assert.equal((await drainSheets(env,{fetcher:g.fetcher})).processed,1);assert.equal(g.rows.size,1);assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,0);
+});
+test('existing unrelated headers or row ids are never overwritten',async()=>{
+ for(const options of [{header:['Existing merch data']},{header:SHEET_COLUMNS.order.fields,occupied:['999','Other person']}]){
+  const g=google(options);const client=await createSheetsClient({GOOGLE_SHEETS_SERVICE_ACCOUNT:credential},g.fetcher);await assert.rejects(client.write('order',order),/sheet_headers_do_not_match|sheet_row_conflict/);assert.equal(g.writes.length,0);
+ }
+});
+test('concurrent D1 updates stay queued until their current revision is copied',async()=>{
+ const {env,sql}=database();let changed=false;const g=google({onWrite(){if(!changed){changed=true;sql.exec("UPDATE orders SET payment_status='paid' WHERE id=1");}}});
+ await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,1);
+ await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,0);assert.equal(g.rows.values().next().value[16],'paid');
+});
+test('active leases prevent competing writes; failures expose codes, not Google response data',async()=>{
+ const {env,sql}=database();sql.exec(`UPDATE sheets_sync_lock SET expires_at=${Date.now()+10000}, owner='other'`);assert.equal((await drainSheets(env)).busy,true);
+ sql.exec('UPDATE sheets_sync_lock SET expires_at=0');await drainSheets(env,{fetcher:async()=>new Response('sensitive diagnostic', {status:403})});
+ const status=await syncStatus(env);assert.equal(status.pending,1);assert.equal(status.lastError,'google_auth_http_403');assert.equal(sql.prepare('SELECT owner FROM sheets_sync_lock').get().owner,null);
+});
+test('Google Sheets management is private for both reads and writes',async()=>{
+ const {env}=database();for(const method of ['GET','POST']) assert.equal((await adminSheets({env,request:new Request('https://example.org/api/admin/sheets',{method})})).status,401);
+});
+
+test('tournament copies preserve leading-zero GCash references and member numbers',async()=>{
+ const g=google();const client=await createSheetsClient({GOOGLE_SHEETS_SERVICE_ACCOUNT:credential},g.fetcher);
+ await client.write('registration',{id:3,phone:'09171234567',gcash_ref:'0001234567890',member_no:'CU-2026-0001',amount:350});
+ assert.equal(g.writes[0].range,"'Registrations'!A4:M4");assert.equal(g.writes[0].values[9],'0001234567890');assert.equal(g.writes[0].values[8],'CU-2026-0001');
+});
+
+test('connection check prepares both owned tabs without adding customer records',async()=>{
+ const g=google();const client=await createSheetsClient({GOOGLE_SHEETS_SERVICE_ACCOUNT:credential},g.fetcher);await client.verify();assert.equal(g.rows.size,0);assert.equal(g.writes.length,0);
+});

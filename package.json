@@ -16,6 +16,7 @@
     "qa:browser": "node scripts/browser-qa.mjs",
     "qa:csp": "node scripts/csp-check.mjs",
     "test": "node scripts/qa.mjs",
+    "test:sheets": "node --test tests/sheets.test.mjs && node tests/sheets-runtime.mjs",
     "qa:colors": "node scripts/color-audit.mjs"
   },
   "dependencies": {

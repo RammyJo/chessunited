@@ -1,3 +1,4 @@
+import { scheduleSheetsSync } from '../_sheets.js';
 import { json, fail, isAdmin, requireAdmin, hasDb, noDb } from '../_utils.js';
 
 /**
@@ -9,7 +10,8 @@ import { json, fail, isAdmin, requireAdmin, hasDb, noDb } from '../_utils.js';
  *  - orders        merchandise orders to pack and ship
  *  - clubs         partner club submissions plus their tournament listings
  */
-export async function onRequestGet({ request, env }) {
+export async function onRequestGet(context) {
+  const { request, env } = context;
   if (!hasDb(env)) return noDb();
   if (!(await isAdmin(request, env))) return requireAdmin(env);
 
@@ -67,6 +69,7 @@ export async function onRequestGet({ request, env }) {
       return { ...row, items: lines, items_json: undefined };
     });
 
+    scheduleSheetsSync(context);
     return json({
       ok: true,
       counts: {

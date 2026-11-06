@@ -1,3 +1,4 @@
+import { scheduleSheetsSync } from './_sheets.js';
 import {
   json,
   fail,
@@ -21,7 +22,8 @@ import { CATALOG, COURIERS, priceItems } from './_catalog.js';
  * saved as unpaid and a club officer matches the GCash payment by hand before
  * the parcel goes out.
  */
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(context) {
+  const { request, env } = context;
   if (!hasDb(env)) return noDb();
 
   const body = await readJson(request);
@@ -85,6 +87,7 @@ export async function onRequestPost({ request, env }) {
     return fail('Could not save the order. Please try again.', 500);
   }
 
+  scheduleSheetsSync(context);
   return json({
     ok: true,
     order: {
