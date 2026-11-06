@@ -32,24 +32,25 @@ export async function onRequestPost(context) {
   const fullName = clean(body.fullName, 120);
   const email = clean(body.email, 160).toLowerCase();
   const phoneRaw = clean(body.phone, 24);
-  const address = clean(body.address, 240);
-  const city = clean(body.city, 80);
-  const province = clean(body.province, 80);
-  const postcode = clean(body.postcode, 16);
-  const country = clean(body.country, 80) || 'Philippines';
   const courier = clean(body.courier, 12).toLowerCase();
+  const pickup = courier === 'pickup';
+  const address = pickup ? '' : clean(body.address, 240);
+  const city = pickup ? '' : clean(body.city, 80);
+  const province = pickup ? '' : clean(body.province, 80);
+  const postcode = pickup ? '' : clean(body.postcode, 16);
+  const country = pickup ? '' : clean(body.country, 80) || 'Philippines';
   const notes = clean(body.notes, 400);
 
   const { lines, subtotal } = priceItems(body.items);
 
   const fields = {};
-  if (fullName.length < 3) fields.fullName = 'Enter the full name for the parcel.';
+  if (fullName.length < 3) fields.fullName = 'Enter your full name.';
   if (!isEmail(email)) fields.email = 'Enter a valid email address.';
   if (!isPhone(phoneRaw)) fields.phone = 'Use a PH mobile number, e.g. 09171234567.';
-  if (address.length < 8) fields.address = 'Enter the street address the parcel ships to.';
-  if (city.length < 2) fields.city = 'Enter a city or municipality.';
-  if (province.length < 2) fields.province = 'Enter a province or state.';
-  if (!Object.hasOwn(COURIERS, courier)) fields.courier = 'Choose a courier.';
+  if (!pickup && address.length < 8) fields.address = 'Enter the street address the parcel ships to.';
+  if (!pickup && city.length < 2) fields.city = 'Enter a city or municipality.';
+  if (!pickup && province.length < 2) fields.province = 'Enter a province or state.';
+  if (!Object.hasOwn(COURIERS, courier)) fields.courier = 'Choose a courier or pickup.';
   if (!lines.length) fields.items = 'Add at least one item to the order.';
   else if (lines.some(({ id, size }) => size && !CATALOG[id].options.values.includes(size))) {
     fields.items = 'Choose an available T-shirt size.';
@@ -96,7 +97,9 @@ export async function onRequestPost(context) {
       subtotal,
       courier: COURIERS[courier].label,
       shippingFee: COURIERS[courier].fee,
-      shipTo: [city, province, country].filter(Boolean).join(', '),
+      shipTo: pickup ? 'Arrange pickup with the club' : [city, province, country].filter(Boolean).join(', '),
+      fulfilmentMessage: pickup ? 'Pick up — no shipping fee. The club will contact you to arrange the place and time.' : `Delivery to ${[city, province, country].filter(Boolean).join(', ')} by ${COURIERS[courier].label}.`,
+      total: COURIERS[courier].fee === null ? null : subtotal + COURIERS[courier].fee,
       paymentStatus: 'pending',
       fulfilmentStatus: 'new',
     },

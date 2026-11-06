@@ -21,6 +21,13 @@ try {
  const login=await mf.dispatchFetch('https://example.com/api/admin/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:'local-test-only'})});
  const cookie=login.headers.get('set-cookie').split(';')[0];
  const status=await mf.dispatchFetch('https://example.com/api/admin/sheets',{headers:{Cookie:cookie}});assert.equal(status.status,200);const data=await status.json();assert.equal(data.configured,false);assert.equal(data.pending,1);
+ const withoutAddress={...order};delete withoutAddress.address;delete withoutAddress.city;delete withoutAddress.province;
+ const delivery=await mf.dispatchFetch('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(withoutAddress)});assert.equal(delivery.status,422);
+ const pickup=await mf.dispatchFetch('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...withoutAddress,courier:'pickup',shippingFee:999,address:'discard this address',country:'discard this country'})});
+ assert.equal(pickup.status,200);const pickupResult=(await pickup.json()).order;assert.equal(pickupResult.shippingFee,0);assert.equal(pickupResult.total,300);assert.match(pickupResult.fulfilmentMessage,/Pick up/);
+ const savedPickup=await db.prepare("SELECT ship_address, ship_city, ship_country FROM orders WHERE courier = 'pickup'").first();assert.deepEqual(savedPickup,{ship_address:'',ship_city:'',ship_country:''});
+ const pickupJob=await db.prepare("SELECT pending FROM sheets_sync WHERE record_id = (SELECT id FROM orders WHERE courier = 'pickup') AND kind = 'order'").first();assert.equal(pickupJob.pending,1);
+ const invalidSize=await mf.dispatchFetch('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...withoutAddress,courier:'pickup',items:[{id:'tshirt',qty:1,size:'invalid'}]})});assert.equal(invalidSize.status,422);
  const retry=await mf.dispatchFetch('https://example.com/api/admin/sheets',{method:'POST',headers:{Cookie:cookie}});assert.equal((await retry.json()).result.issue,'missing_credential');
- console.log('PASS: Workers runtime order insert, transactional D1 queue, authenticated admin status/retry, and missing credential. Local database only.');
+ console.log('PASS: Workers runtime order insert, transactional D1 queue, authenticated admin status/retry, missing credential, pickup totals/address handling, delivery validation and pickup sync queue. Local database only.');
 } finally {await mf.dispose();rmSync(temp,{recursive:true,force:true});}

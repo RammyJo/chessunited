@@ -50,6 +50,7 @@ export const MEMBER_PRINT_FEE = 200;
 export const COURIERS = {
   lbc: { label: 'LBC', fee: null },
   jt: { label: 'J&T Express', fee: null },
+  pickup: { label: 'Pick up', fee: 0 },
 };
 
 /** Tournament entry fees, keyed by event slug then division name. */

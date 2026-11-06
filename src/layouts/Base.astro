@@ -73,7 +73,7 @@ const safeJson = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003
     <script is:inline src="/scripts/boot.js"></script>
     <script is:inline src="/scripts/site.js?v=mobile-chess" defer></script>
     <script is:inline src="/scripts/forms.js?v=shop-checkout" defer></script>
-    {Astro.url.pathname.replace(/\/+$/, '') === '/shop' && <script is:inline src="/scripts/cart.js?v=mobile-chess" defer></script>}
+    {Astro.url.pathname.replace(/\/+$/, '') === '/shop' && <script is:inline src="/scripts/cart.js?v=pickup" defer></script>}
 
     {jsonLdBlocks.map((block) => (
       <script type="application/ld+json" set:html={safeJson(block)} />

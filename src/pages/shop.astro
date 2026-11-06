@@ -59,17 +59,17 @@ const orderTemplate = `
   <h3>Order received.</h3>
   <p>Your order number is</p>
   <p class="success-code">{{order.orderNo}}</p>
-  <p>Shipping to {{order.shipTo}} by {{order.courier}}.</p>
+  <p>{{order.fulfilmentMessage}}</p>
   <p>
-    A club officer checks the order, confirms the total by email, then packs and sends
-    the parcel. Nothing ships before the payment lands in the club account.
+    A club officer checks availability and confirms payment and handover details by email.
+    Please wait for confirmation before paying.
   </p>
 `;
 ---
 
 <Base
   title="Official merchandise — Chess United"
-  description="Shop Chess United merch online — shirts, caps, chess sets and clocks. Pick a size, add to cart, pay by GCash, delivered nationwide by LBC or J&T Express."
+  description="Shop Chess United shirts, caps, chess sets and clocks. Pay by GCash, choose nationwide delivery by LBC or J&T Express, or arrange pickup with the club."
   jsonLd={breadcrumbJsonLd}
 >
   <Header />
@@ -116,7 +116,7 @@ const orderTemplate = `
           <div class="note-box mt-2">
             <strong>How pricing works:</strong> the club charges its published list price for the
             items. The courier fee is added to the order automatically once the club publishes what
-            each courier costs.
+            each courier costs. Pickup has no shipping fee.
           </div>
           <div class="hero-actions">
             <a class="btn" href="#products">
@@ -334,8 +334,8 @@ const orderTemplate = `
             <h2 id="order-title">Send your order.</h2>
           </div>
           <p class="lede">
-            Open your cart and select Checkout. Enter your delivery address, choose the courier
-            and pay by GCash — a club officer checks the payment before the parcel leaves.
+            Open your cart and select Checkout. Choose delivery or pickup
+            and pay by GCash — a club officer confirms payment before handover.
           </p>
         </div>
 
@@ -390,7 +390,7 @@ const orderTemplate = `
 
             <p class="field-error" data-error-for="items" hidden></p>
 
-            <h3 class="mt-3">Where it ships</h3>
+            <h3 class="mt-3">Contact &amp; handover</h3>
 
             <div class="form-grid">
               <div class="field">
@@ -411,36 +411,8 @@ const orderTemplate = `
                 <p class="field-error" data-error-for="phone" hidden></p>
               </div>
 
-              <div class="field">
-                <label for="o-country">Country</label>
-                <input id="o-country" name="country" value="Philippines" maxlength="80" autocomplete="country-name" />
-              </div>
-
               <div class="field field--wide">
-                <label for="o-address">Street address</label>
-                <input id="o-address" name="address" required minlength="8" maxlength="240" autocomplete="street-address" />
-                <p class="field-error" data-error-for="address" hidden></p>
-              </div>
-
-              <div class="field">
-                <label for="o-city">City or municipality</label>
-                <input id="o-city" name="city" required minlength="2" maxlength="80" autocomplete="address-level2" />
-                <p class="field-error" data-error-for="city" hidden></p>
-              </div>
-
-              <div class="field">
-                <label for="o-province">Province or state</label>
-                <input id="o-province" name="province" required minlength="2" maxlength="80" autocomplete="address-level1" />
-                <p class="field-error" data-error-for="province" hidden></p>
-              </div>
-
-              <div class="field">
-                <label for="o-postcode">Postal code <span class="hint">optional</span></label>
-                <input id="o-postcode" name="postcode" maxlength="16" autocomplete="postal-code" />
-              </div>
-
-              <div class="field">
-                <label for="o-courier">Courier</label>
+                <label for="o-courier">Courier / pickup</label>
                 <select id="o-courier" name="courier" required data-courier-select>
                   {couriers.map((courier) => (
                     <option value={courier.id} data-courier-fee={courier.fee ?? undefined}>
@@ -449,6 +421,35 @@ const orderTemplate = `
                   ))}
                 </select>
                 <p class="field-error" data-error-for="courier" hidden></p>
+                <p class="hint" data-pickup-note hidden>The club will contact you to arrange the pickup place and time. No shipping fee.</p>
+              </div>
+
+              <div class="field" data-delivery-field>
+                <label for="o-country">Country</label>
+                <input id="o-country" name="country" value="Philippines" maxlength="80" autocomplete="country-name" />
+              </div>
+
+              <div class="field field--wide" data-delivery-field>
+                <label for="o-address">Street address</label>
+                <input id="o-address" name="address" required minlength="8" maxlength="240" autocomplete="street-address" />
+                <p class="field-error" data-error-for="address" hidden></p>
+              </div>
+
+              <div class="field" data-delivery-field>
+                <label for="o-city">City or municipality</label>
+                <input id="o-city" name="city" required minlength="2" maxlength="80" autocomplete="address-level2" />
+                <p class="field-error" data-error-for="city" hidden></p>
+              </div>
+
+              <div class="field" data-delivery-field>
+                <label for="o-province">Province or state</label>
+                <input id="o-province" name="province" required minlength="2" maxlength="80" autocomplete="address-level1" />
+                <p class="field-error" data-error-for="province" hidden></p>
+              </div>
+
+              <div class="field" data-delivery-field>
+                <label for="o-postcode">Postal code <span class="hint">optional</span></label>
+                <input id="o-postcode" name="postcode" maxlength="16" autocomplete="postal-code" />
               </div>
 
               <div class="field field--wide">
@@ -460,9 +461,9 @@ const orderTemplate = `
             <div class="pay-box mt-3">
               <strong>Paying by GCash</strong>
               <ol>
-                <li>Send the order first — the club emails you the total, items plus the courier fee.</li>
+                <li>Send the order first — the club confirms availability and the total. Pickup has no shipping fee.</li>
                 <li>Scan the club's GCash QR and pay that amount.</li>
-                <li>Nothing ships until the payment lands in the club account.</li>
+                <li>Orders are released after the club confirms payment.</li>
               </ol>
             </div>
 
@@ -557,16 +558,16 @@ const orderTemplate = `
             <p class="value-num">02 / Checkout</p>
             <h3>Fill the form when you are ready.</h3>
             <p>
-              The order form opens as soon as the cart holds something. Give the address, choose the
-              courier, and the club confirms the total — items plus the courier fee — by email.
+              Select Checkout from your cart. Choose a courier and enter your address, or select pickup.
+              The club confirms availability and the total by email.
             </p>
           </article>
           <article class="value-card">
-            <p class="value-num">03 / Ship</p>
-            <h3>The club sends the parcel.</h3>
+            <p class="value-num">03 / Handover</p>
+            <h3>Delivery or pickup.</h3>
             <p>
               The club checks the payment in its GCash account, packs the order and sends it by LBC
-              or J&amp;T Express anywhere in the Philippines.
+              or J&amp;T Express anywhere in the Philippines, or contacts you to arrange pickup.
             </p>
           </article>
         </div>
@@ -619,7 +620,7 @@ const orderTemplate = `
         <strong>Items subtotal</strong>
         <span class="amount" data-cart-total>₱0</span>
       </p>
-      <p class="cart-hint">The courier fee is added by the club once it knows the destination.</p>
+      <p class="cart-hint">Delivery fees are quoted by the club. Pickup has no shipping fee.</p>
       <div class="cart-actions">
         <a class="btn" href="#order" data-cart-checkout>
           <Icon name="arrow" size={15} /> Checkout

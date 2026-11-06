@@ -121,6 +121,7 @@ export type Courier = {
 export const couriers: Courier[] = [
   { id: 'lbc', label: 'LBC', note: 'Nationwide.', fee: null },
   { id: 'jt', label: 'J&T Express', note: 'Nationwide.', fee: null },
+  { id: 'pickup', label: 'Pick up', note: 'Arrange with the club.', fee: 0 },
 ];
 
 

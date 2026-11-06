@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS orders (
   ship_province     TEXT    NOT NULL,
   ship_postcode     TEXT,
   ship_country      TEXT    NOT NULL DEFAULT 'Philippines',
-  courier           TEXT    NOT NULL,                  -- lbc | jt | fedex | ups | dhl | phlpost
+  courier           TEXT    NOT NULL,                  -- lbc | jt | pickup (older orders may use other couriers)
   items_json        TEXT    NOT NULL,
   subtotal          INTEGER NOT NULL,
   shipping_note     TEXT,

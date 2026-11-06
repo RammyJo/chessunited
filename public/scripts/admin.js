@@ -65,7 +65,7 @@
 
   const actions = (...buttons) => {
     const wrap = el('div', 'cell-actions');
-    buttons.forEach((button) => wrap.appendChild(button));
+    buttons.filter(Boolean).forEach((button) => wrap.appendChild(button));
     return wrap;
   };
 
@@ -177,7 +177,7 @@
           line('div', null, row.ship_address),
           line('div', null, [row.ship_city, row.ship_province, row.ship_postcode].filter(Boolean).join(', ')),
           line('div', null, row.ship_country),
-          line('div', null, row.courier),
+          line('div', null, row.courier === 'pickup' ? 'Pick up — arrange with the customer' : row.courier),
           line('div', null, row.shipping_note),
         ),
       );
@@ -189,6 +189,7 @@
       tracking.setAttribute('data-tracking', '');
       tracking.value = row.tracking_no || '';
       tracking.placeholder = 'Tracking no.';
+      tracking.hidden = row.courier === 'pickup';
       tracking.setAttribute('aria-label', `Tracking number for order ${row.order_no}`);
 
       tr.appendChild(td(chip(row.payment_status)));
@@ -196,9 +197,9 @@
       tr.appendChild(
         td(actions(
           action('Paid', { kind: 'order', id: row.id, payment: 'paid' }),
-          action('Packed', { kind: 'order', id: row.id, fulfilment: 'packed' }),
-          action('Shipped', { kind: 'order', id: row.id, fulfilment: 'shipped', tracking: 'true' }),
-          action('Delivered', { kind: 'order', id: row.id, fulfilment: 'delivered' }),
+          action(row.courier === 'pickup' ? 'Ready for pickup' : 'Packed', { kind: 'order', id: row.id, fulfilment: 'packed' }),
+          row.courier !== 'pickup' && action('Shipped', { kind: 'order', id: row.id, fulfilment: 'shipped', tracking: 'true' }),
+          action(row.courier === 'pickup' ? 'Collected' : 'Delivered', { kind: 'order', id: row.id, fulfilment: 'delivered' }),
           action('Cancel', { kind: 'order', id: row.id, fulfilment: 'cancelled' }),
         )),
       );
