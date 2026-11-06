@@ -330,7 +330,7 @@
       } else {
         addToCart(lineKey(item.id, ''), qty);
       }
-      openCart();
+      open(button);
     });
   });
 
@@ -344,10 +344,16 @@
   }
 
   const checkout = drawer.querySelector('[data-cart-checkout]');
-  if (checkout) checkout.addEventListener('click', () => {
+  if (checkout) checkout.addEventListener('click', (event) => {
+    event.preventDefault();
     closeCart();
     checkingOut = keys().length > 0;
     renderCheckout();
+    if (checkingOut && form) {
+      form.scrollIntoView({ behavior: 'instant', block: 'start' });
+      const first = form.querySelector('input:not([type=hidden]), select, textarea');
+      if (first) first.focus({ preventScroll: true });
+    }
   });
 
   if (courierSelect) courierSelect.addEventListener('change', renderShipping);

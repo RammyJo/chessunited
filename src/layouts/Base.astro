@@ -40,7 +40,7 @@ const safeJson = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     {canonicalHref && <link rel="canonical" href={canonicalHref.href} />}
@@ -71,9 +71,9 @@ const safeJson = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003
     <meta name="twitter:image" content={ogImage.href} />
 
     <script is:inline src="/scripts/boot.js"></script>
-    <script is:inline src="/scripts/site.js" defer></script>
+    <script is:inline src="/scripts/site.js?v=mobile-chess" defer></script>
     <script is:inline src="/scripts/forms.js?v=shop-checkout" defer></script>
-    <script is:inline src="/scripts/cart.js?v=shop-checkout" defer></script>
+    {Astro.url.pathname.replace(/\/+$/, '') === '/shop' && <script is:inline src="/scripts/cart.js?v=mobile-chess" defer></script>}
 
     {jsonLdBlocks.map((block) => (
       <script type="application/ld+json" set:html={safeJson(block)} />

@@ -25,18 +25,23 @@
 
   if (menu && toggle) {
     let lastFocused = null;
+    const background = $$('main, .site-footer');
+    let inertStates = [];
 
     const focusable = () =>
       $$('a[href], button:not([disabled])', menu).filter((el) => el.offsetParent !== null);
 
     const openMenu = () => {
       lastFocused = document.activeElement;
+      inertStates = background.map((el) => el.inert);
+      background.forEach((el) => { el.inert = true; });
       menu.inert = false;
       menu.setAttribute('aria-hidden', 'false');
       menu.classList.add('is-open');
       toggle.setAttribute('aria-expanded', 'true');
       toggle.setAttribute('aria-label', 'Close menu');
       document.body.classList.add('menu-open');
+      document.documentElement.classList.add('has-menu-open');
       const first = focusable()[0];
       if (first) window.setTimeout(() => first.focus(), 40);
     };
@@ -48,6 +53,8 @@
       toggle.setAttribute('aria-expanded', 'false');
       toggle.setAttribute('aria-label', 'Open menu');
       document.body.classList.remove('menu-open');
+      document.documentElement.classList.remove('has-menu-open');
+      background.forEach((el, index) => { el.inert = inertStates[index]; });
       if (restoreFocus) {
         const target = lastFocused && lastFocused.focus ? lastFocused : toggle;
         target.focus();
@@ -117,7 +124,9 @@
     ['.poster-card', 'reveal reveal--stamp', 0],
   ];
 
-  if (!reduceMotion()) {
+  const compactMotion = () => reduceMotion() || window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+
+  if (!compactMotion()) {
     staggerGroups.forEach(([selector, variant, step]) => {
       $$(selector).forEach((el, index) => {
         variant.split(' ').forEach((name) => el.classList.add(name));
@@ -131,7 +140,7 @@
   /* ---------------------------------------------------------------------- */
   const reveals = $$('.reveal');
   if (reveals.length) {
-    if (reduceMotion() || !('IntersectionObserver' in window)) {
+    if (compactMotion() || !('IntersectionObserver' in window)) {
       reveals.forEach((el) => el.classList.add('is-in'));
     } else {
       const io = new IntersectionObserver(
@@ -143,7 +152,7 @@
             }
           });
         },
-        { threshold: 0.08, rootMargin: '0px 0px -50px 0px' },
+        { threshold: 0, rootMargin: '0px 0px 60px 0px' },
       );
       reveals.forEach((el) => io.observe(el));
       // Failsafe: never leave content invisible if the observer misses a section.
@@ -169,7 +178,7 @@
     const set = (node, value) => {
       if (!node || node.textContent === value) return;
       node.textContent = value;
-      if (reduceMotion()) return;
+      if (compactMotion()) return;
       node.classList.remove('is-tick');
       void node.offsetWidth; // restart the animation
       node.classList.add('is-tick');
@@ -222,9 +231,23 @@
       item.addEventListener('click', () => {
         show(index);
         dialog.showModal();
+        document.documentElement.classList.add('has-lightbox-open');
       });
     });
 
+    dialog.addEventListener('close', () => document.documentElement.classList.remove('has-lightbox-open'));
+    let swipeStart = null;
+    img.addEventListener('pointerdown', (event) => {
+      if (event.isPrimary && event.pointerType !== 'mouse') swipeStart = { x: event.clientX, y: event.clientY };
+    });
+    img.addEventListener('pointercancel', () => { swipeStart = null; });
+    img.addEventListener('pointerup', (event) => {
+      if (!swipeStart || !event.isPrimary) return;
+      const dx = event.clientX - swipeStart.x;
+      const dy = event.clientY - swipeStart.y;
+      swipeStart = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1));
+    });
     if (close) close.addEventListener('click', () => dialog.close());
     if (prev) prev.addEventListener('click', () => show(current - 1));
     if (next) next.addEventListener('click', () => show(current + 1));
