@@ -5,8 +5,9 @@ import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import EventCard from '../components/EventCard.astro';
 import AddToCalendar from '../components/AddToCalendar.astro';
-import { site, upcomingEvents, merch, partnerTiers, weeklySessions } from '../data/site';
-import { heroImage, photos } from '../data/images';
+import MerchPromos from '../components/MerchPromos.astro';
+import { site, upcomingEvents, partnerTiers, weeklySessions } from '../data/site';
+import { heroImage } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
@@ -89,9 +90,6 @@ const tickerItems = [
 ];
 
 const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
-const shopPreview = merch
-  .flatMap((group) => group.items)
-  .filter((item) => ['T-shirt', 'Chess set', 'Tumbler', 'Cap'].includes(item.name));
 ---
 
 <Base
@@ -324,46 +322,7 @@ const shopPreview = merch
       </div>
     </section>
 
-    <section class="section section--paper" aria-labelledby="shop-title">
-      <div class="wrap shop-teaser">
-        <div class="shop-photo reveal">
-          <img
-            src={photos.flatlay.src}
-            srcset={photos.flatlay.srcset}
-            sizes="(max-width: 980px) 92vw, 42vw"
-            width={photos.flatlay.width}
-            height={photos.flatlay.height}
-            alt={photos.flatlay.alt}
-            loading="lazy"
-            decoding="async"
-          />
-          <span class="tag">Official club merch</span>
-        </div>
-        <div>
-          <p class="eyebrow">Merchandise</p>
-          <h2 id="shop-title" class="display-md">Wear the board.</h2>
-          <p class="lede">
-            Official Chess United merchandise — from tournament-ready sets to the tumbler
-            you'll refill every Saturday.
-          </p>
-          <div class="price-list" aria-label="A few merchandise prices">
-            {shopPreview.map((item) => (
-              <div class="price-row">
-                <span class="name">{item.name}{item.note && <span class="item-note"> · {item.note}</span>}</span>
-                <span class="dots" aria-hidden="true"></span>
-                <span class="amount">₱{item.price.toLocaleString('en-PH')}</span>
-              </div>
-            ))}
-          </div>
-          <p class="mt-2">
-            <a class="btn" href="/shop/">All merchandise <Icon name="arrow" size={16} class="arrow" /></a>
-          </p>
-          <p class="muted" style="font-size:.78rem;margin-top:14px">
-            Pre-order · limited stocks. Prices as published on the club's merch list.
-          </p>
-        </div>
-      </div>
-    </section>
+    <MerchPromos />
 
     <section class="section--tight" aria-labelledby="partners-title">
       <div class="wrap">

@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import GcashPayment from '../components/GcashPayment.astro';
 import { site, merch, couriers, formatPeso } from '../data/site';
-import { photos, merchPhotos } from '../data/images';
+import { merchPhotos } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
@@ -86,129 +86,6 @@ const orderTemplate = `
         </div>
       </div>
     </header>
-
-    <section class="section section--paper" id="prices" aria-labelledby="price-title">
-      <div class="wrap shop-teaser">
-        <div class="shop-photo reveal">
-          <img
-            src="/images/posters/merch-price-list-900.webp"
-            width="900"
-            height="636"
-            alt="Chess United official merchandise price list poster with shirts, chess sets, clocks and small items."
-            loading="lazy"
-            decoding="async"
-          />
-          <span class="tag">Official price list</span>
-        </div>
-        <div>
-          <p class="eyebrow">The list</p>
-          <h2 id="price-title" class="display-md">Support the club. Look the part.</h2>
-          <p class="lede">
-            Every price in the catalogue below is reproduced from the club's own merchandise poster.
-            The poster advertises limited stocks, so the club confirms availability when it receives
-            your order.
-          </p>
-          <div class="note-box mt-2">
-            <strong>How pricing works:</strong> the club charges its published list price for the
-            items. Choose a courier and delivery location to see the shipping fee and full total before paying. Each unit ships in a separately measured parcel. Pickup has no shipping fee.
-          </div>
-          <div class="hero-actions">
-            <a class="btn" href="#products">
-              <Icon name="cart" size={15} /> See the catalogue
-            </a>
-            <a class="btn btn--ghost" href={site.groupUrl} target="_blank" rel="noopener">
-              Ask the club <Icon name="external" size={15} />
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="jersey-title">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Tournament day</p>
-            <h2 id="jersey-title" class="display-md">The club jersey.</h2>
-          </div>
-          <p class="lede">
-            White body, blue and red raglan sleeves, the crest on the chest and the knight on the
-            back — the sublimation design the club publishes for tournament wear.
-          </p>
-        </div>
-
-        <div class="shop-photo shop-photo--wide reveal">
-          <img
-            src={photos.jersey.src}
-            srcset={photos.jersey.srcset}
-            sizes="(max-width: 900px) 92vw, 70vw"
-            width={photos.jersey.width}
-            height={photos.jersey.height}
-            alt={photos.jersey.alt}
-            loading="lazy"
-            decoding="async"
-          />
-          <span class="tag">Sublimation jersey design</span>
-        </div>
-
-        <div class="jersey-facts">
-          <div class="price-list">
-            <div class="price-row">
-              <span class="name">Sublimation shirt</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱600</span>
-            </div>
-            <div class="price-row">
-              <span class="name">T-shirt</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱300</span>
-            </div>
-            <div class="price-row">
-              <span class="name">Polo shirt</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱400</span>
-            </div>
-          </div>
-          <div class="note-box">
-            <strong>Personalisation:</strong> the sample back carries a name and a number. The
-            published list prices a sublimation shirt at ₱600 but does not say what personalisation
-            costs, so contact the club before ordering a personalised version. Checkout covers the published standard design.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--paper" aria-labelledby="kit-title">
-      <div class="wrap shop-teaser">
-        <div>
-          <p class="eyebrow">The kit in real life</p>
-          <h2 id="kit-title" class="display-md">Shirt, cap, mug, notebook.</h2>
-          <p class="lede">
-            The club's printed range is worn at the tables, not kept in a box. Everything in this
-            picture is in the catalogue below — add it to the cart and the club sends it out.
-          </p>
-          <div class="badge-row mt-2">
-            <span class="badge">Order online</span>
-            <span class="badge">Limited stocks</span>
-            <span class="badge">Club colours</span>
-          </div>
-        </div>
-
-        <div class="shop-photo shop-photo--portrait reveal">
-          <img
-            src={photos.merchlife.src}
-            srcset={photos.merchlife.srcset}
-            sizes="(max-width: 900px) 92vw, 42vw"
-            width={photos.merchlife.width}
-            height={photos.merchlife.height}
-            alt={photos.merchlife.alt}
-            loading="lazy"
-            decoding="async"
-          />
-          <span class="tag">Club merchandise</span>
-        </div>
-      </div>
-    </section>
 
     <section class="section" id="products" aria-labelledby="products-title">
       <div class="wrap">
@@ -351,30 +228,6 @@ const orderTemplate = `
           <form class="form-card" data-api="/api/orders" hidden data-checkout-form>
             <h3>Merchandise order</h3>
 
-            <div class="cart-review">
-              <div class="cart-review-head">
-                <strong>Your cart</strong>
-                <button class="text-link" type="button" aria-expanded="false" aria-controls="cart-drawer" data-cart-open>Change it</button>
-              </div>
-              <ul class="cart-review-lines" data-cart-summary></ul>
-              <p class="cart-review-total">
-                <strong>Items subtotal</strong>
-                <span class="amount" data-subtotal>₱0</span>
-              </p>
-              <dl class="cart-review-fees">
-                <div>
-                  <dt>Shipping</dt>
-                  <dd class="amount" data-cart-shipping>Choose location</dd>
-                </div>
-                <div class="cart-review-fees--total">
-                  <dt>Total</dt>
-                  <dd class="amount" data-cart-grand>₱0</dd>
-                </div>
-              </dl>
-              <p class="cart-review-note" data-cart-shipping-note role="status">Choose a courier and location to calculate delivery.</p>
-              <button class="btn btn--sm btn--ghost" type="button" data-shipping-refresh>Refresh delivery total</button>
-            </div>
-
             {/* cart.js writes one field per cart line into this block — product,
                 size and quantity. forms.js turns them into the items array that the
                 API re-prices on the server, so nothing the browser holds can change
@@ -450,10 +303,34 @@ const orderTemplate = `
               </div>
             </div>
 
-            <p class="note-box mt-3">Review your items, shipping and total above. Continue to GCash to pay that exact amount, then return to submit the order for verification.</p>
             <input type="hidden" name="quoteId" data-shipping-quote-id />
             <input type="hidden" name="destinationId" data-shipping-destination-id />
             <input type="hidden" name="checkoutToken" data-checkout-token />
+            <div class="cart-review">
+              <div class="cart-review-head">
+                <strong>Your cart</strong>
+                <button class="text-link" type="button" aria-expanded="false" aria-controls="cart-drawer" data-cart-open>Change it</button>
+              </div>
+              <ul class="cart-review-lines" data-cart-summary></ul>
+              <p class="cart-review-total">
+                <strong>Items subtotal</strong>
+                <span class="amount" data-subtotal>₱0</span>
+              </p>
+              <dl class="cart-review-fees">
+                <div>
+                  <dt>Shipping</dt>
+                  <dd class="amount" data-cart-shipping>Choose location</dd>
+                </div>
+                <div class="cart-review-fees--total">
+                  <dt>Total</dt>
+                  <dd class="amount" data-cart-grand>₱0</dd>
+                </div>
+              </dl>
+              <p class="cart-review-note" data-cart-shipping-note role="status">Choose a courier and location to calculate delivery.</p>
+              <button class="btn btn--sm btn--ghost" type="button" data-shipping-refresh>Refresh delivery total</button>
+            </div>
+
+            <p class="hint mt-2">Continue to GCash to pay the total shown above, then return to submit your order for verification.</p>
             <p class="form-status" data-form-status hidden></p>
 
             <div class="form-actions">
@@ -489,50 +366,6 @@ const orderTemplate = `
       </div>
     </section>
 
-    <section class="section" aria-labelledby="idkit-title">
-      <div class="wrap shop-teaser">
-        <div class="shop-photo shop-photo--portrait reveal">
-          <img
-            src={photos.lanyard.src}
-            srcset={photos.lanyard.srcset}
-            sizes="(max-width: 900px) 92vw, 42vw"
-            width={photos.lanyard.width}
-            height={photos.lanyard.height}
-            alt={photos.lanyard.alt}
-            loading="lazy"
-            decoding="async"
-          />
-          <span class="tag">Club ID kit</span>
-        </div>
-        <div>
-          <p class="eyebrow">Lanyard &amp; member ID</p>
-          <h2 id="idkit-title" class="display-md">Two hundred pesos, and you're on the roster.</h2>
-          <p class="lede">
-            Register as a member and the digital card is free. The printed membership ID with the
-            club lanyard — blue on one side, red on the other, the knight on the strap — is the
-            club's ₱200 option, and it is ordered on the membership page.
-          </p>
-          <div class="price-list">
-            <div class="price-row">
-              <span class="name">Lanyard</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱100</span>
-            </div>
-            <div class="price-row">
-              <span class="name">Member ID</span>
-              <span class="dots" aria-hidden="true"></span>
-              <span class="amount">₱100</span>
-            </div>
-          </div>
-          <div class="hero-actions">
-            <a class="btn" href="/membership/#register">
-              Register and order an ID <Icon name="arrow" size={15} />
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="section section--paper" aria-labelledby="steps-title">
       <div class="wrap">
         <div class="section-head">
@@ -559,7 +392,7 @@ const orderTemplate = `
             <h3>Fill the form when you are ready.</h3>
             <p>
               Select Checkout from your cart. Choose a courier and enter your address, or select pickup.
-              The club confirms availability and the total by email.
+              Review the full total at the bottom of the form, then continue to GCash and submit after paying.
             </p>
           </article>
           <article class="value-card">
@@ -574,20 +407,6 @@ const orderTemplate = `
       </div>
     </section>
 
-    <section class="cta-band" aria-labelledby="shop-cta">
-      <div class="wrap cta-inner">
-        <div>
-          <h2 id="shop-cta" class="display-lg">Get the kit.</h2>
-          <p>Order online and the club ships it to your door.</p>
-        </div>
-        <div class="cta-actions">
-          <a class="btn" href="#products">
-            <Icon name="cart" size={16} /> Back to the catalogue
-          </a>
-          <a class="btn btn--light" href="/visit/">Visit us</a>
-        </div>
-      </div>
-    </section>
   </main>
 
   <div class="cart-scrim" data-cart-scrim hidden></div>
