@@ -10,7 +10,7 @@ import { json, fail, readJson, clean, adminLoginResponse, adminLogoutResponse, i
 
 export async function onRequestPost({ request, env }) {
   const body = await readJson(request);
-  if (!body || !body.token) return adminLogoutResponse();
+  if (!body || typeof body.token !== 'string' || !body.token.trim()) return fail('Enter the admin token.',422);
   return adminLoginResponse(env, clean(body.token, 200));
 }
 

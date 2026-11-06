@@ -95,6 +95,9 @@
     const button = $('[type="submit"]', form);
     const busyLabel = button ? button.getAttribute('data-busy') : null;
     const idleLabel = button ? button.textContent : null;
+    let retryKey = null;
+    let retryFingerprint = '';
+    const retryStorage = 'cu_submission_v1:' + form.getAttribute('data-api') + ':' + (form.elements.eventSlug?.value || '');
 
     const clearErrors = () => {
       $$('[data-error-for]', form).forEach((node) => {
@@ -149,6 +152,17 @@
       }
 
       try {
+        if(endpoint !== '/api/orders') {
+          const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(payload)));
+          const fingerprint = Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');
+          if(retryFingerprint !== fingerprint) {
+            let saved=null;try{saved=JSON.parse(sessionStorage.getItem(retryStorage)||'null');}catch{}
+            retryKey=saved?.fingerprint===fingerprint && /^[a-f0-9]{64}$/.test(saved?.key||'') ? saved.key : Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
+            retryFingerprint=fingerprint;
+            try{sessionStorage.setItem(retryStorage,JSON.stringify({fingerprint,key:retryKey}));}catch{}
+          }
+          payload.submissionToken=retryKey;
+        }
         const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
@@ -183,7 +197,8 @@
           // half-finished URL; they become real hrefs here, once the server has
           // answered.
           holder.querySelectorAll('[data-href]').forEach((node) => {
-            node.setAttribute('href', node.getAttribute('data-href'));
+            const url=new URL(node.getAttribute('data-href'),location.origin);
+            if(url.origin===location.origin && ['https:','http:'].includes(url.protocol))node.href=url.href;
           });
           success.innerHTML = '';
           while (holder.firstChild) success.appendChild(holder.firstChild);
@@ -195,6 +210,7 @@
           status.hidden = false;
           form.reset();
         }
+        retryKey=null;retryFingerprint='';try{sessionStorage.removeItem(retryStorage);}catch{}
       } catch {
         showErrors('Could not reach the club’s server. Check your connection and try again.');
       } finally {
@@ -230,11 +246,12 @@
       });
     };
 
-    if (!/^CU-\d{4}-\d{4}$/.test(memberNo)) {
+    const key=new URLSearchParams(location.hash.replace(/^#card[&?]?/,'')).get('key') || '';
+    if (!/^CU-\d{4}-(?:\d{4}|\d{8})$/.test(memberNo)) {
       show(empty);
     } else {
       show(loading);
-      fetch('/api/members/' + encodeURIComponent(memberNo))
+      fetch('/api/members/' + encodeURIComponent(memberNo), {headers:key?{'X-Member-Card-Key':key}:{}})
         .then(async (response) => {
           const payload = await response.json().catch(() => null);
           if (!response.ok || !payload || payload.ok === false) {
@@ -327,10 +344,11 @@
       }
       card.appendChild(facts);
 
-      if (club.facebook) {
+      let safeFacebook='';try{const url=new URL(club.facebook);if(['http:','https:'].includes(url.protocol)&&!url.username&&!url.password)safeFacebook=url.href;}catch{}
+      if (safeFacebook) {
         const link = document.createElement('a');
         link.className = 'text-link';
-        link.href = club.facebook;
+        link.href = safeFacebook;
         link.target = '_blank';
         link.rel = 'noopener';
         link.textContent = 'Club page';

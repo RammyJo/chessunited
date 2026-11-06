@@ -11,6 +11,7 @@ import {
   noDb,
 } from './_utils.js';
 import { TOURNAMENTS } from './_catalog.js';
+import {prepareSubmission,submissionStatement,savedSubmission,SubmissionError} from './_submissions.js';
 
 /**
  * POST /api/registrations — enter a club tournament.
@@ -39,11 +40,11 @@ export async function onRequestPost(context) {
   const gcashRef = clean(body.gcashRef, 20).replace(/[\s-]/g, '');
   const notes = clean(body.notes, 400);
 
-  const event = TOURNAMENTS[eventSlug];
+  const event = Object.hasOwn(TOURNAMENTS,eventSlug) ? TOURNAMENTS[eventSlug] : null;
 
   const fields = {};
   if (!event) fields.eventSlug = 'Choose a tournament.';
-  else if (!event.divisions[division]) fields.division = 'Choose a division.';
+  else if (!Object.hasOwn(event.divisions,division)) fields.division = 'Choose a division.';
   if (fullName.length < 3) fields.fullName = 'Enter the player’s full name.';
   if (!isEmail(email)) fields.email = 'Enter a valid email address.';
   if (!isPhone(phoneRaw)) fields.phone = 'Use a PH mobile number, e.g. 09171234567.';
@@ -52,7 +53,12 @@ export async function onRequestPost(context) {
   }
   if (Object.keys(fields).length) return fail('Please check the highlighted fields.', 422, fields);
 
+  if(memberNo && !/^CU-\d{4}-(?:\d{4}|\d{8})$/.test(memberNo))return fail('Enter a valid member number.',422,{memberNo:'Use your club member number, or leave this blank.'});
   const amount = event.divisions[division];
+  let submission;
+  try{submission=await prepareSubmission(env,'registration',body,{eventSlug,division,fullName,email,phoneRaw,club,memberNo,gcashRef,notes});if(submission.response)return json(submission.response);}catch(e){return fail(e instanceof SubmissionError?e.message:'Please retry the entry.',e instanceof SubmissionError?e.status:503);}
+  if(Date.now()>=Date.parse(event.registrationClosesAt))return fail('Registration for this event has closed. Please choose an upcoming tournament.',422);
+  const response={ok:true,registration:{eventSlug,eventName:event.name,division,fullName,amount,gcashRef,paymentStatus:'pending'},message:'Entry saved. The club verifies receipt in GCash before confirming your slot.'};
 
   try {
     const existing = await env.DB.prepare(
@@ -68,7 +74,7 @@ export async function onRequestPost(context) {
       );
     }
 
-    await env.DB.prepare(
+    const insert = env.DB.prepare(
       `INSERT INTO registrations
          (event_slug, full_name, email, phone, division, club, member_no, gcash_ref,
           amount, payment_status, notes)
@@ -85,26 +91,17 @@ export async function onRequestPost(context) {
         gcashRef,
         amount,
         notes,
-      )
-      .run();
+      );
+    const marker=await submissionStatement(env,'registration',submission,response);
+    await env.DB.batch([insert,...(marker?[marker]:[])]);
   } catch (error) {
-    console.error('registration insert failed', error);
+    const saved=await savedSubmission(env,submission);if(saved)return json(saved);
+    const duplicate=await env.DB.prepare('SELECT id FROM registrations WHERE event_slug=? AND email=?').bind(eventSlug,email).first();
+    if(duplicate)return fail('An entry already exists for these details. Contact the club before sending another payment.',409);
+    console.error('registration_insert_failed');
     return fail('Could not save the entry. Please try again.', 500);
   }
 
   scheduleSheetsSync(context);
-  return json({
-    ok: true,
-    registration: {
-      eventSlug,
-      eventName: event.name,
-      division,
-      fullName,
-      amount,
-      gcashRef,
-      paymentStatus: 'pending',
-    },
-    message:
-      'Entry saved. The club checks the reference number against its GCash account and confirms your slot.',
-  });
+  return json(response);
 }

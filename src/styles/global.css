@@ -2790,8 +2790,8 @@ html.has-cart-open body { overflow: hidden; }
 .admin-stat span { display: block; font-size: .58rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .admin-stat strong { font-family: var(--font-display); font-size: 2rem; line-height: 1.05; }
 
-.queue { display: grid; gap: 26px; margin-top: 34px; }
-.queue > section { border: var(--line); background: var(--card); }
+.queue { min-width: 0; display: grid; gap: 26px; margin-top: 34px; }
+.queue > section { min-width: 0; max-width: 100%; border: var(--line); background: var(--card); }
 .queue h3 {
   font-family: var(--font-display);
   text-transform: uppercase;
@@ -2804,7 +2804,7 @@ html.has-cart-open body { overflow: hidden; }
   gap: 12px;
 }
 
-.table-wrap { overflow-x: auto; }
+.table-wrap { max-width: 100%; overflow-x: auto; }
 .queue table { width: 100%; border-collapse: collapse; font-size: .84rem; min-width: 720px; }
 .queue th, .queue td { text-align: left; padding: 10px 14px; border-bottom: 1px solid rgba(10, 21, 51, .17); vertical-align: top; }
 .queue th { font-size: .56rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }

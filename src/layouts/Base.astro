@@ -1,4 +1,5 @@
 ---
+import { scriptUrl } from '../lib/assets';
 import { site } from '../data/site';
 import '../styles/global.css';
 
@@ -70,12 +71,12 @@ const safeJson = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage.href} />
 
-    <script is:inline src="/scripts/boot.js"></script>
-    <script is:inline src="/scripts/site.js?v=mobile-chess" defer></script>
-    <script is:inline src="/scripts/forms.js?v=gcash-checkout" defer></script>
-    {Astro.url.pathname.replace(/\/+$/, '') === '/shop' && <script is:inline src="/scripts/cart.js?v=gcash-checkout" defer></script>}
+    <script is:inline src={scriptUrl('boot.js')}></script>
+    <script is:inline src={scriptUrl('site.js')} defer></script>
+    <script is:inline src={scriptUrl('forms.js')} defer></script>
+    {Astro.url.pathname.replace(/\/+$/, '') === '/shop' && <script is:inline src={scriptUrl('cart.js')} defer></script>}
 
-    <script is:inline src="/scripts/payments.js?v=gcash-checkout" defer></script>
+    <script is:inline src={scriptUrl('payments.js')} defer></script>
 
     {jsonLdBlocks.map((block) => (
       <script type="application/ld+json" set:html={safeJson(block)} />

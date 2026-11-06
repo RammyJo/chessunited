@@ -1,4 +1,5 @@
 ---
+import { scriptUrl } from '../../lib/assets';
 import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -12,8 +13,8 @@ import Icon from '../../components/Icon.astro';
   canonical={false}
 >
   <Fragment slot="head">
-    <script is:inline src="/scripts/admin.js?v=gcash-checkout" defer></script>
-    <script is:inline src="/scripts/admin-shipping.js?v=gcash-checkout" defer></script>
+    <script is:inline src={scriptUrl('admin.js')} defer></script>
+    <script is:inline src={scriptUrl('admin-shipping.js')} defer></script>
   </Fragment>
 
   <Header />
@@ -117,7 +118,7 @@ import Icon from '../../components/Icon.astro';
 
           <div class="queue">
             <section aria-labelledby="q-members">
-              <h3 id="q-members">Membership registrations</h3>
+              <h3 id="q-members">Membership registrations</h3><p class="hint">New private card link replaces any earlier card link for that member. Share it only with the member or guardian.</p>
               <div class="table-wrap">
                 <table>
                   <thead>

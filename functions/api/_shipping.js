@@ -1,6 +1,6 @@
 import { LOCATIONS } from './_shipping-locations.js';
 import { CATALOG, priceItems } from './_catalog.js';
-export class ShippingError extends Error {}
+export class ShippingError extends Error {constructor(message,status=503){super(message);this.status=status;}}
 export const DEFAULT_ORIGINS = { jt: '56054', lbc: '103314000' };
 export async function shippingSettings(env) {
  const row = await env.DB.prepare('SELECT config_json,revision FROM shipping_settings WHERE id=1').first();
@@ -84,13 +84,13 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
  return {fee:Math.round(total*100)/100,details};
 }
 export async function createShippingQuote(env,body,fetcher=fetch) {
- const courier=body.courier;if(!['lbc','jt','pickup'].includes(courier))throw new ShippingError('Choose a courier or pickup.');
- const {lines,subtotal}=priceItems(body.items);if(!lines.length || lines.some(x=>x.size&&!CATALOG[x.id].options.values.includes(x.size)))throw new ShippingError('Choose valid items and sizes.');
+ const courier=body.courier;if(!['lbc','jt','pickup'].includes(courier))throw new ShippingError('Choose a courier or pickup.',422);
+ const {lines,subtotal}=priceItems(body.items);if(!lines.length || lines.some(x=>x.size&&!CATALOG[x.id].options.values.includes(x.size)))throw new ShippingError('Choose valid items and sizes.',422);
  const {config,revision}=await shippingSettings(env);
  let destination,origin,rate={fee:0,details:[]};
  if(courier!=='pickup') {
   destination=LOCATIONS[courier].find(x=>x.id===String(body.destinationId));
-  if(!destination)throw new ShippingError('Choose a delivery province and city.');
+  if(!destination)throw new ShippingError('Choose a delivery province and city.',422);
   origin=LOCATIONS[courier].find(x=>x.id===config.origins?.[courier]);
   if(!origin)throw new ShippingError('The club must confirm its dispatch location before delivery checkout opens. Pickup is available.');
   rate=await officialShippingRate(courier,origin,destination,packItems(lines,config),fetcher);

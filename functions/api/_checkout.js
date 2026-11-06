@@ -10,5 +10,6 @@ export function orderResult(row) {
   fulfilmentMessage:pickup?'Pick up — no shipping fee. The club will arrange the place and time.':`Delivery to ${row.ship_city}, ${row.ship_province} by ${COURIERS[row.courier]?.label||row.courier}.`,
   paymentStatus:row.payment_status,submitted:!!row.payment_claimed_at,
   fulfilmentStatus:row.fulfilment_status,
+  canPay:row.payment_status==='pending' && row.fulfilment_status!=='cancelled' && !row.payment_claimed_at,
  };
 }

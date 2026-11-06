@@ -89,7 +89,7 @@ export async function onRequestGet(context) {
       partnerEvents: events.results ?? [],
     });
   } catch (error) {
-    console.error('admin queue read failed', error);
+    console.error('admin_queue_failed');
     return fail('Could not read the queue.', 500);
   }
 }

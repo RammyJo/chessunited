@@ -1,5 +1,7 @@
+import {scheduleSecurityCheck} from './_security-check.js';
 import { scheduleRequestedSheetsCheck } from './_sheets.js';
 import { json, fail, readJson, clean, isEmail, hasDb, noDb } from './_utils.js';
+import {prepareSubmission,submissionStatement,savedSubmission,SubmissionError} from './_submissions.js';
 
 /**
  * /api/partner-clubs
@@ -56,9 +58,10 @@ export async function onRequestGet(context) {
     }));
 
     scheduleRequestedSheetsCheck(context);
+    scheduleSecurityCheck(context);
     return json({ ok: true, count: results.length, clubs: results });
   } catch (error) {
-    console.error('partner club read failed', error);
+    console.error('partner_directory_failed');
     return fail('The partner club directory is unavailable right now.', 500);
   }
 }
@@ -93,55 +96,26 @@ export async function onRequestPost({ request, env }) {
   if (meetingSchedule.length < 3) fields.meetingSchedule = 'When does the club meet?';
   if (contactName.length < 2) fields.contactName = 'Enter the club officer’s name.';
   if (!isEmail(contactEmail)) fields.contactEmail = 'Enter a valid email address.';
-  if (facebook && !/^https?:\/\//i.test(facebook)) {
-    fields.facebook = 'Paste the full page URL, starting with https://';
-  }
-  if (eventTitle && !/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) {
+  if(facebook){try{const url=new URL(facebook);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)throw Error();}catch{fields.facebook='Paste a valid full page URL, starting with https://';}}
+  if (eventTitle && (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate) || !Number.isFinite(Date.parse(eventDate)) || new Date(eventDate).toISOString().slice(0,10)!==eventDate)) {
     fields.eventDate = 'Pick the tournament date.';
   }
   if (Object.keys(fields).length) return fail('Please check the highlighted fields.', 422, fields);
 
+  let submission;
+  try{submission=await prepareSubmission(env,'partner',body,{clubName,city,province,country,meetingPlace,meetingSchedule,contactName,contactEmail,contactPhone,facebook,notes,eventTitle,eventDate,eventVenue,eventDetails});if(submission.response)return json(submission.response);}catch(e){return fail(e instanceof SubmissionError?e.message:'Please retry the club submission.',e instanceof SubmissionError?e.status:503);}
+  const response={ok:true,message:'Thank you — a Chess United officer reviews the details before the club appears in the directory.'};
   try {
-    const inserted = await env.DB.prepare(
-      `INSERT INTO partner_clubs
-         (club_name, city, province, country, meeting_place, meeting_schedule,
-          contact_name, contact_email, contact_phone, facebook, notes, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
-    )
-      .bind(
-        clubName,
-        city,
-        province,
-        country,
-        meetingPlace,
-        meetingSchedule,
-        contactName,
-        contactEmail,
-        contactPhone,
-        facebook,
-        notes,
-      )
-      .run();
-
-    const clubId = inserted.meta?.last_row_id;
-
-    if (eventTitle && clubId) {
-      await env.DB.prepare(
-        `INSERT INTO partner_events
-           (partner_club_id, title, event_date, venue, details, status)
-         VALUES (?, ?, ?, ?, ?, 'pending')`,
-      )
-        .bind(clubId, eventTitle, eventDate, eventVenue, eventDetails)
-        .run();
-    }
-
-    return json({
-      ok: true,
-      message:
-        'Thank you — a Chess United officer reviews the details before the club appears in the directory.',
-    });
-  } catch (error) {
-    console.error('partner club insert failed', error);
+    const insert=env.DB.prepare(`INSERT INTO partner_clubs(club_name,city,province,country,meeting_place,meeting_schedule,contact_name,contact_email,contact_phone,facebook,notes,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,'pending')`)
+      .bind(clubName,city,province,country,meetingPlace,meetingSchedule,contactName,contactEmail,contactPhone,facebook,notes);
+    const statements=[insert];
+    if(eventTitle)statements.push(env.DB.prepare(`INSERT INTO partner_events(partner_club_id,title,event_date,venue,details,status) VALUES(last_insert_rowid(),?,?,?,?,'pending')`).bind(eventTitle,eventDate,eventVenue,eventDetails));
+    const marker=await submissionStatement(env,'partner',submission,response);if(marker)statements.push(marker);
+    await env.DB.batch(statements);
+    return json(response);
+  } catch {
+    const saved=await savedSubmission(env,submission);if(saved)return json(saved);
+    console.error('partner_insert_failed');
     return fail('Could not save the club details. Please try again.', 500);
   }
 }

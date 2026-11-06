@@ -127,7 +127,7 @@ test('newer dashboard payment edits win; wrong row IDs and invalid marks never c
  const {env,sql}=database();const g=google();await drainSheets(env,{fetcher:g.fetcher});
  sql.exec("UPDATE orders SET payment_status='paid' WHERE id=1");await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');assert.equal(g.rows.get("'Orders'!A2:X2")[19],'Paid');
  const row=g.rows.get("'Orders'!A2:X2");row[0]='999';row[19]='Not paid';await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');
- row[0]=1;row[19]='anything';await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');
+ row[0]=1;row[19]='anything';await drainSheets(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');assert.equal(g.rows.get("'Orders'!A2:X2")[19],'Paid');
 });
 test('Sheets payment edits verify tournaments, paid printed cards, and never charge free memberships',async()=>{
  const {env,sql}=database();const g=google();

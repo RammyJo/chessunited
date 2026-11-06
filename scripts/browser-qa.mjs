@@ -59,6 +59,9 @@ for (const viewport of viewports) {
     });
     page.on('pageerror', (error) => pageErrors.push(error.message));
 
+    await page.setRequestInterception(true);
+    page.on('request',request=>{if(new URL(request.url()).pathname==='/api/partner-clubs' && request.method()==='GET')return request.respond({status:200,contentType:'application/json',body:JSON.stringify({ok:true,count:0,clubs:[]})});request.continue();});
+
     await page.setViewport({
       width: viewport.width,
       height: viewport.height,

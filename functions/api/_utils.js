@@ -25,7 +25,7 @@ export function fail(message, status = 400, fields) {
 export async function readJson(request) {
   try {
     const body = await request.json();
-    return body && typeof body === 'object' ? body : null;
+    return body && typeof body === 'object' && !Array.isArray(body) ? body : null;
   } catch {
     return null;
   }
@@ -33,7 +33,7 @@ export async function readJson(request) {
 
 /** Trim, collapse whitespace and cap length — every value is user input. */
 export function clean(value, max = 200) {
-  if (value === undefined || value === null) return '';
+  if (!['string','number'].includes(typeof value)) return '';
   return String(value).replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
@@ -60,6 +60,10 @@ export function toInt(value, fallback = 0) {
    Identifiers
    -------------------------------------------------------------------------- */
 
+export function randomToken() {
+ return Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join('');
+}
+
 function randomDigits(length) {
   const bytes = new Uint8Array(length);
   crypto.getRandomValues(bytes);
@@ -71,7 +75,7 @@ function randomDigits(length) {
 /** Human-facing member number, e.g. CU-2026-0042. */
 export function makeMemberNo() {
   const year = new Date().getUTCFullYear();
-  return `CU-${year}-${randomDigits(4)}`;
+  return `CU-${year}-${randomDigits(8)}`;
 }
 
 /** Order number, e.g. ORD-4F2K9A. */
@@ -122,7 +126,7 @@ export function adminToken(env) {
  */
 export async function adminLoginResponse(env, supplied) {
   const token = adminToken(env);
-  if (!token) return fail('The admin dashboard is not configured (ADMIN_TOKEN is unset).', 500);
+  if (!token) return fail('The officer dashboard is temporarily unavailable.', 500);
   if (!supplied || !safeEqual(String(supplied), token)) {
     return fail('That admin token is not correct.', 401);
   }
@@ -156,13 +160,14 @@ export async function isAdmin(request, env) {
   const match = cookie.match(/(?:^|;\s*)cu_admin=([^;]+)/);
   if (!match) return false;
 
-  const raw = decodeURIComponent(match[1]);
+  const raw = match[1];
+  if (!/^admin\.\d{13}\.[a-f0-9]{64}$/.test(raw)) return false;
   const parts = raw.split('.');
   if (parts.length !== 3) return false;
 
   const [scope, expires, signature] = parts;
   if (scope !== 'admin') return false;
-  if (!Number.isFinite(Number(expires)) || Number(expires) < Date.now()) return false;
+  if (!Number.isFinite(Number(expires)) || Number(expires) <= Date.now() || Number(expires) > Date.now() + SESSION_HOURS * 3600000) return false;
 
   const expected = await hmac(`${scope}.${expires}`, token);
   return safeEqual(signature, expected);
@@ -183,7 +188,7 @@ export function hasDb(env) {
 
 export function noDb() {
   return fail(
-    'The database is not connected yet. Create the D1 database and set its id in wrangler.toml.',
+    'The service is temporarily unavailable. Please try again shortly.',
     503,
   );
 }

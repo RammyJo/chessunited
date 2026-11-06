@@ -19,7 +19,9 @@
     "test:sheets": "node --test tests/sheets.test.mjs && node tests/sheets-runtime.mjs",
     "qa:colors": "node scripts/color-audit.mjs",
     "test:shipping": "node --test tests/shipping.test.mjs",
-    "qa:checkout": "node scripts/checkout-qa.mjs"
+    "qa:checkout": "node scripts/checkout-qa.mjs",
+    "test:security": "node tests/security-runtime.mjs",
+    "qa:security": "node scripts/security-browser-qa.mjs"
   },
   "dependencies": {
     "astro": "^7.4.2"

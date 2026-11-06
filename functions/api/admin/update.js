@@ -42,12 +42,12 @@ export async function onRequestPost(context) {
   if (!body) return fail('Send a JSON body.');
 
   const kind = clean(body.kind, 20);
-  const table = TABLES[kind];
-  const rule = ALLOWED[kind];
-  const id = Number.parseInt(body.id, 10);
+  const table = Object.hasOwn(TABLES,kind) ? TABLES[kind] : null;
+  const rule = Object.hasOwn(ALLOWED,kind) ? ALLOWED[kind] : null;
+  const id = Number(body.id);
 
   if (!table || !rule) return fail('Unknown record type.', 422);
-  if (!Number.isFinite(id) || id < 1) return fail('Unknown record id.', 422);
+  if (!Number.isSafeInteger(id) || id < 1) return fail('Unknown record id.', 422);
 
   const sets = [];
   const values = [];
@@ -104,7 +104,7 @@ export async function onRequestPost(context) {
     scheduleSheetsSync(context);
     return json({ ok: true, kind, id });
   } catch (error) {
-    console.error('admin update failed', error);
+    console.error('admin_update_failed');
     return fail('Could not save the change.', 500);
   }
 }

@@ -39,6 +39,8 @@ try{
  // ask the buyer to pay again.
  draft.paymentStatus='paid';submitted=false;await page.evaluate(t=>sessionStorage.setItem('cu_payment_session_v1',t),token);await page.reload({waitUntil:'networkidle0'});await page.waitForSelector('[data-success]:not([hidden])');assert.match(await page.$eval('[data-success]',e=>e.textContent),/Payment verified/);assert.equal(await page.$eval('[data-order-payment]',e=>e.hidden),true);
 
+ draft.paymentStatus='pending';draft.fulfilmentStatus='cancelled';draft.canPay=false;submitted=false;await page.evaluate(t=>sessionStorage.setItem('cu_payment_session_v1',t),token);await page.reload({waitUntil:'networkidle0'});await page.waitForSelector('[data-order-payment]:not([hidden])');assert.equal(await page.$eval('[data-order-payment] [data-gcash-panel]',e=>getComputedStyle(e).display),'none');assert.match(await page.$eval('[data-order-payment-warning]',e=>e.textContent),/Do not send money/);
+
  await page.goto(base+'/events/',{waitUntil:'networkidle0'});const eventForm=await page.$('form[data-api="/api/registrations"]');assert.ok(eventForm);
  const amount=await eventForm.$eval('[data-gcash-amount]',e=>e.textContent);assert.ok(/₱[0-9]/.test(amount));const options=await eventForm.$$eval('[name="division"] option',es=>es.map(e=>e.value));await (await eventForm.$('select[name="division"]')).select(options[1]);const amount2=await eventForm.$eval('[data-gcash-amount]',e=>e.textContent);assert.notEqual(amount,amount2);
  await page.goto(base+'/membership/',{waitUntil:'networkidle0'});assert.equal(await page.$eval('[data-printed-payment]',e=>e.hidden),true);await page.click('#m-printed');assert.equal(await page.$eval('[data-printed-payment]',e=>e.hidden),false);assert.equal(await page.$eval('#m-ref',e=>e.required),true);

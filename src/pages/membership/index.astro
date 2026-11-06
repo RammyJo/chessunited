@@ -106,7 +106,7 @@ const successTemplate = `
             <h3>Membership registration</h3>
             <p class="lede">
               Nothing is charged here. This form only issues the card and, if you ask for it, the
-              printed ID order.
+              printed ID order. Parents or guardians should help younger players register.
             </p>
 
             <div class="form-grid">
@@ -179,6 +179,7 @@ const successTemplate = `
             </div>
 
             <div data-printed-payment hidden><GcashPayment amount={membership.printFee} /></div>
+            <p class="hint mt-2"><a href="/about/#privacy">How the club uses your details</a></p>
             <p class="form-status" data-form-status hidden></p>
 
             <div class="form-actions">
@@ -204,9 +205,8 @@ const successTemplate = `
             <h2 id="card-title">Find your card.</h2>
           </div>
           <p class="lede">
-            Every member gets a number, formatted like CU-2026-0137. Add it to this page's
-            address as <code>?m=</code> and the card appears below — the link your registration
-            gives you already carries it. Open it on your phone to show at the table, or print it;
+            Your registration gives you a private card link. Bookmark that link to open your card again.
+            Your member number identifies you at the tables; the private link protects your name. Open it on your phone to show at the table, or print it;
             the card is laid out to print cleanly on A4 or card stock.
           </p>
         </div>
@@ -222,8 +222,7 @@ const successTemplate = `
           <div class="club-empty" data-card-loading hidden>Looking up your card…</div>
 
           <div class="club-empty" data-card-empty>
-            <strong>No member number in this link.</strong> Append <code>?m=CU-2026-0137</code> to
-            the address, or register above to get a number.
+            <strong>Open your private card link.</strong> Use the link saved after registration, or ask a club officer for a replacement.
           </div>
 
           <div class="club-empty" data-card-error hidden>

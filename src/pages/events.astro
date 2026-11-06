@@ -219,7 +219,7 @@ const breadcrumbJsonLd = {
         <div class="entry-grid">
           {upcomingEvents.map((event) => (
             <div data-form-shell>
-              <form class="form-card" data-api="/api/registrations">
+              <form class="form-card" data-api="/api/registrations" data-registration-closes={`${event.date}T${event.end}:00+08:00`}>
                 <h3>{event.shortName}</h3>
                 <p class="lede">{event.dateLabel} · {event.venue}</p>
 
@@ -321,7 +321,8 @@ const breadcrumbJsonLd = {
 
                 <GcashPayment dynamic />
 
-                <p class="form-status" data-form-status hidden></p>
+                <p class="hint mt-2"><a href="/about/#privacy">How the club uses your details</a></p>
+            <p class="form-status" data-form-status hidden></p>
 
                 <div class="form-actions">
                   <button class="btn" type="submit" data-busy="Sending…">

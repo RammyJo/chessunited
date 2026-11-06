@@ -35,7 +35,7 @@
     const cell = el('td');
     nodes.flat().forEach((node) => {
       if (node === undefined || node === null || node === false) return;
-      cell.appendChild(node);
+      cell.appendChild(node instanceof Node ? node : document.createTextNode(String(node)));
     });
     return cell;
   };
@@ -118,6 +118,7 @@
       tr.appendChild(
         td(actions(
           row.printed_id && action(row.payment_status === 'paid' ? 'Mark not paid' : 'Mark paid', { kind: 'member', id: row.id, payment: row.payment_status === 'paid' ? 'pending' : 'paid' }),
+          Object.assign(el('button','btn btn--xs','New private card link'),{type:'button',onclick:async event=>{const button=event.currentTarget;button.disabled=true;try{const r=await fetch('/api/admin/member-card',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:row.id})});const data=await r.json();if(!r.ok||!data.ok)throw Error(data.error||'Could not issue a link.');const link=el('a',null,'Open private card — keep this link');link.href=data.cardUrl;link.target='_blank';link.rel='noopener noreferrer';button.replaceWith(link);}catch(e){setStatus(panelStatus,e.message,'bad');button.disabled=false;}}}),
           action('Approve', { kind: 'member', id: row.id, status: 'active' }),
           action('Reject', { kind: 'member', id: row.id, status: 'rejected' }),
         )),
@@ -227,7 +228,6 @@
         ),
       );
       tr.appendChild(td(chip(row.status)));
-      tr.appendChild(td(el('strong', null, !row.printed_id ? 'Not required' : row.payment_status === 'paid' ? 'Paid' : 'Not paid')));
       tr.appendChild(
         td(actions(
           action('Approve', { kind: 'partner-club', id: row.id, status: 'approved' }),
@@ -247,7 +247,6 @@
       tr.appendChild(td(el('span', 'cell-nowrap', text(row.event_date))));
       tr.appendChild(td(text(row.venue)));
       tr.appendChild(td(chip(row.status)));
-      tr.appendChild(td(el('strong', null, !row.printed_id ? 'Not required' : row.payment_status === 'paid' ? 'Paid' : 'Not paid')));
       tr.appendChild(
         td(actions(
           action('Approve', { kind: 'partner-event', id: row.id, status: 'approved' }),
@@ -304,7 +303,7 @@
     try {
       let checked = 0;
       for (let batch = 0; batch < (sync ? 20 : 1); batch++) {
-        const response = await fetch('/api/admin/sheets' + (check ? '?check=1' : ''), { method: sync || check ? 'POST' : 'GET' });
+        const response = await fetch('/api/admin/sheets' + (check ? '?check=1' : ''), { method: sync || check ? 'POST' : 'GET', ...(sync || check ? {headers:{'Content-Type':'application/json'},body:'{}'} : {}) });
         const status = await response.json();
         if (!response.ok || !status.ok) throw new Error();
         if (!status.configured) {
@@ -332,6 +331,7 @@
     try {
       const response = await fetch('/api/admin/queue', { headers: { accept: 'application/json' } });
       const payload = await response.json().catch(() => null);
+      if(response.status===401){showSignin('Your session has expired. Please sign in again.');return;}
       if (!response.ok || !payload || payload.ok === false) {
         setStatus(panelStatus, (payload && payload.error) || 'Could not read the queue.', 'bad');
         return;
@@ -389,8 +389,7 @@
 
   if (signoutButton) {
     signoutButton.addEventListener('click', async () => {
-      await fetch('/api/admin/session', { method: 'DELETE' }).catch(() => null);
-      showSignin('Signed out.');
+      try{const response=await fetch('/api/admin/session',{method:'DELETE'});if(!response.ok)throw Error();showSignin('Signed out.');}catch{setStatus(panelStatus,'Could not sign out. Check your connection and try again.','bad');}
     });
   }
 

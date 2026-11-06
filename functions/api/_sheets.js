@@ -76,7 +76,7 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
       const legacyHeader = legacyLengths.includes(header.length) && JSON.stringify(header) === JSON.stringify(spec.fields.slice(0, header.length));
       if (header.some(value => value !== '') && !legacyHeader && JSON.stringify(header) !== JSON.stringify(spec.fields)) throw new SyncError('sheet_headers_do_not_match');
       if (verifyWrite || legacyHeader || !header.some(value => value !== '')) await request(rangePath(`'${spec.title}'!A1`) + '?valueInputOption=RAW', 'PUT', { values: [spec.fields] });
-      if (legacyHeader || !header.some(value => value !== '')) await request(':batchUpdate', 'POST', { requests: [{ setDataValidation: { range: { sheetId: tab.sheetId, startRowIndex: 1, startColumnIndex: spec.fields.indexOf('paid'), endColumnIndex: spec.fields.indexOf('paid') + 1 }, rule: { condition: { type: 'ONE_OF_LIST', values: ['Paid', 'Not paid', 'Not required'].map(userEnteredValue => ({ userEnteredValue })) }, strict: true, showCustomUi: true } } }] });
+      if (verifyWrite || legacyHeader || !header.some(value => value !== '')) await request(':batchUpdate', 'POST', { requests: [{ setDataValidation: { range: { sheetId: tab.sheetId, startRowIndex: 1, startColumnIndex: spec.fields.indexOf('paid'), endColumnIndex: spec.fields.indexOf('paid') + 1 }, rule: { condition: { type: 'ONE_OF_LIST', values: (kind === 'member' ? ['Paid', 'Not paid', 'Not required'] : ['Paid', 'Not paid']).map(userEnteredValue => ({ userEnteredValue })) }, strict: true, showCustomUi: true } } }] });
       prepared.add(kind);
     }
   };
@@ -111,7 +111,7 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
       const existing = (await request(rangePath(range))).values?.[0] || [];
       if (existing.some(value => value !== '') && String(existing[0]) !== String(record.id)) throw new SyncError('sheet_row_conflict');
       const sheetMark = existing[spec.fields.indexOf('paid')];
-      if (!(kind === 'member' && !record.printed_id) && ['Paid', 'Not paid', 'Not required'].includes(sheetMark) && sheetMark !== paidLabel(kind, record) && (paidSnapshot === null || paidSnapshot === paidLabel(kind, record))) throw new SyncError('sheet_payment_changed');
+      if (!(kind === 'member' && !record.printed_id) && ['Paid', 'Not paid'].includes(sheetMark) && sheetMark !== paidLabel(kind, record) && (paidSnapshot === null || paidSnapshot === paidLabel(kind, record))) throw new SyncError('sheet_payment_changed');
       // RAW preserves phone/reference strings and does not execute user-entered formulas.
       await request(rangePath(range) + '?valueInputOption=RAW', 'PUT', { values: [spec.fields.map(field => field === 'paid' ? paidLabel(kind, record) : record[field] ?? '')] });
     },
@@ -152,7 +152,10 @@ async function pullPaymentMarks(env, client, jobs) {
     }
     if (mark === current || job.paid_snapshot === null || current !== job.paid_snapshot) continue;
     const status = paymentStatusForMark(job.kind, mark, record);
-    if (!status) continue;
+    if (!status) {
+      if(mark)await env.DB.prepare('UPDATE sheets_sync SET pending=1,version=version+1 WHERE kind=? AND record_id=?').bind(job.kind,job.record_id).run();
+      continue;
+    }
     await env.DB.prepare(`UPDATE ${spec.table} SET payment_status = ? WHERE id = ? AND payment_status = ? AND EXISTS
       (SELECT 1 FROM sheets_sync WHERE kind = ? AND record_id = ? AND version = ?)`)
       .bind(status, job.record_id, record.payment_status, job.kind, job.record_id, job.version).run();

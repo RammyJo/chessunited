@@ -51,6 +51,6 @@ try {
  const settings=await send('/api/admin/shipping',{origins:{jt:'56054',lbc:'103314000'},products:{tshirt:{weight:0.5,length:30,width:20,height:5}}},{Cookie:cookie});assert.equal(settings.status,200);
  const oldQuote=await send('/api/orders',{...order,checkoutToken:'9'.repeat(64)});assert.equal(oldQuote.status,409);
  const mark=await send('/api/admin/update',{kind:'order',id:1,paymentStatus:'paid'},{Cookie:cookie});assert.equal(mark.status,200);assert.equal((await db.prepare('SELECT payment_status FROM orders WHERE id=1').first()).payment_status,'paid');
- const retry=await mf.dispatchFetch('https://example.com/api/admin/sheets',{method:'POST',headers:{Cookie:cookie}});assert.equal((await retry.json()).result.issue,'missing_credential');
+ const retry=await mf.dispatchFetch('https://example.com/api/admin/sheets',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:'{}'});assert.equal(retry.status,200,await retry.clone().text());assert.equal((await retry.json()).result.issue,'missing_credential');
  console.log('PASS: Workers runtime order insert, transactional D1 queue, authenticated admin status/retry, missing credential, pickup totals/address handling, delivery validation and pickup sync queue. Local database only.');
 } finally {await mf.dispose();rmSync(temp,{recursive:true,force:true});}

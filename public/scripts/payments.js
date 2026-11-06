@@ -6,7 +6,8 @@
  document.querySelectorAll('form[data-api="/api/registrations"]').forEach(form=>{
   const division=$('[name="division"]',form),amount=$('[data-gcash-amount]',form);
   const update=()=>{const fee=Number(division?.selectedOptions[0]?.dataset.entryFee);if(amount)amount.textContent=Number.isFinite(fee)&&fee>0?peso(fee):'Select your division to see the entry fee.';};
-  division?.addEventListener('change',update);update();
+  const checkOpen=()=>{if(form.dataset.registrationCloses && Date.now()>=Date.parse(form.dataset.registrationCloses)){form.hidden=true;let notice=form.parentElement.querySelector('[data-registration-closed]');if(!notice){notice=document.createElement('p');notice.dataset.registrationClosed='';notice.className='note-box';notice.textContent='Registration for this tournament has closed. Please choose an upcoming event.';form.after(notice);}}};
+  division?.addEventListener('change',update);update();checkOpen();setInterval(checkOpen,60000);
  });
  const member=$('form[data-api="/api/members"]');
  if(member){const checkbox=$('[name="printedId"]',member),panel=$('[data-printed-payment]',member),ref=$('[name="gcashRef"]',member);const update=()=>{if(panel)panel.hidden=!checkbox.checked;if(ref){ref.required=checkbox.checked;ref.closest('.field').hidden=!checkbox.checked;}};checkbox?.addEventListener('change',update);update();}
@@ -63,6 +64,10 @@
   clearTimeout(expiry);prepared=order;form.hidden=true;success.hidden=true;panel.hidden=false;
   const list=$('[data-payment-items]',panel);list.replaceChildren();for(const item of order.lines){const li=document.createElement('li');li.textContent=`${item.quantity} × ${item.name}${item.size?' · '+item.size:''} — ${peso(item.lineTotal)}`;list.append(li);}
   $('[data-payment-order-no]',panel).textContent=order.orderNo;$('[data-payment-subtotal]',panel).textContent=peso(order.subtotal);$('[data-payment-shipping]',panel).textContent=peso(order.shippingFee);$('[data-payment-delivery]',panel).textContent=order.fulfilmentMessage;$('[data-gcash-amount]',panel).textContent=peso(order.total);setPayStatus('');
+  const blocked=order.canPay===false && !order.submitted && order.paymentStatus!=='paid';
+  $('[data-gcash-panel]',panel).hidden=blocked;
+  const warning=$('[data-order-payment-warning]',panel);warning.hidden=!blocked;warning.textContent=blocked?'This order is '+(order.fulfilmentStatus==='cancelled'?'cancelled':'closed for payment')+'. Do not send money. If you already paid, submit the payment details below so the club can help.':'';
+  payButton.textContent=blocked?'I already paid — notify the club':'I’ve paid — submit order';
   document.dispatchEvent(new CustomEvent('cu:order-payment'));panel.focus();panel.scrollIntoView({behavior:'smooth',block:'start'});
  };
  document.addEventListener('cu:order-prepared',e=>{(e.detail.order.submitted||e.detail.order.paymentStatus==='paid')?complete(e.detail.order):showPayment(e.detail.order);});

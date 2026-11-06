@@ -331,6 +331,7 @@ const orderTemplate = `
             </div>
 
             <p class="hint mt-2">Continue to GCash to pay the total shown above, then return to submit your order for verification.</p>
+            <p class="hint mt-2"><a href="/about/#privacy">How the club uses your details</a></p>
             <p class="form-status" data-form-status hidden></p>
 
             <div class="form-actions">
@@ -352,8 +353,9 @@ const orderTemplate = `
             <ul data-payment-items></ul>
             <p>Items <strong data-payment-subtotal></strong> · Shipping <strong data-payment-shipping></strong></p>
             <p data-payment-delivery></p>
+            <p class="note-box mt-2" data-order-payment-warning role="status" hidden></p>
             <GcashPayment dynamic />
-            <p class="note-box mt-2">Your order is saved as awaiting payment. After sending the amount in GCash, submit it below. A club officer verifies receipt before marking it paid.</p>
+            <p class="note-box mt-2">Save your order number before opening GCash. Your order is saved as awaiting payment. After sending the amount in GCash, submit it below. A club officer verifies receipt before marking it paid.</p>
             <div class="field mt-2"><label for="payment-ref">GCash reference <span class="hint">optional, helps us match your payment</span></label><input id="payment-ref" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" data-order-payment-ref autocomplete="off" /></div>
             <p data-order-payment-status class="form-status" role="status" hidden></p>
             <div class="form-actions"><button class="btn" type="button" data-order-paid>I’ve paid — submit order</button><button class="btn btn--ghost" type="button" data-order-start-over>I haven’t paid — start a new checkout</button></div>

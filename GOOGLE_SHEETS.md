@@ -16,7 +16,7 @@ https://docs.google.com/spreadsheets/d/1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoC
 
 ## Storage and retries
 
-Apply `migrations/0001_google_sheets.sql` and `migrations/0002_sheets_connection_check.sql` and `migrations/0003_membership_sheets.sql`, then `migrations/0004_payment_tracking.sql` and `migrations/0005_checkout.sql` to the existing D1 database before deploying the functions. It adds only the sync queue, a lease row, tracking triggers and an initial queue entry for each existing source record. `schema.sql` includes the same migration for new databases.
+Apply `migrations/0001_google_sheets.sql` and `migrations/0002_sheets_connection_check.sql` and `migrations/0003_membership_sheets.sql`, then `migrations/0004_payment_tracking.sql` and `migrations/0005_checkout.sql`, followed by `migrations/0006_security.sql` to the existing D1 database before deploying the functions. It adds only the sync queue, a lease row, tracking triggers and an initial queue entry for each existing source record. `schema.sql` includes the same migration for new databases.
 
 Triggers commit queue changes atomically with orders/registrations. A global 120-second lease serializes sheet writes. Revision checks keep edits made during a copy queued for the next pass. Remote rows are updated at `D1 id + 1`, so retries after ambiguous network failures cannot append duplicates. Values use Google's RAW input mode to preserve phone/reference strings and avoid evaluating user-entered formulas.
 
@@ -48,3 +48,9 @@ J&T uses the public EZ calculator at https://www.jtexpress.ph/shipping-rates (ba
 The declared value is the unit catalogue price. Each unit is quoted in a separate measured parcel. LBC selects the smallest official package fitting the packed dimensions and weight, allowing rotation, and adds valuation to the returned freight amount. Include outer-box allowance in configured weight. J&T sends the actual configured dimensions and weight and includes returned insurance/service charges. This integration quotes delivery; it does not book shipments. Keep the packing method consistent with these settings.
 
 `node --test tests/shipping.test.mjs` checks both rate adapters, insurance, invalid rates and missing measurements. `npm run test:sheets` checks the real local Workers/D1 draft, quote expiry/revision checks, resume/idempotency, buyer claim versus trusted paid, officer authorization and Sheets payment edits.
+
+## Launch hardening
+
+API routes now enforce request budgets, same-origin browser writes, JSON and body limits, and private response headers. Current membership, tournament and partner forms send random retry keys; their encrypted replies make concurrent retries atomic. Member card names require the private card link or an officer session. Existing number-only links should be replaced with **New private card link** in the dashboard; private access keys are never mirrored into the spreadsheet.
+
+The operator may request a configuration-only check with `UPDATE security_check SET requested=1 WHERE id=1`. A directory GET services it in the background. The boolean findings stay in D1 and never return credential values. `LAUNCH_READINESS.md` records checks, fixes and the remaining delivery measurements requirement.

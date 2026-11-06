@@ -57,10 +57,12 @@ export const COURIERS = {
 export const TOURNAMENTS = {
   'tournament-2-0': {
     name: 'Chess United Tournament 2.0',
+    registrationClosesAt: '2026-11-07T18:00:00+08:00',
     divisions: { 'Open Division': 350, 'Kiddies Division': 300 },
   },
   'super-mario-cup': {
     name: 'Ortega Chess Tournament: Super Mario Cup',
+    registrationClosesAt: '2026-12-05T17:00:00+08:00',
     divisions: { 'Open Division': 500, 'Kiddies Division': 400 },
   },
 };
@@ -76,31 +78,20 @@ export function priceItems(rawItems) {
   const lines = [];
   let subtotal = 0;
 
-  if (Array.isArray(rawItems)) {
-    for (const entry of rawItems.slice(0, 40)) {
-      const id = typeof entry?.id === 'string' ? entry.id : '';
-      if (!Object.hasOwn(CATALOG, id)) continue;
-      const item = CATALOG[id];
-
-      const qty = Number.parseInt(entry?.qty, 10);
-      if (!Number.isFinite(qty) || qty < 1) continue;
-      const quantity = Math.min(qty, 99);
-
-      const chosen = typeof entry?.size === 'string' ? entry.size.trim() : '';
-      const size = item.options ? chosen || 'M' : null;
-
-      subtotal += item.price * quantity;
-
-      lines.push({
-        id,
-        name: item.name,
-        quantity,
-        size,
-        unitPrice: item.price,
-        lineTotal: item.price * quantity,
-      });
-    }
+  if (!Array.isArray(rawItems) || !rawItems.length || rawItems.length > 40) return { lines: [], subtotal: 0 };
+  const seen = new Set();
+  for (const entry of rawItems) {
+    const id = typeof entry?.id === 'string' ? entry.id : '';
+    if (!Object.hasOwn(CATALOG, id)) return { lines: [], subtotal: 0 };
+    const item = CATALOG[id], quantity = entry.qty;
+    if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > 99) return { lines: [], subtotal: 0 };
+    const size = item.options ? entry.size : null;
+    if (item.options && !item.options.values.includes(size)) return { lines: [], subtotal: 0 };
+    const key = id + '|' + (size || '');
+    if (seen.has(key)) return { lines: [], subtotal: 0 };
+    seen.add(key);
+    subtotal += item.price * quantity;
+    lines.push({ id, name: item.name, quantity, size, unitPrice: item.price, lineTotal: item.price * quantity });
   }
-
   return { lines, subtotal };
 }
