@@ -1,0 +1,35 @@
+name: Test LBC official public API access without payment
+on:
+  push:
+    branches: [feature/courier-service-1kg-2026-11-07]
+    paths: [.github/workflows/test-lbc-official-api.yml]
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Verify public LBC API for one kilogram
+        run: |
+          node --input-type=module <<'NODE'
+          const base='https://ratecalcapi.lbcapps.com/';
+          const js=await (await fetch(base+'Scripts/PH_Rate_Calculator.js',{signal:AbortSignal.timeout(12000)})).text();
+          const token=js.match(/setRequestHeader\("token",\s*"([^"]+)"\)/)?.[1];
+          if(!token)throw Error('Calculator public token not available');
+          console.log('Official calculator token found in published client script; never printed.');
+          async function post(path,data){
+            const response=await fetch(base+path,{method:'POST',headers:{token,'content-type':'application/x-www-form-urlencoded; charset=UTF-8',Origin:base,Referer:base+'Tools/PH_Rate_Calculator','X-Requested-With':'XMLHttpRequest'},body:new URLSearchParams(data),signal:AbortSignal.timeout(12000)});
+            const raw=await response.text();let body;try{body=JSON.parse(raw)}catch{body={raw:raw.slice(0,120)}}
+            const x={path,status:response.status,ResponseCode:body.ResponseCode,ResponseMessage:body.ResponseMessage,keys:Object.keys(body.ResponseData||{}),sample:Object.fromEntries(Object.entries(body.ResponseData||{}).map(([k,v])=>[k,Array.isArray(v)?v.slice(0,3):v]))};
+            console.log('LBC_API',JSON.stringify(x).slice(0,1400));return body;
+          }
+          const products=await post('api/PH/GetProductsV2',{IsCargo:'true'});
+          const items=products.ResponseData?.Products||[];
+          const names=items.filter(x=>/N.PACK MEDIUM|KB MINI|KB SMALL/i.test(x.ProductName||'')).slice(0,3);
+          console.log('PROVIDER_PRODUCTS',JSON.stringify(names));
+          if(names[0]){
+            await post('api/PH/CalculatePriceV2',{ProductId:names[0].ProductId,OriginCityId:'103314000',DestinationCityId:'1381300000',Weight:'1',DeclaredValue:'150'});
+          }
+          NODE
