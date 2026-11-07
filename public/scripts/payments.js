@@ -85,8 +85,11 @@
  form.addEventListener('submit',()=>{if(!token){token=makeToken();persist();}},true);
  const setPayStatus=s=>{payStatus.textContent=s;payStatus.hidden=!s;};
  const complete=order=>{
+  const statusToken=token;
+  try{if(statusToken)sessionStorage.setItem('cu_last_order_v1',statusToken);}catch{}
   token='';persist();prepared=null;panel.hidden=true;form.hidden=true;
   success.replaceChildren();const h=document.createElement('h3');h.textContent=order.paymentStatus==='paid'?'Payment verified.':'Order submitted for payment verification.';const p=document.createElement('p');p.textContent=`${order.orderNo} · Total ${peso(order.total)}. ${order.paymentStatus==='paid'?'The club has verified your GCash payment and will arrange handover.':'The club will verify receipt in GCash and confirm your handover.'} Do not pay again.`;success.append(h,p);success.hidden=false;success.scrollIntoView({behavior:'smooth',block:'center'});
+  if(statusToken){const link=document.createElement('a');link.className='btn btn--sm mt-2';link.textContent='Check payment and delivery status';link.href='/shop/order/#key='+statusToken;success.append(link);const hint=document.createElement('p');hint.className='hint mt-2';hint.textContent='Bookmark your private status link to follow payment confirmation and delivery.';success.append(hint);}
   document.dispatchEvent(new CustomEvent('cu:order-complete'));
  };
  const showPayment=order=>{

@@ -13,6 +13,8 @@ export function orderResult(row) {
   shippingMessage:shipping.pricingMessage||'',
   paymentStatus:row.payment_status,submitted:!!row.payment_claimed_at,
   fulfilmentStatus:row.fulfilment_status,
+  trackingNo:pickup?'':row.tracking_no||'',
+  trackingUrl:!pickup&&row.tracking_no?(row.courier==='jt'?'https://www.jtexpress.ph/track-and-trace?waybillNo='+encodeURIComponent(row.tracking_no):row.courier==='lbc'?'https://www.lbcexpress.com/track/':null):null,
   canPay:row.payment_status==='pending' && row.fulfilment_status!=='cancelled' && !row.payment_claimed_at,
  };
 }

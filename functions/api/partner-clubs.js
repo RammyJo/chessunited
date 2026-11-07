@@ -1,4 +1,5 @@
 import {scheduleSecurityCheck} from './_security-check.js';
+import {scheduleRequestedSheetsSync} from './_scheduled-sheets.js';
 import { scheduleRequestedSheetsCheck } from './_sheets.js';
 import { json, fail, readJson, clean, isEmail, hasDb, noDb } from './_utils.js';
 import {prepareSubmission,submissionStatement,savedSubmission,SubmissionError} from './_submissions.js';
@@ -58,6 +59,7 @@ export async function onRequestGet(context) {
     }));
 
     scheduleRequestedSheetsCheck(context);
+    scheduleRequestedSheetsSync(context);
     scheduleSecurityCheck(context);
     return json({ ok: true, count: results.length, clubs: results });
   } catch (error) {

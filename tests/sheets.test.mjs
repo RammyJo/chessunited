@@ -4,6 +4,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 import { createSheetsClient, drainSheets, sheetsConfig, syncStatus, SHEET_COLUMNS, runRequestedSheetsCheck } from '../functions/api/_sheets.js';
 import { onRequest as adminSheets } from '../functions/api/admin/sheets.js';
+import { runScheduledSheetsSync } from '../functions/api/_scheduled-sheets.js';
+import { tick } from '../workers/sheets-scheduler/index.js';
 
 const pair = await crypto.subtle.generateKey({name:'RSASSA-PKCS1-v1_5',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'}, true, ['sign','verify']);
 const pem = '-----BEGIN PRIVATE KEY-----\n'+Buffer.from(await crypto.subtle.exportKey('pkcs8',pair.privateKey)).toString('base64')+'\n-----END PRIVATE KEY-----';
@@ -47,6 +49,35 @@ function google({header, occupied, lostReply=false, onWrite}={}) {
   };
   return {fetcher,rows,writes};
 }
+
+test('scheduled sync imports a sheet payment edit while the website is idle',async()=>{
+ const {env,sql}=database(),g=google();
+ await drainSheets(env,{fetcher:g.fetcher});
+ const cells=g.rows.get("'Orders'!A2:X2");cells[SHEET_COLUMNS.order.fields.indexOf('paid')]='Paid';
+ // A normal public directory request cannot request a job or import payments.
+ assert.equal(await runScheduledSheetsSync(env,{fetcher:g.fetcher}),undefined);
+ assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'pending');
+ await tick(env,async(url)=>{assert.equal(url,'https://chessunitedglobal.com/api/partner-clubs');return Response.json({ok:true});});
+ await Promise.all([runScheduledSheetsSync(env,{fetcher:g.fetcher}),runScheduledSheetsSync(env,{fetcher:g.fetcher})]);
+ assert.equal(sql.prepare('SELECT payment_status FROM orders').get().payment_status,'paid');
+ const schedule=sql.prepare('SELECT * FROM sheets_schedule').get();assert.equal(schedule.requested_at,schedule.completed_at);assert.ok(schedule.finished_at);assert.equal(schedule.last_error,null);
+ assert.equal((await syncStatus(env)).schedule.healthy,true);
+ assert.equal(await runScheduledSheetsSync(env,{fetcher:g.fetcher}),undefined);
+});
+test('scheduler records failed runs and retries busy work without losing newer ticks',async()=>{
+ const {env,sql}=database();
+ sql.exec('UPDATE sheets_schedule SET requested_at=1');
+ sql.exec("UPDATE sheets_sync_lock SET owner='other',expires_at=9999999999999");
+ const busy=await runScheduledSheetsSync(env);assert.equal(busy.busy,true);
+ assert.equal(sql.prepare('SELECT completed_at FROM sheets_schedule').get().completed_at,0);
+ sql.exec('UPDATE sheets_sync_lock SET owner=NULL,expires_at=0');
+ const g=google({onWrite(){sql.exec('UPDATE sheets_schedule SET requested_at=2');}});
+ await runScheduledSheetsSync(env,{fetcher:g.fetcher});
+ let job=sql.prepare('SELECT * FROM sheets_schedule').get();assert.equal(job.completed_at,1);assert.equal(job.requested_at,2);
+ await runScheduledSheetsSync(env,{fetcher:g.fetcher});assert.equal(sql.prepare('SELECT completed_at FROM sheets_schedule').get().completed_at,2);
+ sql.exec('UPDATE sheets_schedule SET requested_at=3');delete env.GOOGLE_SHEETS_SERVICE_ACCOUNT;
+ await runScheduledSheetsSync(env);job=sql.prepare('SELECT * FROM sheets_schedule').get();assert.equal(job.last_error,'missing_credential');assert.equal(job.owner,null);
+});
 
 test('D1 triggers retain inserts, updates and transaction rollbacks', async()=>{
  const {sql}=database();assert.equal(sql.prepare('SELECT pending FROM sheets_sync').get().pending,1);

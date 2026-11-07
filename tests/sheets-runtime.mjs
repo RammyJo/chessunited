@@ -62,6 +62,9 @@ try {
   const created=await send('/api/orders',deliveryOrder);assert.equal(created.status,200,await created.clone().text());
   const payment=(await created.json()).order;assert.equal(payment.shippingFee,fee);assert.equal(payment.total,300+fee);assert.equal(payment.canPay,true);assert.equal(payment.paymentStatus,'pending');
   const resumed=await send('/api/orders',deliveryOrder);assert.equal((await resumed.json()).order.orderNo,payment.orderNo);
+  // Shipment updates become visible only through the buyer's private token.
+  const shipped=await send('/api/admin/update',{kind:'order',id:(await db.prepare('SELECT id FROM orders WHERE order_no=?').bind(payment.orderNo).first()).id,fulfilmentStatus:'shipped',trackingNo:'123456789012'},{Cookie:cookie});assert.equal(shipped.status,200);
+  const status=await send('/api/orders/payment',{action:'resume',checkoutToken:deliveryOrder.checkoutToken});const statusOrder=(await status.json()).order;assert.equal(statusOrder.trackingNo,'123456789012');assert.equal(statusOrder.fulfilmentStatus,'shipped');assert.equal(statusOrder.paymentStatus,'pending');assert.ok(statusOrder.trackingUrl.startsWith('https://www.'));
  }
  const mark=await send('/api/admin/update',{kind:'order',id:1,paymentStatus:'paid'},{Cookie:cookie});assert.equal(mark.status,200);assert.equal((await db.prepare('SELECT payment_status FROM orders WHERE id=1').first()).payment_status,'paid');
  const retry=await mf.dispatchFetch('https://example.com/api/admin/sheets',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:'{}'});assert.equal(retry.status,200,await retry.clone().text());assert.equal((await retry.json()).result.issue,'missing_credential');

@@ -35,6 +35,11 @@ try{
  await page.type('[data-order-payment-ref]','0001234567890');await page.click('[data-order-paid]');await page.waitForSelector('[data-success]:not([hidden])');assert.equal(submitted,true);
  assert.match(await page.$eval('[data-success]',e=>e.textContent),/payment verification/);
  assert.equal(await page.evaluate(()=>sessionStorage.getItem('cu_payment_session_v1')),null);
+ // The private status link survives submission and does not ask for payment again.
+ const statusLink=await page.$eval('[data-success] a[href*="/shop/order/"]',e=>e.getAttribute('href'));assert.equal(statusLink,'/shop/order/#key='+token);
+ await page.goto(base+statusLink,{waitUntil:'networkidle0'});await page.waitForSelector('[data-order-status]:not([hidden])');assert.match(await page.$eval('[data-status-payment]',e=>e.textContent),/awaiting officer verification/);assert.equal(await page.$eval('[data-status-pay]',e=>e.hidden),true);
+ draft.paymentStatus='paid';draft.fulfilmentStatus='shipped';draft.trackingNo='123456789012';draft.trackingUrl='https://www.jtexpress.ph/track-and-trace?waybillNo=123456789012';await page.click('[data-order-status-refresh]');await page.waitForFunction(()=>document.querySelector('[data-status-payment]').textContent.includes('verified'));assert.match(await page.$eval('[data-status-tracking]',e=>e.textContent),/123456789012/);assert.equal(await page.$eval('[data-tracking-link]',e=>e.hostname),'www.jtexpress.ph');
+ await page.goto(base+'/shop/',{waitUntil:'networkidle0'});
  // If an officer already verified the transfer, a recovered session must not
  // ask the buyer to pay again.
  draft.paymentStatus='paid';submitted=false;await page.evaluate(t=>sessionStorage.setItem('cu_payment_session_v1',t),token);await page.reload({waitUntil:'networkidle0'});await page.waitForSelector('[data-success]:not([hidden])');assert.match(await page.$eval('[data-success]',e=>e.textContent),/Payment verified/);assert.equal(await page.$eval('[data-order-payment]',e=>e.hidden),true);

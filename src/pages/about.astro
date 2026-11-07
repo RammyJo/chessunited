@@ -6,6 +6,10 @@ import Icon from '../components/Icon.astro';
 import { site, officerGroups, partnerTiers, globalHubs, globalNetworks, globalMarkers, team } from '../data/site';
 import { photos, sponsors } from '../data/images';
 
+const publishedOfficerGroups = officerGroups
+  .map(group => ({ ...group, officers: group.officers.filter(person => !person.open) }))
+  .filter(group => group.officers.length);
+
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 
@@ -233,7 +237,7 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
           </p>
         </div>
 
-        {officerGroups.map((group) => (
+        {publishedOfficerGroups.map((group) => (
           <div class="officer-group" aria-labelledby={`officers-${group.id}`}>
             <div class="officer-group-head">
               <h3 id={`officers-${group.id}`}>{group.title}</h3>

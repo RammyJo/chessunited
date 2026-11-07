@@ -132,7 +132,9 @@ export async function syncStatus(env) {
     COALESCE(SUM(CASE WHEN pending = 1 AND last_error IS NOT NULL THEN 1 ELSE 0 END),0) AS failed,
     MAX(synced_at) AS lastSynced FROM sheets_sync`).first();
   const failure = await env.DB.prepare('SELECT last_error FROM sheets_sync WHERE pending = 1 AND last_error IS NOT NULL ORDER BY attempts DESC LIMIT 1').first();
-  return { configured: config.configured, issue: config.issue || null, ...stats, lastError: failure?.last_error || null };
+  const schedule = await env.DB.prepare('SELECT last_tick_at AS lastTick, finished_at AS lastRun, last_error AS lastError FROM sheets_schedule WHERE id=1').first();
+  return { configured: config.configured, issue: config.issue || null, ...stats, lastError: failure?.last_error || null,
+    schedule: { ...schedule, healthy: !!schedule?.lastTick && !!schedule?.lastRun && Date.now()-schedule.lastTick<15*60*1000 && Date.now()-schedule.lastRun<15*60*1000 && !schedule.lastError } };
 }
 
 /** Pull only explicit private-sheet marks, matching the row ID. Newer dashboard edits win conflicts. */

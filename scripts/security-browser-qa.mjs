@@ -4,7 +4,7 @@ const args=['--no-sandbox'];if(process.env.QA_URL?.startsWith('https:')&&process
 const browser=await puppeteer.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/chromium',args});
 try{
  const page=await browser.newPage();await page.setViewport({width:320,height:844,isMobile:true,hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
- const cardKey='c'.repeat(64),name='<img src=x onerror=window.__injected=1>';let firstToken='',posts=0,cardReads=0;
+ const cardKey='c'.repeat(64),name='<img src=x onerror=window.__injected=1>';let firstToken='',posts=0,cardReads=0,paymentUpdates=0;
  await page.setRequestInterception(true);page.on('request',request=>{
   const path=new URL(request.url()).pathname,reply=data=>request.respond({status:200,contentType:'application/json',body:JSON.stringify(data)});
   if(path==='/api/members'&&request.method()==='POST'){
@@ -20,6 +20,7 @@ try{
   if(path==='/api/admin/sheets')return reply({ok:true,configured:false,pending:0,total:0});
   if(path==='/api/admin/queue')return reply({ok:true,counts:{},members:[{id:1,member_no:'CU-2026-12345678',first_name:name,last_name:'Fixture',printed_id:0,status:'active'}],registrations:[{id:1,event_slug:'tournament-2-0',full_name:name,amount:350,payment_status:'pending'}],orders:[{id:1,order_no:'ORD-FIXTURE',full_name:name,courier:'pickup',items:[],total:300,subtotal:300,shipping_fee:0,payment_status:'pending',fulfilment_status:'new'}],partnerClubs:[{id:1,club_name:name,status:'pending'}],partnerEvents:[{id:1,title:name,partner_club_id:1,status:'pending'}]});
   if(path==='/api/admin/member-card'){assert.equal(JSON.parse(request.postData()).id,1);return reply({ok:true,cardUrl:'/membership/?m=CU-2026-12345678#card&key='+cardKey});}
+  if(path==='/api/admin/update'){const data=JSON.parse(request.postData());assert.equal(data.kind,'order');assert.equal(data.paymentStatus,'paid');paymentUpdates++;return reply({ok:true});}
   request.continue();
  });
  const base=process.env.QA_URL||'http://127.0.0.1:4321';await page.goto(base+'/membership/',{waitUntil:'networkidle0'});await page.type('#m-first',name);await page.type('#m-last','Fixture');await page.type('#m-email','browser@example.invalid');await page.type('#m-phone','09171234567');
@@ -35,4 +36,11 @@ try{
  }
  const button=await page.$('button::-p-text(New private card link)');assert.ok(button);await button.evaluate(e=>e.scrollIntoView({behavior:'instant',block:'center',inline:'center'}));await button.click();await page.waitForSelector('[data-queue-body="members"] a');assert.equal(await page.evaluate(()=>window.__injected),undefined);assert.deepEqual(errors,[]);
  console.log('PASS: all officer tables align, untrusted text remains text, and replacement private card links work.');
+ const verify='[data-queue-body="orders"] [data-payment="paid"]';
+ await page.$eval(verify,e=>e.click());await page.waitForSelector('[data-payment-review][open]');
+ assert.equal(paymentUpdates,0);assert.match(await page.$eval('[data-receipt-details]',e=>e.textContent),/₱300/);assert.ok((await page.$eval('[data-receipt-details]',e=>e.textContent)).includes(name));assert.equal(await page.$eval('[data-receipt-details]',e=>e.querySelectorAll('img').length),0);
+ await page.click('[data-payment-review] button[value="cancel"]');assert.equal(paymentUpdates,0);
+ await page.waitForFunction(selector=>!document.querySelector(selector).disabled,{},verify);
+ await page.$eval(verify,e=>e.click());await page.waitForSelector('[data-payment-review][open]');const updated=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/admin/update');await page.click('[data-payment-review] button[value="received"]');await updated;assert.equal(paymentUpdates,1);
+ console.log('PASS: officer receipt review shows expected amount safely; cancel saves nothing and confirm marks one payment.');
 }finally{await browser.close();}

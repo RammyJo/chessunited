@@ -23,6 +23,8 @@
   const reloadButton = $('[data-admin-reload]');
   const signoutButton = $('[data-admin-signout]');
   const panelStatus = $('[data-admin-panel-status]');
+  const receiptDialog = $('[data-payment-review]');
+  let receiptRows = new Map();
 
   const el = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -280,6 +282,11 @@
   };
 
   const render = (payload) => {
+    receiptRows = new Map([
+      ...(payload.orders||[]).map(row=>['order:'+row.id,{number:row.order_no,name:row.full_name,amount:row.total,reference:row.gcash_ref}]),
+      ...(payload.registrations||[]).map(row=>['registration:'+row.id,{number:row.event_slug,name:row.full_name,amount:row.amount,reference:row.gcash_ref}]),
+      ...(payload.members||[]).map(row=>['member:'+row.id,{number:row.member_no,name:[row.first_name,row.last_name].join(' '),amount:row.printed_id?200:0,reference:row.gcash_ref}]),
+    ]);
     renderStats(payload.counts || {});
     renderMembers($('[data-queue-body="members"]'), payload.members || []);
     renderRegistrations($('[data-queue-body="registrations"]'), payload.registrations || []);
@@ -317,6 +324,10 @@
         checked += status.result?.checked || 0;
         const issue = status.result?.issue || status.lastError;
         sheetsStatus.textContent = `${status.pending} waiting to sync. ${status.lastSynced ? 'Last copied: ' + status.lastSynced + ' UTC.' : 'No records copied yet.'}${issue ? ' Sync needs attention (' + issue + '). Records remain saved; retry after resolving the connection.' : ''}`;
+        if(status.schedule){
+          const schedule=status.schedule;
+          sheetsStatus.textContent+=' '+(schedule.healthy?'Automatic sync is running every five minutes.':schedule.lastTick?'Automatic sync needs attention; use Sync now.':'Automatic sync is waiting for its first scheduled run.');
+        }
         if (!sync || issue || status.result?.busy || (!status.pending && checked >= status.total) || (!status.result?.processed && !status.result?.checked) || dashboard.hidden) break;
       }
     } catch {
@@ -417,6 +428,18 @@
       const row = button.closest('tr');
       const input = row ? $('[data-tracking]', row) : null;
       body.trackingNo = input ? input.value.trim() : '';
+    }
+
+    if(payment==='paid'||(body.kind==='registration'&&status==='verified')){
+      const receipt=receiptRows.get(body.kind+':'+body.id);
+      if(!receipt||!receiptDialog)return;
+      const details=$('[data-receipt-details]',receiptDialog);details.replaceChildren();
+      for(const [label,value]of [['Record',receipt.number],['Customer',receipt.name],['Expected amount',peso(receipt.amount)],['GCash reference',receipt.reference||'Not provided — match the transfer with the customer']]){
+        details.append(el('dt',null,label),el('dd',null,value));
+      }
+      button.disabled=true;receiptDialog.returnValue='';
+      const confirmed=await new Promise(resolve=>{receiptDialog.addEventListener('close',()=>resolve(receiptDialog.returnValue==='received'),{once:true});receiptDialog.showModal();});
+      button.disabled=false;if(!confirmed)return;
     }
 
     button.disabled = true;

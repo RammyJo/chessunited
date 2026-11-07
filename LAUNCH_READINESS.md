@@ -20,8 +20,8 @@ The audit covers Chess United’s public pages, registration and checkout APIs, 
 
 - `npm run check`, `npm run build`, `npm run qa`.
 - `npm run test:security`: actual Workers/D1 adversarial tests for access control, cookies, CSRF, request size, login throttling and expiry, prototype inputs, basket tampering, concurrent retries, encrypted replies, private-card access/revocation, transaction rollback and cancelled-order payment handling.
-- `npm run test:sheets`: fifteen Sheets tests plus actual local Workers/D1 checkout, quote, buyer-claim and officer tests.
-- `npm run test:shipping`: four rate, valuation and validation tests.
+- `npm run test:sheets`: seventeen Sheets tests plus actual local Workers/D1 checkout, quote, buyer-claim and officer tests.
+- `npm run test:shipping`: thirteen rate, valuation and validation tests.
 - `npm run qa:checkout`, `npm run qa:security`: browser fixtures for payment recovery, cancelled orders, HTML injection, lost signup replies, private card keys, all populated dashboard queues and mobile cards.
 - Desktop and mobile public-page checks, navigation/touch/focus checks and production-CSP checks.
 - `npm audit`: zero reported dependency vulnerabilities at audit time. No matching credential patterns found in tracked files or the 184 historical text blobs scanned; no source maps, SQL, private-key files or source archives found in the public build.
@@ -33,10 +33,20 @@ Delivery uses the owner-authorized **minimum small-parcel** pricing policy: one 
 
 All payments use the supplied GCash/InstaPay QR. Officers must match actual receipt in GCash before selecting Paid. The website does not collect PINs or OTPs. A buyer’s payment claim is not automatic verification. Courier quotes do not book a shipment.
 
-In the private spreadsheet, use the paid dropdown. Select **Sync now** in the dashboard to import sheet edits and reload the queues. Failed mirrors remain queued in D1; background sync depends on website/dashboard activity.
+In the private spreadsheet, use the paid dropdown after confirming receipt. The five-minute scheduled worker imports sheet edits even while the site is idle; **Sync now** requests an immediate pass. Failed mirrors stay queued in D1. Large queues take multiple passes; dashboard status shows scheduler health.
 
 The owner confirmed there are no existing members to migrate. Members will register through the website; an import can be handled later if supplied. No stored records were deleted. Officers can issue replacement private card links when needed; replacement links invalidate the earlier key.
 
 Keep ADMIN_TOKEN unique and random, with at least 24 characters; changing it revokes existing officer sessions. Keep the Google service-account credential in Cloudflare secrets. Use the Cloudflare D1 recovery tools for operational recovery; do not apply the fresh schema to an existing database instead of migrations.
 
 Audit results and deployment details are recorded after the live checks in the deployment receipt for this workspace.
+
+## Launch follow-through
+
+Unconfirmed officer cards are unpublished until real details arrive. Published names use their initials until photographs are provided. No names or photographs are invented.
+
+The owner selected the supplied GCash QR with manual officer verification for launch. Dashboard Mark paid opens a receipt review showing customer, expected amount and reference; Cancel writes nothing. Direct Paid edits in Google Sheets remain supported and must also reflect actual receipt. No personal-QR webhook is implied.
+
+Submitted orders provide a private `/shop/order/#key=...` status link. The 256-bit capability is hashed in D1 and sent to the API in a POST body, never in a request URL. The page is noindex and excluded from the sitemap; it shows payment, handover and official courier tracking links. Bookmarking the link retains access. Officers enter the actual courier tracking number after booking separately.
+
+Real-money rehearsal remains an owner action: complete one genuine small purchase, confirm its reference and amount in the receiving GCash account, mark Paid and check the private buyer page and spreadsheet. Automated browser tests use fixtures and do not prove settlement of real funds.

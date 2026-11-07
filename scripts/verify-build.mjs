@@ -156,6 +156,7 @@ for (const route of [
 }
 if (locs.some((loc) => loc.includes('/404'))) errors.push('sitemap: contains 404');
 if (locs.some((loc) => loc.includes('/admin'))) errors.push('sitemap: contains /admin');
+if (locs.some((loc) => loc.includes('/shop/order'))) errors.push('sitemap: contains private order status');
 if (new Set(locs).size !== locs.length) errors.push('sitemap: has duplicate URLs');
 // The public site is capped at eight pages: home plus these seven sections.
 if (locs.length !== 8) errors.push(`sitemap: expected 8 URLs, found ${locs.length}`);

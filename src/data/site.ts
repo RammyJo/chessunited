@@ -540,13 +540,13 @@ export const officerGroups: OfficerGroup[] = [
   {
     id: 'senior',
     title: 'Senior club officers',
-    caption: 'The seven officers who steer the club.',
+    caption: 'Senior officers serving the club.',
     officers: [
       { name: 'Yel Romero', role: 'Club President' },
       { name: 'Elito Batulan', role: 'Club Vice President' },
       { name: 'Ricky Shetty', role: 'Master of Ceremonies' },
-      /* The remaining senior officers are placeholders until the club sends the
-         names, roles and photos. Replace these five entries with the real
+      /* Unconfirmed entries stay unpublished until the club sends the
+         names, roles and photos. Replace these four entries with the real
          officers; add `photo: '/images/officers/<file>.webp'` to each. */
       { name: 'Officer', role: 'To be confirmed', open: true },
       { name: 'Officer', role: 'To be confirmed', open: true },

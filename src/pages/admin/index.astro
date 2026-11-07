@@ -94,7 +94,7 @@ import Icon from '../../components/Icon.astro';
 
           <div class="note-box mt-3" aria-labelledby="sheets-title">
             <h3 id="sheets-title">Google Sheets</h3>
-            <p>Officers can edit the <strong>paid</strong> dropdown directly in Sheets: Paid or Not paid. Select Sync now here to import the changes. Use filter views instead of moving or sorting rows.</p>
+            <p>After verifying receipt in GCash, officers can edit the <strong>paid</strong> dropdown in Sheets: Paid or Not paid. Changes sync automatically every five minutes; use Sync now for an immediate update. Use filter views instead of moving or sorting rows.</p>
             <p data-sheets-status role="status">Checking spreadsheet sync…</p>
             <div class="form-actions">
               <button class="btn btn--sm btn--ghost" type="button" data-sheets-check>Check connection</button>
@@ -219,10 +219,20 @@ import Icon from '../../components/Icon.astro';
           </div>
 
           <div class="note-box mt-3">
-            <strong>Printed membership IDs:</strong> a member who ticked the printed card has paid
-            ₱200 by GCash. Match the reference number against the club account before the ID is
+            <strong>Printed membership IDs:</strong> a printed card and lanyard cost
+            ₱200 by GCash. Match the actual received payment against the club account before the ID is
             printed, then hand the card and lanyard over at a Saturday session.
           </div>
+          <dialog class="receipt-dialog" data-payment-review aria-labelledby="receipt-title">
+            <h2 id="receipt-title">Verify GCash receipt</h2>
+            <p class="mt-2">Match these details with a completed incoming payment in the club’s GCash account.</p>
+            <dl class="mt-3" data-receipt-details></dl>
+            <p class="hint mt-2">A buyer’s reference or screenshot alone does not confirm that money arrived.</p>
+            <form method="dialog" class="form-actions mt-3">
+              <button class="btn btn--ghost" value="cancel">Cancel</button>
+              <button class="btn" value="received">Confirm received</button>
+            </form>
+          </dialog>
         </div>
       </div>
     </section>
@@ -230,3 +240,10 @@ import Icon from '../../components/Icon.astro';
 
   <Footer />
 </Base>
+
+<style>
+ .receipt-dialog{width:min(34rem,calc(100% - 2rem));max-height:calc(100dvh - 2rem);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:1.5rem;margin:auto;background:var(--paper,#fff);color:var(--ink,#152027)}
+ .receipt-dialog::backdrop{background:rgb(0 0 0 / .55)}
+ .receipt-dialog dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5rem 1rem}
+ .receipt-dialog dt{font-weight:700}.receipt-dialog dd{margin:0;overflow-wrap:anywhere}
+</style>
