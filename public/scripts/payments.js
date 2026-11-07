@@ -12,7 +12,7 @@
  const member=$('form[data-api="/api/members"]');
  if(member){const checkbox=$('[name="printedId"]',member),panel=$('[data-printed-payment]',member),ref=$('[name="gcashRef"]',member);const update=()=>{if(panel)panel.hidden=!checkbox.checked;if(ref){ref.required=checkbox.checked;ref.closest('.field').hidden=!checkbox.checked;}};checkbox?.addEventListener('change',update);update();}
  const form=$('form[data-api="/api/orders"]');if(!form)return;
- const courier=$('[name="courier"]',form),province=$('[data-shipping-province]',form),city=$('[data-shipping-city]',form);
+ const courier=$('[name="courier"]',form),province=$('[data-shipping-province]',form),city=$('[data-shipping-city]',form),service=$('[data-courier-service]',form);
  const quoteId=$('[data-shipping-quote-id]',form),destination=$('[data-shipping-destination-id]',form),tokenInput=$('[data-checkout-token]',form);
  const shipping=$('[data-cart-shipping]'),grand=$('[data-cart-grand]'),note=$('[data-cart-shipping-note]'),submit=$('[type="submit"]',form);
  const panel=$('[data-order-payment]'),success=$('[data-success]',form.closest('[data-form-shell]'));
@@ -22,7 +22,12 @@
  const makeToken=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join('');
  const persist=()=>{tokenInput.value=token;try{if(token)sessionStorage.setItem(KEY,token);else sessionStorage.removeItem(KEY);}catch{}};persist();
  const items=()=>Array.from(form.querySelectorAll('[data-item-id]')).map(i=>({id:i.dataset.itemId,qty:Number(i.value),...(i.dataset.itemSize?{size:i.dataset.itemSize}:{})}));
- const payload=()=>({courier:courier.value,destinationId:destination.value,items:items()});
+ const payload=()=>({courier:courier.value,serviceId:service.value,destinationId:destination.value,items:items()});
+ const SERVICE_OPTIONS={
+  jt:[['ez','J&T EZ — regular parcel']],
+  lbc:[['auto','LBC — lowest available 1 kg parcel'],['npack-medium','LBC N-Pack Medium'],['kb-mini','LBC Kilobox Mini'],['kb-small','LBC Kilobox Small']],
+  pickup:[['pickup','Club pickup (free)']]
+ };
  const message=s=>{note.textContent=s;note.hidden=false;};
  const invalidate=()=>{clearTimeout(expiry);quoteId.value='';// Keep the button usable so customers can see an actionable checkout error, not a silent dead end.
   // The form handler refuses to create any order until a valid server quote exists.
@@ -31,6 +36,7 @@
   if(prepared)return;
   const data=payload(),signature=JSON.stringify(data),version=++sequence;lastSignature=signature;invalidate();
   if(!data.items.length)return;
+  if(!data.serviceId){message('Select a courier service to calculate shipping.');return;}
   if(data.courier!=='pickup'&&!data.destinationId){message('Choose a delivery province and city to see the full total.');return;}
   message('Calculating the full total…');
   try{
@@ -46,6 +52,13 @@
  const schedule=()=>{const signature=JSON.stringify(payload());if(signature===lastSignature)return;lastSignature=signature;++sequence;invalidate();clearTimeout(timer);timer=setTimeout(quote,400);};
  const option=(value,label)=>{const o=document.createElement('option');o.value=value;o.textContent=label;return o;};
  const loadProvinces=()=>{
+  const previousService=service.value;
+  service.replaceChildren(...(SERVICE_OPTIONS[courier.value]||[]).map(([id,label])=>option(id,label)));
+  if((SERVICE_OPTIONS[courier.value]||[]).some(([id])=>id===previousService))service.value=previousService;
+  const pickupService=courier.value==='pickup';
+  service.required=!pickupService;
+  service.disabled=pickupService;
+  service.closest('[data-courier-service-field]').hidden=pickupService;
   province.replaceChildren(option('','Choose a province'));city.replaceChildren(option('','Choose province first'));destination.value='';
   const list=locations?.[courier.value]||[];for(const name of [...new Set(list.map(x=>x.province))].sort())province.append(option(name,name.replace(/-/g,' ')));
   const pickup=courier.value==='pickup';for(const select of [province,city]){select.disabled=pickup;select.required=!pickup;select.closest('[data-delivery-field]').hidden=pickup;}
@@ -53,7 +66,9 @@
  };
  province.addEventListener('change',()=>{city.replaceChildren(option('','Choose a city / municipality'));destination.value='';for(const location of (locations?.[courier.value]||[]).filter(x=>x.province===province.value).sort((a,b)=>a.city.localeCompare(b.city))){const o=option(location.city,location.city.replace(/-/g,' '));o.dataset.destinationId=location.id;city.append(o);}schedule();});
  city.addEventListener('change',()=>{destination.value=city.selectedOptions[0]?.dataset.destinationId||'';schedule();});
- courier.addEventListener('change',loadProvinces);form.addEventListener('input',schedule);
+ courier.addEventListener('change',loadProvinces);
+ service.addEventListener('change',schedule);
+ form.addEventListener('input',schedule);
  $('[data-shipping-refresh]')?.addEventListener('click',quote);
  form.addEventListener('cu:shipping-refresh',()=>{void quote();});
  fetch('/data/shipping-locations.json').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{locations=data;loadProvinces();}).catch(()=>message('Delivery locations could not load. Refresh the page or choose pickup.'));
