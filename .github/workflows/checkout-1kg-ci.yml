@@ -1,0 +1,27 @@
+name: Official courier calculator 1kg checkout tests
+on:
+  push:
+    branches: [feature/courier-service-1kg-2026-11-07]
+  pull_request:
+    branches: [main]
+permissions: {contents: read}
+jobs:
+  shipping-checkout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: One kilogram, courier service selection, and order security tests
+        run: npm run test:shipping
+      - name: Complete Astro build
+        run: npm run build
+      - name: Checkout browser regression with mocked rates and payments
+        run: |
+          npx astro preview --host 127.0.0.1 --port 4321 > /tmp/checkout-astro.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4321/shop/ >/dev/null && break; sleep 1; done
+          node scripts/checkout-error-qa.mjs

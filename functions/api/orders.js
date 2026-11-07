@@ -67,6 +67,11 @@ export async function onRequestPost(context) {
   const setting = await env.DB.prepare('SELECT revision FROM shipping_settings WHERE id=1').first();
   if (!quote || quote.expires_at < Date.now() || quote.config_revision !== setting?.revision || quote.courier !== courier || quote.basket_json !== JSON.stringify(lines) || quote.destination_id !== (pickup ? '' : clean(body.destinationId, 30))) return fail('Your total has expired or your basket changed. Refresh the delivery total before paying.', 409);
   const details = JSON.parse(quote.details_json);
+  const expectedServiceId = courier === 'pickup' ? 'pickup' : courier === 'jt' ? 'ez' : 'auto';
+  const selectedServiceId = clean(body.serviceId || expectedServiceId, 40);
+  if (details.serviceId && details.serviceId !== selectedServiceId) {
+    return fail('Your courier service changed. Refresh the shipping rate before paying.', 409);
+  }
   const destination = details.destination;
   if (!pickup && (city !== destination.city || province !== destination.province)) return fail('Choose the delivery location again to refresh the total.', 409);
   const shippingFee = quote.shipping_fee;

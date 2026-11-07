@@ -3,8 +3,26 @@ import { CATALOG, priceItems } from './_catalog.js';
 export class ShippingError extends Error {constructor(message,status=503){super(message);this.status=status;}}
 export const DEFAULT_ORIGINS = { jt: '56054', lbc: '103314000' };
 export const MINIMUM_POLICY = 'minimum_small_parcel';
-// Approved by Chess United: charge this once per order if LBC's public rate API cannot be reached.
-export const LBC_FALLBACK_FEE_PHP = 100;
+// The club quotes a single 1 kg shipment per merchandise order, regardless of quantity.
+// Buyers never enter guessed dimensions. The club accepts any carrier overage.
+export const CHECKOUT_WEIGHT_KG = 1;
+export const SERVICE_CHOICES = Object.freeze({
+ jt: [{id:'ez',label:'J&T EZ — regular parcel'}],
+ lbc: [
+  {id:'auto',label:'LBC — lowest available 1 kg parcel'},
+  {id:'npack-medium',label:'LBC N-Pack Medium'},
+  {id:'kb-mini',label:'LBC Kilobox Mini'},
+  {id:'kb-small',label:'LBC Kilobox Small'},
+ ],
+ pickup:[{id:'pickup',label:'Club pickup (free)'}]
+});
+export function serviceSelection(courier,serviceId){
+ const choices=SERVICE_CHOICES[courier];
+ const id=String(serviceId||({jt:'ez',lbc:'auto',pickup:'pickup'}[courier]||''));
+ const choice=choices?.find(x=>x.id===id);
+ if(!choice)throw new ShippingError('Choose a valid courier service or packaging option.',422);
+ return choice;
+}
 export async function shippingSettings(env) {
  const row = await env.DB.prepare('SELECT config_json,revision FROM shipping_settings WHERE id=1').first();
  return { config: JSON.parse(row?.config_json || '{}'), revision: row?.revision || 1 };
@@ -35,7 +53,7 @@ export function packItems(lines, config) {
  if(config.mode===MINIMUM_POLICY) {
   // This is the merchant's customer pricing policy, not a claim of measured
   // merchandise weight/size. The club covers any higher actual carrier charge.
-  return [{minimum:true,weight:0.5,quantity:1,value:lines.reduce((n,line)=>n+line.lineTotal,0)}];
+  return [{minimum:true,weight:CHECKOUT_WEIGHT_KG,quantity:1,value:lines.reduce((n,line)=>n+line.lineTotal,0)}];
  }
  // The club specifies measured packed envelopes/boxes. Each unit is priced as a
  // separate parcel. This avoids promising that unrelated fragile goods fit a box.
@@ -49,32 +67,37 @@ export function packItems(lines, config) {
 }
 const JT='https://ylofficialjw.jtexpress.ph/website/fee/findRates';
 const LBC_PAGE='https://www.lbcexpress.com/rates/';
-const LBC_AJAX='https://www.lbcexpress.com/wp-admin/admin-ajax.php';
+// Official LBC public PH calculator endpoints used by its shipping-rate page.
+const LBC_API='https://ratecalcapi.lbcapps.com/';
+const LBC_CALC=LBC_API+'Tools/PH_Rate_Calculator';
+const LBC_CLIENT=LBC_API+'Scripts/PH_Rate_Calculator.js';
 async function response(fetcher,url,init={}) {
  let r;try{r=await fetcher(url,{...init,headers:{'User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)',...init.headers},signal:AbortSignal.timeout(10000)});}catch{throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');}
  if(!r.ok)throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');return r;
 }
-export function lbcCookieHeader(headers) {
- const values=typeof headers.getSetCookie==='function'?headers.getSetCookie():typeof headers.getAll==='function'?headers.getAll('Set-Cookie'):[headers.get('Set-Cookie')||''];
- return values.map(value=>value.split(';')[0]).filter(value=>/^[^\s=;]+=[^;\r\n]*$/.test(value)).join('; ');
-}
-export async function officialShippingRate(courier,origin,destination,parcels,fetcher=fetch) {
+export async function officialShippingRate(courier,origin,destination,parcels,fetcher=fetch,serviceId) {
+ const selected=serviceSelection(courier,serviceId);
  const deadline=Date.now()+22000;
  const boundedFetch=(url,init={})=>fetcher(url,{...init,signal:AbortSignal.timeout(Math.max(1,Math.min(10000,deadline-Date.now())))});
- let context,lbcCookies='';
+ let lbcToken='';
  if(courier==='lbc') {
-  const page=await response(boundedFetch,LBC_PAGE+'?cu_rates='+crypto.randomUUID(),{headers:{'Cache-Control':'no-cache'},cf:{cacheTtl:0,cacheEverything:false}});
-  lbcCookies=lbcCookieHeader(page.headers);
-  const html=await page.text();
-  const found=[...html.matchAll(/var ajax_object\s*=\s*(\{[^;]+\});/g)].at(-1);
-  try{context=JSON.parse(found?.[1]||'');}catch{throw new ShippingError('LBC calculator settings are unavailable. Please retry or choose another option.');}
+  // Read the public calculator's current token; never commit or persist it.
+  const script=await response(boundedFetch,LBC_CLIENT);
+  const js=await script.text();
+  lbcToken=js.match(/setRequestHeader\(["']token["'],\s*["']([^"']+)["']\)/i)?.[1]||'';
+  if(!/^[a-zA-Z0-9_-]{30,512}$/.test(lbcToken))throw new ShippingError('LBC calculator authorization is unavailable. Try another courier or pickup.');
  }
  const lbcCall=async(action,data)=>{
-  const security=context[action+'_nonce'];if(!/^[a-f0-9]{10}$/.test(security||''))throw new ShippingError('LBC calculator settings have changed. Please choose another option.');
-  const r=await (await response(boundedFetch,LBC_AJAX,{method:'POST',redirect:'error',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8','Origin':'https://www.lbcexpress.com','Referer':LBC_PAGE,'X-Requested-With':'XMLHttpRequest',...(lbcCookies?{Cookie:lbcCookies}:{})},body:new URLSearchParams({action,security,...data}).toString()})).json();
-  if(!r.success)throw new ShippingError('LBC could not quote this parcel and destination. Please choose another option.');return r.data;
+  const r=await (await response(boundedFetch,LBC_API+'api/PH/'+action,{
+   method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',token:lbcToken,'Origin':LBC_API,'Referer':LBC_CALC,'X-Requested-With':'XMLHttpRequest'},body:new URLSearchParams(data).toString()
+  })).json();
+  if(r.ResponseCode!=='0001'||!r.ResponseData)throw new ShippingError('LBC could not quote this route and package. Try another courier service.');
+  return r.ResponseData;
  };
- let products;if(courier==='lbc')products=await lbcCall('get_domestic_product_types',{is_cargo:'true'});
+ let products;if(courier==='lbc'){
+  products=(await lbcCall('GetProductsV2',{IsCargo:'true'})).Products;
+  if(!Array.isArray(products))throw new ShippingError('LBC package options are unavailable. Try another courier.');
+ }
  let total=0;const details=[];
  for(const p of parcels) {
   let fee,service;
@@ -89,24 +112,31 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
    }
    const basic=r.data?.find(x=>x.type==='fee');const insured=r.data?.find(x=>x.type==='insured');
    if(!r.succ || !basic || !Number.isFinite(Number(basic.fees)) || Number(basic.fees)<=0)throw new ShippingError('J&T could not quote this route. Please choose another option.');
-   fee=Number(basic.fees)+Number(basic.serviceFee||0)+Number(insured?.fees||0);service=p.minimum?'J&T EZ · minimum 0.5 kg rate':'J&T EZ';
+   fee=Number(basic.fees)+Number(basic.serviceFee||0)+Number(insured?.fees||0);service=p.minimum?'J&T EZ · 1 kg parcel rate':'J&T EZ';
   }else{
-   const parseFee=r=>Number(String(r.estimated_price).replace(/,/g,''))+Number(String(r.valuation_fee).replace(/,/g,''));
+   const parseFee=r=>Number(r.Price)+Number(r.ValuationFee);
    if(p.minimum) {
-    // Compare the official fixed-weight minimum packages, rather than inventing
-    // parcel dimensions. Their quoted charge is the customer's final fee.
-    const fixed=products.filter(x=>x.IsWeightRequired===false && Number(x.MaxWeight_Kg)>0);
-    const minimumWeight=Math.min(...fixed.map(x=>Number(x.MaxWeight_Kg)));
-    const candidates=fixed.filter(x=>Number(x.MaxWeight_Kg)===minimumWeight);
-    if(!candidates.length || candidates.length>4)throw new ShippingError('LBC minimum packages are unavailable. Choose another courier.');
+    // Product and service options are sourced from the official LBC calculator.
+    // No fabricated parcel measurements or a fixed shipping charge are used.
+    const eligible=products.filter(x=>Number(x.MaxWeight_Kg)>=CHECKOUT_WEIGHT_KG&&Number(x.ProductId)>0);
+    const named=eligible.filter(x=>{
+     const name=String(x.ProductName||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+     if(selected.id==='npack-medium')return name.includes('NPACKMEDIUM');
+     if(selected.id==='kb-mini')return name.includes('KBMINI');
+     if(selected.id==='kb-small')return name.includes('KBSMALL');
+     return x.IsWeightRequired===false;
+    });
+    const candidates=selected.id==='auto'?
+     named.sort((a,b)=>Number(a.MaxWeight_Kg)-Number(b.MaxWeight_Kg)).slice(0,4):named.slice(0,1);
+    if(!candidates.length)throw new ShippingError('This LBC packaging is not currently available in the official calculator. Choose a different service.');
     const offers=[];
-    for(const product of candidates) {
-     const r=await lbcCall('get_domestic_calculate_price',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(minimumWeight),DeclaredValue:String(p.value)});
+    for(const product of candidates){
+     const r=await lbcCall('CalculatePriceV2',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(CHECKOUT_WEIGHT_KG),DeclaredValue:String(p.value)});
      const amount=parseFee(r);if(Number.isFinite(amount)&&amount>0)offers.push({amount,product});
     }
     offers.sort((a,b)=>a.amount-b.amount);
-    if(!offers.length)throw new ShippingError('LBC could not quote this route. Please choose another option.');
-    fee=offers[0].amount;service=offers[0].product.ProductName+' · minimum '+minimumWeight+' kg rate';
+    if(!offers.length)throw new ShippingError('LBC could not quote this 1 kg service. Choose another service or courier.');
+    fee=offers[0].amount;service=offers[0].product.ProductName+' · 1 kg';
    }else{
     // Measured mode chooses an official package fitting the measured unit.
     const dims=[p.length,p.width,p.height].sort((a,b)=>a-b);
@@ -114,11 +144,10 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
      .filter(x=>x.dims.length===3 && x.dims.every((n,i)=>Number.isFinite(n)&&n>=dims[i]) && Number(x.MaxWeight_Kg)>=p.weight)
      .sort((a,b)=>a.dims.reduce((v,n)=>v*n,1)-b.dims.reduce((v,n)=>v*n,1));
     const product=fits[0];if(!product)throw new ShippingError('This parcel does not fit an online LBC package. Choose J&T or pickup.');
-    const r=await lbcCall('get_domestic_calculate_price',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(Math.max(1,p.weight)),DeclaredValue:String(p.value)});
+    const r=await lbcCall('CalculatePriceV2',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(Math.max(1,p.weight)),DeclaredValue:String(p.value)});
     fee=parseFee(r);service=product.ProductName;
    }
-   // The public calculator returns freight and valuation separately. Verified
-   // against two declared values: freight stays fixed while valuation changes.
+   // Official LBC calculator returns Price and ValuationFee separately.
   }
   if(!Number.isFinite(fee)||fee<=0||fee>50000)throw new ShippingError('The courier returned an invalid price. Please retry or choose pickup.');
   fee=Math.round(fee*100)/100;total+=fee*p.quantity;details.push({...p,fee,service});
@@ -127,6 +156,7 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
 }
 export async function createShippingQuote(env,body,fetcher=fetch) {
  const courier=body.courier;if(!['lbc','jt','pickup'].includes(courier))throw new ShippingError('Choose a courier or pickup.',422);
+ const selected=serviceSelection(courier,body.serviceId);
  const {lines,subtotal}=priceItems(body.items);if(!lines.length || lines.some(x=>x.size&&!CATALOG[x.id].options.values.includes(x.size)))throw new ShippingError('Choose valid items and sizes.',422);
  const {config,revision}=await shippingSettings(env);
  let destination,origin,rate={fee:0,details:[]};
@@ -136,19 +166,12 @@ export async function createShippingQuote(env,body,fetcher=fetch) {
   origin=LOCATIONS[courier].find(x=>x.id===config.origins?.[courier]);
   if(!origin)throw new ShippingError('The club must confirm its dispatch location before delivery checkout opens. Pickup is available.');
   const parcels=packItems(lines,config);
-  try{
-   rate=await officialShippingRate(courier,origin,destination,parcels,fetcher);
-  }catch(error){
-   // Only LBC's unavailable external calculator may use the club-approved flat
-   // charge. Preserve normal validation, live J&T rates, and free pickup.
-   if(courier!=='lbc'||config.mode!==MINIMUM_POLICY)throw error;
-   rate={fee:LBC_FALLBACK_FEE_PHP,details:[{...parcels[0],fee:LBC_FALLBACK_FEE_PHP,service:'LBC · club-approved minimum parcel fallback',fallback:true}],fallbackApplied:true};
-  }
+  rate=await officialShippingRate(courier,origin,destination,parcels,fetcher,selected.id);
  }
  const id=crypto.randomUUID(),expiresAt=Date.now()+15*60*1000;
  const pricingMode=courier==='pickup'?'pickup':config.mode||'measured';
- const pricingMessage=rate.fallbackApplied?'LBC rate calculator unavailable: club-approved flat shipping of ₱100 once per order. The club covers any higher actual courier charge.':pricingMode===MINIMUM_POLICY?'Minimum small-parcel delivery, once per order. The club covers any higher actual courier charge.':'Courier fee includes valuation. Each product unit ships as a separate parcel. This is the full amount to pay.';
- const details={pricingMode,pricingMessage,origin,destination,parcels:rate.details,fallbackApplied:rate.fallbackApplied===true,source:rate.fallbackApplied?'Chess United approved LBC flat-rate fallback':courier==='pickup'?'Club pickup':courier==='jt'?JT:LBC_PAGE,quotedAt:new Date().toISOString()};
+ const pricingMessage=pricingMode===MINIMUM_POLICY?'Official '+selected.label+' quote for 1 kg, once per order. The club covers any higher actual shipping cost.':'Courier fee includes valuation. Each product unit ships as a separate parcel. This is the full amount to pay.';
+ const details={pricingMode,pricingMessage,serviceId:selected.id,serviceLabel:selected.label,origin,destination,parcels:rate.details,fallbackApplied:false,source:courier==='pickup'?'Club pickup':courier==='jt'?JT:LBC_PAGE,quotedAt:new Date().toISOString()};
  await env.DB.prepare('DELETE FROM shipping_quotes WHERE expires_at < ?').bind(Date.now()).run();
  await env.DB.prepare('INSERT INTO shipping_quotes(id,basket_json,courier,destination_id,shipping_fee,subtotal,details_json,config_revision,expires_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(id,JSON.stringify(lines),courier,destination?.id||'',rate.fee,subtotal,JSON.stringify(details),revision,expiresAt).run();
  return {id,shippingFee:rate.fee,subtotal,pricingMode,pricingMessage,total:Math.round((subtotal+rate.fee)*100)/100,expiresAt,details};
