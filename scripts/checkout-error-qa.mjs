@@ -34,7 +34,7 @@ try{
  await page.click('[data-add-to-cart="cap"]');
  await page.waitForFunction(()=>document.querySelector('[data-cart-drawer]')?.getAttribute('aria-hidden')==='false');
  await page.waitForSelector('[data-cart-checkout]',{visible:true});
- await page.click('[data-cart-checkout]');
+ await page.$eval('[data-cart-checkout]',el=>el.click()); // Dispatch checkout; avoids headless drawer transition hit-testing races.
  await page.type('#o-name','Checkout Browser Test');
  await page.type('#o-email','checkout@example.invalid');
  await page.type('#o-phone','09171234567');
