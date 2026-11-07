@@ -3,6 +3,8 @@ import { CATALOG, priceItems } from './_catalog.js';
 export class ShippingError extends Error {constructor(message,status=503){super(message);this.status=status;}}
 export const DEFAULT_ORIGINS = { jt: '56054', lbc: '103314000' };
 export const MINIMUM_POLICY = 'minimum_small_parcel';
+// Approved by Chess United: charge this once per order if LBC's public rate API cannot be reached.
+export const LBC_FALLBACK_FEE_PHP = 100;
 export async function shippingSettings(env) {
  const row = await env.DB.prepare('SELECT config_json,revision FROM shipping_settings WHERE id=1').first();
  return { config: JSON.parse(row?.config_json || '{}'), revision: row?.revision || 1 };
@@ -126,12 +128,20 @@ export async function createShippingQuote(env,body,fetcher=fetch) {
   if(!destination)throw new ShippingError('Choose a delivery province and city.',422);
   origin=LOCATIONS[courier].find(x=>x.id===config.origins?.[courier]);
   if(!origin)throw new ShippingError('The club must confirm its dispatch location before delivery checkout opens. Pickup is available.');
-  rate=await officialShippingRate(courier,origin,destination,packItems(lines,config),fetcher);
+  const parcels=packItems(lines,config);
+  try{
+   rate=await officialShippingRate(courier,origin,destination,parcels,fetcher);
+  }catch(error){
+   // Only LBC's unavailable external calculator may use the club-approved flat
+   // charge. Preserve normal validation, live J&T rates, and free pickup.
+   if(courier!=='lbc'||config.mode!==MINIMUM_POLICY)throw error;
+   rate={fee:LBC_FALLBACK_FEE_PHP,details:[{...parcels[0],fee:LBC_FALLBACK_FEE_PHP,service:'LBC · club-approved minimum parcel fallback',fallback:true}],fallbackApplied:true};
+  }
  }
  const id=crypto.randomUUID(),expiresAt=Date.now()+15*60*1000;
  const pricingMode=courier==='pickup'?'pickup':config.mode||'measured';
- const pricingMessage=pricingMode===MINIMUM_POLICY?'Minimum small-parcel delivery, once per order. The club covers any higher actual courier charge.':'Courier fee includes valuation. Each product unit ships as a separate parcel. This is the full amount to pay.';
- const details={pricingMode,pricingMessage,origin,destination,parcels:rate.details,source:courier==='pickup'?'Club pickup':courier==='jt'?JT:LBC_PAGE,quotedAt:new Date().toISOString()};
+ const pricingMessage=rate.fallbackApplied?'LBC rate calculator unavailable: club-approved flat shipping of ₱100 once per order. The club covers any higher actual courier charge.':pricingMode===MINIMUM_POLICY?'Minimum small-parcel delivery, once per order. The club covers any higher actual courier charge.':'Courier fee includes valuation. Each product unit ships as a separate parcel. This is the full amount to pay.';
+ const details={pricingMode,pricingMessage,origin,destination,parcels:rate.details,fallbackApplied:rate.fallbackApplied===true,source:rate.fallbackApplied?'Chess United approved LBC flat-rate fallback':courier==='pickup'?'Club pickup':courier==='jt'?JT:LBC_PAGE,quotedAt:new Date().toISOString()};
  await env.DB.prepare('DELETE FROM shipping_quotes WHERE expires_at < ?').bind(Date.now()).run();
  await env.DB.prepare('INSERT INTO shipping_quotes(id,basket_json,courier,destination_id,shipping_fee,subtotal,details_json,config_revision,expires_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(id,JSON.stringify(lines),courier,destination?.id||'',rate.fee,subtotal,JSON.stringify(details),revision,expiresAt).run();
  return {id,shippingFee:rate.fee,subtotal,pricingMode,pricingMessage,total:Math.round((subtotal+rate.fee)*100)/100,expiresAt,details};
