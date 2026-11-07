@@ -94,6 +94,7 @@
  };
  const showPayment=order=>{
   clearTimeout(expiry);prepared=order;form.hidden=true;success.hidden=true;panel.hidden=false;
+  $('[data-order-private-status]',panel).href='/shop/order/#key='+token;
   const list=$('[data-payment-items]',panel);list.replaceChildren();for(const item of order.lines){const li=document.createElement('li');li.textContent=`${item.quantity} × ${item.name}${item.size?' · '+item.size:''} — ${peso(item.lineTotal)}`;list.append(li);}
   $('[data-payment-order-no]',panel).textContent=order.orderNo;$('[data-payment-subtotal]',panel).textContent=peso(order.subtotal);$('[data-payment-shipping]',panel).textContent=peso(order.shippingFee);$('[data-payment-delivery]',panel).textContent=[order.fulfilmentMessage,order.shippingMessage].filter(Boolean).join(' ');$('[data-gcash-amount]',panel).textContent=peso(order.total);setPayStatus('');
   const blocked=order.canPay===false && !order.submitted && order.paymentStatus!=='paid';

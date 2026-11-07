@@ -18,7 +18,7 @@ try{
    draft={orderNo:'ORD-LOCAL-TEST',subtotal:300,shippingFee:body.courier==='pickup'?0:195,total:body.courier==='pickup'?300:495,lines:[{name:'T-shirt',quantity:1,size:'M',lineTotal:300}],fulfilmentMessage:'Local test pickup.',submitted:false,paymentStatus:'pending'};return reply({ok:true,order:draft});
   }
   if(path==='/api/orders/payment'){
-   const body=JSON.parse(request.postData());assert.equal(body.checkoutToken,token);if(body.action==='submit')submitted=true;return reply({ok:true,order:{...draft,submitted}});
+   const body=JSON.parse(request.postData());assert.equal(body.checkoutToken,token);if(body.action==='submit')submitted=true;return reply({ok:true,order:{...draft,submitted,canPay:draft.paymentStatus==='pending'&&!submitted&&draft.fulfilmentStatus!=='cancelled'}});
   }
   request.continue();
  });
@@ -32,6 +32,11 @@ try{
  assert.ok(await page.$eval('form[data-api="/api/orders"]',e=>e.hidden));assert.equal(orderPosts,1);
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await page.reload({waitUntil:'networkidle0'});await page.waitForSelector('[data-order-payment]:not([hidden])');assert.equal(orderPosts,1);
+ const savedLink=await page.$eval('[data-order-private-status]',e=>e.getAttribute('href'));assert.equal(savedLink,'/shop/order/#key='+token);
+ // A bookmarked capability recovers an unpaid draft after tab state is lost.
+ await page.evaluate(()=>sessionStorage.removeItem('cu_payment_session_v1'));
+ await page.goto(base+savedLink,{waitUntil:'networkidle0'});await page.waitForSelector('[data-order-status]:not([hidden])');assert.match(await page.$eval('[data-status-payment]',e=>e.textContent),/Awaiting payment/);
+ await page.click('[data-status-pay]');await page.waitForSelector('[data-order-payment]:not([hidden])');assert.equal(orderPosts,1);
  await page.type('[data-order-payment-ref]','0001234567890');await page.click('[data-order-paid]');await page.waitForSelector('[data-success]:not([hidden])');assert.equal(submitted,true);
  assert.match(await page.$eval('[data-success]',e=>e.textContent),/payment verification/);
  assert.equal(await page.evaluate(()=>sessionStorage.getItem('cu_payment_session_v1')),null);
