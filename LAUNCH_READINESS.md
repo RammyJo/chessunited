@@ -29,7 +29,7 @@ The audit covers Chess United’s public pages, registration and checkout APIs, 
 
 ## Launch operation
 
-Delivery uses the owner-authorized **minimum small-parcel** pricing policy: one minimum courier charge per order, valued at the full merchandise subtotal, dispatched from San Fernando City, La Union. J&T uses its first 0.5 kg tier; LBC compares its smallest fixed-weight packages. These are billing assumptions, not measured product weights. The club covers any higher actual carrier charge, so buyers pay the complete total shown before GCash payment. Pickup stays free. Officers can later switch to measured pricing in **Dashboard → Delivery setup**.
+Delivery uses the owner-authorized **minimum small-parcel** pricing policy: one minimum courier charge per order, valued at the full merchandise subtotal, dispatched from San Fernando City, La Union. Checkout prices one 1 kg parcel per order. J&T uses EZ service; LBC uses its official PH calculator and the buyer’s selected package. These are billing assumptions, not measured product weights. The club covers any higher actual carrier charge, so buyers pay the complete total shown before GCash payment. Pickup stays free. Officers can later switch to measured pricing in **Dashboard → Delivery setup**.
 
 All payments use the supplied GCash/InstaPay QR. Officers must match actual receipt in GCash before selecting Paid. The website does not collect PINs or OTPs. A buyer’s payment claim is not automatic verification. Courier quotes do not book a shipment.
 

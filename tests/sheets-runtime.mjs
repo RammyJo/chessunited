@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
+import { priceItems } from '../functions/api/_catalog.js';
 const temp = mkdtempSync(join(tmpdir(), 'chess-sheets-test-'));
 execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'pages','functions','build','functions','--outdir',temp,'--compatibility-date','2026-10-01','--compatibility-flags','no_nodejs_compat','no_nodejs_compat_v2'], {stdio:'pipe'});
 const mf = new Miniflare(convertV4MiniflareOptions({modules:true,modulesRoot:temp,scriptPath:join(temp,'index.js'),compatibilityDate:'2026-10-01',compatibilityFlags:['no_nodejs_compat','no_nodejs_compat_v2'],d1Databases:['DB'],bindings:{ADMIN_TOKEN:'local-test-only'},serviceBindings:{ASSETS:()=>new Response('test')}}));
@@ -50,7 +51,19 @@ try {
  const deliveryUnconfigured=await send('/api/shipping/quote',{courier:'jt',destinationId:'57307',items:basket});assert.equal(deliveryUnconfigured.status,503);
  const settings=await send('/api/admin/shipping',{origins:{jt:'56054',lbc:'103314000'},products:{tshirt:{weight:0.5,length:30,width:20,height:5}}},{Cookie:cookie});assert.equal(settings.status,200);
  const oldQuote=await send('/api/orders',{...order,checkoutToken:'9'.repeat(64)});assert.equal(oldQuote.status,409);
+ // Exercise the actual order route with locked delivery quotes, without contacting
+ // couriers or creating production records. Client totals must never be trusted.
+ const revision=(await db.prepare('SELECT revision FROM shipping_settings WHERE id=1').first()).revision;
+ for(const [index,courier,serviceId,fee] of [[0,'jt','ez',170],[1,'lbc','auto',200]]) {
+  const quoteId='runtime-delivery-'+courier,destination={id:'fixture-'+courier,city:'QUEZON CITY',province:'NCR'};
+  await db.prepare('INSERT INTO shipping_quotes(id,basket_json,courier,destination_id,shipping_fee,subtotal,details_json,config_revision,expires_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(quoteId,JSON.stringify(priceItems(basket).lines),courier,destination.id,fee,300,JSON.stringify({serviceId,destination,pricingMessage:'Locked test rate'}),revision,Date.now()+60000).run();
+  const deliveryOrder={...order,checkoutToken:String(index+2).repeat(64),quoteId,courier,serviceId,destinationId:destination.id,city:destination.city,province:destination.province,shippingFee:1,total:1};
+  const wrongService=await send('/api/orders',{...deliveryOrder,serviceId:'wrong-service'});assert.equal(wrongService.status,409);
+  const created=await send('/api/orders',deliveryOrder);assert.equal(created.status,200,await created.clone().text());
+  const payment=(await created.json()).order;assert.equal(payment.shippingFee,fee);assert.equal(payment.total,300+fee);assert.equal(payment.canPay,true);assert.equal(payment.paymentStatus,'pending');
+  const resumed=await send('/api/orders',deliveryOrder);assert.equal((await resumed.json()).order.orderNo,payment.orderNo);
+ }
  const mark=await send('/api/admin/update',{kind:'order',id:1,paymentStatus:'paid'},{Cookie:cookie});assert.equal(mark.status,200);assert.equal((await db.prepare('SELECT payment_status FROM orders WHERE id=1').first()).payment_status,'paid');
  const retry=await mf.dispatchFetch('https://example.com/api/admin/sheets',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:'{}'});assert.equal(retry.status,200,await retry.clone().text());assert.equal((await retry.json()).result.issue,'missing_credential');
- console.log('PASS: Workers runtime order insert, transactional D1 queue, authenticated admin status/retry, missing credential, pickup totals/address handling, delivery validation and pickup sync queue. Local database only.');
+ console.log('PASS: Workers/D1 checkout, both courier payment drafts, locked delivery totals, service validation, retry, payment claims, pickup, admin auth and Sheets queue. Local database only.');
 } finally {await mf.dispose();rmSync(temp,{recursive:true,force:true});}

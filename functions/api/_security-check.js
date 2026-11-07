@@ -1,6 +1,5 @@
 import {sheetsConfig} from './_sheets.js';
-import {digest} from './_security.js';
-import {lbcCookieHeader} from './_shipping.js';
+import {officialShippingRate,CHECKOUT_WEIGHT_KG} from './_shipping.js';
 /** Read only configuration metadata; credentials never leave their runtime. */
 export async function runRequestedSecurityCheck(env) {
  const claimed=await env.DB.prepare('UPDATE security_check SET requested=0 WHERE id=1 AND requested=1 RETURNING id,checks_json').first();
@@ -11,15 +10,16 @@ export async function runRequestedSecurityCheck(env) {
  const checks={adminCredentialMeetsBaseline:token.length>=24&&new Set(token).size>=8,sheetsConfigured:sheetsConfig(env).configured,deliveryConfigured};
  let probe=false;try{probe=JSON.parse(claimed.checks_json||'{}').probeShipping===true;}catch{}
  if(probe){
-  const sources={};const start=Date.now();
-  try{
-   const page=await fetch('https://www.lbcexpress.com/rates/?cu_rates='+crypto.randomUUID(),{headers:{'Cache-Control':'no-cache','User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)'},signal:AbortSignal.timeout(12000)});
-   sources.pageStatus=page.status;sources.pageMs=Date.now()-start;sources.pageCache=page.headers.get('CF-Cache-Status');const cookies=lbcCookieHeader(page.headers);sources.sessionCookieProvided=!!cookies;
-   if(page.ok){const html=await page.text();const configs=[...html.matchAll(/var ajax_object\s*=\s*(\{[^;]+\});/g)];sources.publicConfigCount=configs.length;const found=configs.at(-1);sources.publicConfigFound=!!found;
-    if(found){const config=JSON.parse(found[1]);sources.ajaxHost=new URL(config.ajax_url||'https://www.lbcexpress.com/wp-admin/admin-ajax.php').host;sources.nonceFingerprint=await digest(config.get_domestic_product_types_nonce);const before=Date.now();const products=await fetch('https://www.lbcexpress.com/wp-admin/admin-ajax.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8','Origin':'https://www.lbcexpress.com','Referer':'https://www.lbcexpress.com/rates/','X-Requested-With':'XMLHttpRequest',...(cookies?{Cookie:cookies}:{}),'User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)'},body:new URLSearchParams({action:'get_domestic_product_types',security:config.get_domestic_product_types_nonce,is_cargo:'true'}).toString(),signal:AbortSignal.timeout(10000)});sources.productsStatus=products.status;sources.productsMs=Date.now()-before;if(products.ok){const data=await products.json();sources.productsSuccess=data.success;}else{const text=await products.text();sources.nonceRejected=text.trim()==='-1';sources.accessChallenge=/challenge-platform|cf-chl-|captcha/i.test(text);sources.errorBodyLength=text.length;}}
-   }
-  }catch(e){sources.networkFailure=e.name;sources.totalMs=Date.now()-start;}
-  checks.shippingSourceProbe=sources;
+  const entries=await Promise.all(['jt','lbc'].map(async courier=>{
+   const start=Date.now();
+   try{
+    const origin=courier==='jt'?{id:'56054',city:'LA-UNION-SAN-FERNANDO-CITY'}:{id:'103314000'};
+    const destination=courier==='jt'?{id:'57307',city:'QUEZON-CITY'}:{id:'1381300000'};
+    const rate=await officialShippingRate(courier,origin,destination,[{minimum:true,weight:CHECKOUT_WEIGHT_KG,quantity:1,value:150}]);
+    return [courier,{available:true,fee:rate.fee,ms:Date.now()-start}];
+   }catch{return [courier,{available:false,ms:Date.now()-start}];}
+  }));
+  checks.shippingSourceProbe=Object.fromEntries(entries);
  }
  await env.DB.prepare("UPDATE security_check SET checks_json=?,checked_at=datetime('now') WHERE id=1").bind(JSON.stringify(checks)).run();
 }

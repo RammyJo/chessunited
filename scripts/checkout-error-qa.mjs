@@ -49,17 +49,15 @@ try{
  assert.equal(await page.$eval(submit,el=>el.disabled),false,'Button must remain actionable when a rate fails');
  await page.click(submit);
  await page.waitForSelector('form[data-api="/api/orders"] [data-form-status]:not([hidden])');
- assert.match(await page.$eval('[data-form-status]',el=>el.textContent),/shipping total is not ready/i);
+ assert.match(await page.$eval('[data-form-status]',el=>el.textContent),/unavailable|could not calculate|retry/i);
  assert.equal(orders,0,'Do not send an unquoted order');
  console.log('PASS: J&T API failure is explained on click without an unpaid order.');
  failJT=false;
- await page.select('#o-courier','pickup');
- await page.waitForFunction(()=>document.querySelector('[data-cart-grand]').textContent.includes('150'));
  assert.equal(await page.$eval(submit,el=>el.disabled),false);
  await page.click(submit);
  await page.waitForSelector('[data-order-payment]:not([hidden])',{timeout:10000});
  assert.equal(orders,1);
- assert.equal(await page.$eval('[data-order-payment] [data-gcash-amount]',e=>e.textContent),'₱150.00');
- console.log('PASS: Switching to pickup resumes checkout and displays GCash QR screen. No payment or production order occurred.');
+ assert.equal(await page.$eval('[data-order-payment] [data-gcash-amount]',e=>e.textContent),'₱245.00');
+ console.log('PASS: Retrying the same J&T delivery proceeds to the GCash QR screen. No payment or production order occurred.');
  assert.deepEqual(scriptErrors,[]);
 }finally{await browser.close();}

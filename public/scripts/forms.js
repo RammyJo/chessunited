@@ -95,6 +95,7 @@
     const button = $('[type="submit"]', form);
     const busyLabel = button ? button.getAttribute('data-busy') : null;
     const idleLabel = button ? button.textContent : null;
+    let submitting = false;
     let retryKey = null;
     let retryFingerprint = '';
     const retryStorage = 'cu_submission_v1:' + form.getAttribute('data-api') + ':' + (form.elements.eventSlug?.value || '');
@@ -136,6 +137,7 @@
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (submitting) return;
       clearErrors();
 
       if (!form.checkValidity()) {
@@ -144,15 +146,9 @@
       }
 
       const endpoint = form.getAttribute('data-api');
-      const payload = collect(form);
-
-      // Don't silently disable checkout while an external courier is being quoted.
-      // An order must still have an unexpired, server-generated shipping quote.
-      if (endpoint === '/api/orders' && !payload.quoteId) {
-        showErrors('The shipping total is not ready. Check the delivery message above, then select Refresh delivery total. For immediate checkout, select Pick up.');
-        form.dispatchEvent(new Event('cu:shipping-refresh'));
-        return;
-      }
+      let payload = collect(form);
+      submitting = true;
+      form.dataset.submitting = 'true';
 
       if (button) {
         button.disabled = true;
@@ -160,6 +156,21 @@
       }
 
       try {
+        if (endpoint === '/api/orders' && !payload.quoteId) {
+          if(button)button.textContent='Calculating delivery…';
+          await new Promise(resolve=>{
+            const timer=setTimeout(()=>resolve(null),32000);
+            form.dispatchEvent(new CustomEvent('cu:shipping-refresh',{detail:{resolve:value=>{clearTimeout(timer);resolve(value);}}}));
+          });
+          payload=collect(form);
+          if(!payload.quoteId){
+            const shippingMessage=document.querySelector('[data-cart-shipping-note]')?.textContent;
+            showErrors(shippingMessage || 'The delivery total could not be calculated. Please try again.');
+            return;
+          }
+          if(!form.checkValidity()){form.reportValidity();return;}
+          if(button && busyLabel)button.textContent=busyLabel;
+        }
         if(endpoint !== '/api/orders') {
           const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(payload)));
           const fingerprint = Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');
@@ -222,6 +233,8 @@
       } catch {
         showErrors('Could not reach the club’s server. Check your connection and try again.');
       } finally {
+        submitting = false;
+        delete form.dataset.submitting;
         if (button) {
           // Re-enable submit after a response; quote validity is enforced above and on the server.
           button.disabled = false;

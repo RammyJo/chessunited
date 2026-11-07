@@ -31,23 +31,33 @@
  const message=s=>{note.textContent=s;note.hidden=false;};
  const invalidate=()=>{clearTimeout(expiry);quoteId.value='';// Keep the button usable so customers can see an actionable checkout error, not a silent dead end.
   // The form handler refuses to create any order until a valid server quote exists.
-  submit.disabled=false;shipping.textContent=courier.value==='pickup'?'₱0 — pick up':'—';grand.textContent='—';};
- const quote=async()=>{
-  if(prepared)return;
-  const data=payload(),signature=JSON.stringify(data),version=++sequence;lastSignature=signature;invalidate();
-  if(!data.items.length)return;
-  if(!data.serviceId){message('Select a courier service to calculate shipping.');return;}
-  if(data.courier!=='pickup'&&!data.destinationId){message('Choose a delivery province and city to see the full total.');return;}
+  submit.disabled=form.dataset.submitting==='true';shipping.textContent=courier.value==='pickup'?'₱0 — pick up':'—';grand.textContent='—';};
+ let activeQuote=null;
+ const quote=()=>{
+  if(prepared)return Promise.resolve(null);
+  const data=payload(),signature=JSON.stringify(data);
+  if(activeQuote?.signature===signature)return activeQuote.promise;
+  clearTimeout(timer);
+  const version=++sequence;lastSignature=signature;invalidate();
+  if(!data.items.length)return Promise.resolve(null);
+  if(!data.serviceId){message('Select a courier service to calculate shipping.');return Promise.resolve(null);}
+  if(data.courier!=='pickup'&&!data.destinationId){message('Choose a delivery province and city to see the full total.');return Promise.resolve(null);}
   message('Calculating the full total…');
-  try{
-   const response=await fetch('/api/shipping/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();
-   if(version!==sequence||JSON.stringify(payload())!==signature)return;
-   if(!response.ok||!body.ok)throw new Error(body.error||'Could not calculate shipping. Retry or choose pickup.');
-   quoteId.value=body.quote.id;shipping.textContent=peso(body.quote.shippingFee);grand.textContent=peso(body.quote.total);submit.disabled=false;
-   const formStatus=form.querySelector('[data-form-status]');if(formStatus&&/shipping total is not ready/i.test(formStatus.textContent||'')){formStatus.textContent='';formStatus.hidden=true;}
-   message(data.courier==='pickup'?'Pickup has no shipping fee. This is the amount to pay.':body.quote.pricingMessage||'Courier fee includes valuation. This is the full amount to pay.');
-   expiry=setTimeout(()=>{invalidate();message('Refresh the delivery total before continuing.');},Math.max(0,body.quote.expiresAt-Date.now()));
-  }catch(e){if(version===sequence){message(e.message||'Could not reach the shipping calculator. Please retry.');}}
+  const pending=(async()=>{
+   try{
+    const response=await fetch('/api/shipping/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(30000)});const body=await response.json();
+    if(version!==sequence||JSON.stringify(payload())!==signature)return null;
+    if(!response.ok||!body.ok)throw new Error(body.error||'Could not calculate shipping. Please retry.');
+    quoteId.value=body.quote.id;shipping.textContent=peso(body.quote.shippingFee);grand.textContent=peso(body.quote.total);submit.disabled=form.dataset.submitting==='true';
+    const formStatus=form.querySelector('[data-form-status]');if(formStatus&&/shipping total is not ready/i.test(formStatus.textContent||'')){formStatus.textContent='';formStatus.hidden=true;}
+    message(data.courier==='pickup'?'Pickup has no shipping fee. This is the amount to pay.':body.quote.pricingMessage||'Courier fee includes valuation. This is the full amount to pay.');
+    expiry=setTimeout(()=>{invalidate();message('Refresh the delivery total before continuing.');},Math.max(0,body.quote.expiresAt-Date.now()));
+    return body.quote;
+   }catch(e){if(version===sequence){message(e.name==='TimeoutError'?'The courier took too long to respond. Please retry the delivery total.':e.message||'Could not reach the shipping calculator. Please retry.');}return null;}
+  })();
+  activeQuote={signature,promise:pending};
+  void pending.then(()=>{if(activeQuote?.promise===pending)activeQuote=null;});
+  return pending;
  };
  const schedule=()=>{const signature=JSON.stringify(payload());if(signature===lastSignature)return;lastSignature=signature;++sequence;invalidate();clearTimeout(timer);timer=setTimeout(quote,400);};
  const option=(value,label)=>{const o=document.createElement('option');o.value=value;o.textContent=label;return o;};
@@ -70,7 +80,7 @@
  service.addEventListener('change',schedule);
  form.addEventListener('input',schedule);
  $('[data-shipping-refresh]')?.addEventListener('click',quote);
- form.addEventListener('cu:shipping-refresh',()=>{void quote();});
+ form.addEventListener('cu:shipping-refresh',event=>{const pending=quote();if(typeof event.detail?.resolve==='function')void pending.then(event.detail.resolve,()=>event.detail.resolve(null));});
  fetch('/data/shipping-locations.json').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{locations=data;loadProvinces();}).catch(()=>message('Delivery locations could not load. Refresh the page or choose pickup.'));
  form.addEventListener('submit',()=>{if(!token){token=makeToken();persist();}},true);
  const setPayStatus=s=>{payStatus.textContent=s;payStatus.hidden=!s;};
