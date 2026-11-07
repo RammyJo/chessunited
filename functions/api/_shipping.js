@@ -67,33 +67,37 @@ export function packItems(lines, config) {
 }
 const JT='https://ylofficialjw.jtexpress.ph/website/fee/findRates';
 const LBC_PAGE='https://www.lbcexpress.com/rates/';
-const LBC_AJAX='https://www.lbcexpress.com/wp-admin/admin-ajax.php';
+// Official LBC public PH calculator endpoints used by its shipping-rate page.
+const LBC_API='https://ratecalcapi.lbcapps.com/';
+const LBC_CALC=LBC_API+'Tools/PH_Rate_Calculator';
+const LBC_CLIENT=LBC_API+'Scripts/PH_Rate_Calculator.js';
 async function response(fetcher,url,init={}) {
  let r;try{r=await fetcher(url,{...init,headers:{'User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)',...init.headers},signal:AbortSignal.timeout(10000)});}catch{throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');}
  if(!r.ok)throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');return r;
-}
-export function lbcCookieHeader(headers) {
- const values=typeof headers.getSetCookie==='function'?headers.getSetCookie():typeof headers.getAll==='function'?headers.getAll('Set-Cookie'):[headers.get('Set-Cookie')||''];
- return values.map(value=>value.split(';')[0]).filter(value=>/^[^\s=;]+=[^;\r\n]*$/.test(value)).join('; ');
 }
 export async function officialShippingRate(courier,origin,destination,parcels,fetcher=fetch,serviceId) {
  const selected=serviceSelection(courier,serviceId);
  const deadline=Date.now()+22000;
  const boundedFetch=(url,init={})=>fetcher(url,{...init,signal:AbortSignal.timeout(Math.max(1,Math.min(10000,deadline-Date.now())))});
- let context,lbcCookies='';
+ let lbcToken='';
  if(courier==='lbc') {
-  const page=await response(boundedFetch,LBC_PAGE+'?cu_rates='+crypto.randomUUID(),{headers:{'Cache-Control':'no-cache'},cf:{cacheTtl:0,cacheEverything:false}});
-  lbcCookies=lbcCookieHeader(page.headers);
-  const html=await page.text();
-  const found=[...html.matchAll(/var ajax_object\s*=\s*(\{[^;]+\});/g)].at(-1);
-  try{context=JSON.parse(found?.[1]||'');}catch{throw new ShippingError('LBC calculator settings are unavailable. Please retry or choose another option.');}
+  // Read the public calculator's current token; never commit or persist it.
+  const script=await response(boundedFetch,LBC_CLIENT);
+  const js=await script.text();
+  lbcToken=js.match(/setRequestHeader\(["']token["'],\s*["']([^"']+)["']\)/i)?.[1]||'';
+  if(!/^[a-zA-Z0-9_-]{30,512}$/.test(lbcToken))throw new ShippingError('LBC calculator authorization is unavailable. Try another courier or pickup.');
  }
  const lbcCall=async(action,data)=>{
-  const security=context[action+'_nonce'];if(!/^[a-f0-9]{10}$/.test(security||''))throw new ShippingError('LBC calculator settings have changed. Please choose another option.');
-  const r=await (await response(boundedFetch,LBC_AJAX,{method:'POST',redirect:'error',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8','Origin':'https://www.lbcexpress.com','Referer':LBC_PAGE,'X-Requested-With':'XMLHttpRequest',...(lbcCookies?{Cookie:lbcCookies}:{})},body:new URLSearchParams({action,security,...data}).toString()})).json();
-  if(!r.success)throw new ShippingError('LBC could not quote this parcel and destination. Please choose another option.');return r.data;
+  const r=await (await response(boundedFetch,LBC_API+'api/PH/'+action,{
+   method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',token:lbcToken,'Origin':LBC_API,'Referer':LBC_CALC,'X-Requested-With':'XMLHttpRequest'},body:new URLSearchParams(data).toString()
+  })).json();
+  if(r.ResponseCode!=='0001'||!r.ResponseData)throw new ShippingError('LBC could not quote this route and package. Try another courier service.');
+  return r.ResponseData;
  };
- let products;if(courier==='lbc')products=await lbcCall('get_domestic_product_types',{is_cargo:'true'});
+ let products;if(courier==='lbc'){
+  products=(await lbcCall('GetProductsV2',{IsCargo:'true'})).Products;
+  if(!Array.isArray(products))throw new ShippingError('LBC package options are unavailable. Try another courier.');
+ }
  let total=0;const details=[];
  for(const p of parcels) {
   let fee,service;
@@ -110,7 +114,7 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
    if(!r.succ || !basic || !Number.isFinite(Number(basic.fees)) || Number(basic.fees)<=0)throw new ShippingError('J&T could not quote this route. Please choose another option.');
    fee=Number(basic.fees)+Number(basic.serviceFee||0)+Number(insured?.fees||0);service=p.minimum?'J&T EZ · 1 kg parcel rate':'J&T EZ';
   }else{
-   const parseFee=r=>Number(String(r.estimated_price).replace(/,/g,''))+Number(String(r.valuation_fee).replace(/,/g,''));
+   const parseFee=r=>Number(r.Price)+Number(r.ValuationFee);
    if(p.minimum) {
     // Product and service options are sourced from the official LBC calculator.
     // No fabricated parcel measurements or a fixed shipping charge are used.
@@ -127,7 +131,7 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
     if(!candidates.length)throw new ShippingError('This LBC packaging is not currently available in the official calculator. Choose a different service.');
     const offers=[];
     for(const product of candidates){
-     const r=await lbcCall('get_domestic_calculate_price',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(CHECKOUT_WEIGHT_KG),DeclaredValue:String(p.value)});
+     const r=await lbcCall('CalculatePriceV2',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(CHECKOUT_WEIGHT_KG),DeclaredValue:String(p.value)});
      const amount=parseFee(r);if(Number.isFinite(amount)&&amount>0)offers.push({amount,product});
     }
     offers.sort((a,b)=>a.amount-b.amount);
@@ -140,11 +144,10 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
      .filter(x=>x.dims.length===3 && x.dims.every((n,i)=>Number.isFinite(n)&&n>=dims[i]) && Number(x.MaxWeight_Kg)>=p.weight)
      .sort((a,b)=>a.dims.reduce((v,n)=>v*n,1)-b.dims.reduce((v,n)=>v*n,1));
     const product=fits[0];if(!product)throw new ShippingError('This parcel does not fit an online LBC package. Choose J&T or pickup.');
-    const r=await lbcCall('get_domestic_calculate_price',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(Math.max(1,p.weight)),DeclaredValue:String(p.value)});
+    const r=await lbcCall('CalculatePriceV2',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(Math.max(1,p.weight)),DeclaredValue:String(p.value)});
     fee=parseFee(r);service=product.ProductName;
    }
-   // The public calculator returns freight and valuation separately. Verified
-   // against two declared values: freight stays fixed while valuation changes.
+   // Official LBC calculator returns Price and ValuationFee separately.
   }
   if(!Number.isFinite(fee)||fee<=0||fee>50000)throw new ShippingError('The courier returned an invalid price. Please retry or choose pickup.');
   fee=Math.round(fee*100)/100;total+=fee*p.quantity;details.push({...p,fee,service});
