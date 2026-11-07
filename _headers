@@ -1,0 +1,22 @@
+# Cloudflare Pages headers
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; font-src 'self'; frame-src https://maps.google.com https://www.google.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-lt6u7qFabkXgLg8WGzs0wC/61DNRDdzRhQZ3lY6Fu7o=' 'sha256-tVR+0KXHIB4npYk1V6i3ssjbXGQYNFcQh2Tex3/MV6g=' 'sha256-piopVQZhdmVtRB7hNRFW+vGtnvT0iPFhl4wJuYMMURY=' 'sha256-XrANYpWge8johpcTq3Ytj3SLXHVxRy7DMJahWC2q/nU=' 'sha256-1ZbKMORtjct94xpQqYuv9Kn2IwtbSWP0BP6z6ziIwj4=' 'sha256-iMeE60H4Lfy/d1ZR30fQznwwIHHI+V/Bjlnb/P7Un+Q=' 'sha256-0eW7M1rFGaVywN8ShyGNoecn025TiBWYqV2fJrRIMuw=' 'sha256-LIqGlMAtFar2Mq/7FCHEk4N9cNtGfuljFDcWoQ1Lu6M=' 'sha256-yMXPN53UKi0k+6SlUpH+PfPRZz6XkdE+YdoxP7cWeCs=' 'sha256-ybARb3/XWazBODLOuc1DYO3xiTet7PndZDtK+8laJHc=' 'sha256-+lfvnC15+uVUl7okq0tX79AqAthz6KPtLHdNIeDaUfM=' 'sha256-2+fe9OhUP2v5KEgbjjROU+b8jgVQpoyod4vaOuCF+e8=' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; manifest-src 'self'; upgrade-insecure-requests
+  Cache-Control: public, max-age=0, must-revalidate
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
+
+/calendar/*
+  Cache-Control: public, max-age=86400
+
+/scripts/*
+  Cache-Control: public, max-age=86400

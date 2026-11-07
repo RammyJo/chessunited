@@ -1,0 +1,165 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/admin/member-card",
+      "mountPath": "/api/admin",
+      "method": "POST",
+      "module": [
+        "api/admin/member-card.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/admin/queue",
+      "mountPath": "/api/admin",
+      "method": "GET",
+      "module": [
+        "api/admin/queue.js:onRequestGet"
+      ]
+    },
+    {
+      "routePath": "/api/admin/session",
+      "mountPath": "/api/admin",
+      "method": "DELETE",
+      "module": [
+        "api/admin/session.js:onRequestDelete"
+      ]
+    },
+    {
+      "routePath": "/api/admin/session",
+      "mountPath": "/api/admin",
+      "method": "GET",
+      "module": [
+        "api/admin/session.js:onRequestGet"
+      ]
+    },
+    {
+      "routePath": "/api/admin/session",
+      "mountPath": "/api/admin",
+      "method": "POST",
+      "module": [
+        "api/admin/session.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/admin/update",
+      "mountPath": "/api/admin",
+      "method": "POST",
+      "module": [
+        "api/admin/update.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/orders/payment",
+      "mountPath": "/api/orders",
+      "method": "POST",
+      "module": [
+        "api/orders/payment.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/shipping/quote",
+      "mountPath": "/api/shipping",
+      "method": "POST",
+      "module": [
+        "api/shipping/quote.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/admin/queue",
+      "mountPath": "/api/admin",
+      "method": "",
+      "module": [
+        "api/admin/queue.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/admin/session",
+      "mountPath": "/api/admin",
+      "method": "",
+      "module": [
+        "api/admin/session.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/admin/sheets",
+      "mountPath": "/api/admin",
+      "method": "",
+      "module": [
+        "api/admin/sheets.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/admin/shipping",
+      "mountPath": "/api/admin",
+      "method": "",
+      "module": [
+        "api/admin/shipping.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/admin/update",
+      "mountPath": "/api/admin",
+      "method": "",
+      "module": [
+        "api/admin/update.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/members/:number",
+      "mountPath": "/api/members",
+      "method": "GET",
+      "module": [
+        "api/members/[number].js:onRequestGet"
+      ]
+    },
+    {
+      "routePath": "/api/members",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/members.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/orders",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/orders.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/partner-clubs",
+      "mountPath": "/api",
+      "method": "GET",
+      "module": [
+        "api/partner-clubs.js:onRequestGet"
+      ]
+    },
+    {
+      "routePath": "/api/partner-clubs",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/partner-clubs.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/registrations",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/registrations.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api",
+      "mountPath": "/api",
+      "method": "",
+      "middleware": [
+        "api/_middleware.js:onRequest"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}
