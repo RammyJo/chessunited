@@ -1,0 +1,69 @@
+name: Prepare Cloudflare Pages direct-upload bundle
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/prepare-pages-bundle-v2.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run test:shipping
+      - run: npm run build
+      - name: Bundle Pages Functions
+        run: |
+          mkdir -p /tmp/cu-pages-deploy
+          npx wrangler pages functions build functions --outfile=/tmp/cu-pages-deploy/_worker.bundle --output-routes-path=/tmp/cu-pages-deploy/_routes.json --output-config-path=/tmp/cu-pages-deploy/functions-filepath-routing-config.json --build-output-directory=dist
+          cp dist/_headers /tmp/cu-pages-deploy/_headers
+          [ ! -f dist/_redirects ] || cp dist/_redirects /tmp/cu-pages-deploy/_redirects
+      - name: Prepare Cloudflare asset manifest
+        run: |
+          node --input-type=module <<'NODE'
+          import {readdir,readFile,writeFile} from 'node:fs/promises';
+          import {extname,join,relative} from 'node:path';
+          import {hash as blake3hash} from 'blake3-wasm';
+          const root='dist', manifest={};
+          async function walk(path){
+            for(const ent of await readdir(path,{withFileTypes:true})){
+              const full=join(path,ent.name), rel=relative(root,full).replaceAll('\\','/');
+              if(ent.isDirectory()){if(['functions','node_modules','.git','.wrangler'].includes(ent.name))continue;await walk(full);continue;}
+              if(['_headers','_redirects','_routes.json','_worker.js','.DS_Store'].includes(ent.name))continue;
+              const bytes=await readFile(full), ext=extname(full).slice(1);
+              manifest['/'+rel]=blake3hash(bytes.toString('base64')+ext).toString('hex').slice(0,32);
+            }
+          }
+          await walk(root);
+          await writeFile('/tmp/cu-pages-deploy/manifest.json',JSON.stringify(manifest));
+          await writeFile('/tmp/cu-pages-deploy/source-commit.txt',process.env.GITHUB_SHA+'\\n');
+          const bundle=await readFile('/tmp/cu-pages-deploy/_worker.bundle');
+          await writeFile('/tmp/cu-pages-deploy/worker.bundle.base64.txt',bundle.toString('base64'));
+          const {unlink}=await import('node:fs/promises');
+          await unlink('/tmp/cu-pages-deploy/_worker.bundle');
+          console.log('Manifest entries',Object.keys(manifest).length,'Worker bytes',bundle.length);
+          NODE
+      - name: Publish temporary bundle on isolated branch
+        run: |
+          export BUNDLE_BRANCH="deployment/checkout-bundle-2026-11-07-r2"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/cu-pages-export
+          cp -a /tmp/cu-pages-deploy/. /tmp/cu-pages-export/
+          git checkout --orphan "$BUNDLE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a /tmp/cu-pages-export/. .
+          git add -A
+          git commit -m "Prepared Cloudflare Pages assets for $GITHUB_SHA"
+          git push --force origin "HEAD:refs/heads/$BUNDLE_BRANCH"
