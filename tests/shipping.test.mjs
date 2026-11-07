@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {officialShippingRate,validateShippingConfig,packItems,lbcCookieHeader} from '../functions/api/_shipping.js';
+import {officialShippingRate,validateShippingConfig,packItems} from '../functions/api/_shipping.js';
 const parcel={weight:1,length:20,width:20,height:10,value:300,quantity:2};
 test('J&T uses official route and dimensions; includes valuation and service fee for every parcel',async()=>{
  let posted;const rate=await officialShippingRate('jt',{city:'ORIGIN'},{city:'DESTINATION'},[parcel],async(url,init)=>{assert.equal(new URL(url).hostname,'ylofficialjw.jtexpress.ph');posted=JSON.parse(init.body);return Response.json({succ:true,data:[{type:'fee',fees:'190',serviceFee:'10'},{type:'insured',fees:'5'}]});});
@@ -11,10 +11,10 @@ test('a zero J&T route rate never becomes free delivery',async()=>{
 });
 test('LBC selects a fitting official package, fetches fresh public calculator configuration and adds valuation',async()=>{
  const calls=[];const rate=await officialShippingRate('lbc',{id:'ORIGIN'},{id:'DESTINATION'},[parcel],async(url,init)=>{
-  if(new URL(url).pathname==='/rates/')return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
-  assert.equal(url,'https://www.lbcexpress.com/wp-admin/admin-ajax.php');const data=new URLSearchParams(init.body);calls.push(data);
-  if(data.get('action')==='get_domestic_product_types')return Response.json({success:true,data:[{ProductId:1,ProductName:'Too small',MaxWeight_Kg:10,Size_Inch:'3 X 3 X 3 IN'},{ProductId:2,ProductName:'Fits',MaxWeight_Kg:10,Size_Inch:'12 X 10 X 5 IN'}]});
-  return Response.json({success:true,data:{estimated_price:'300.00',valuation_fee:'15.00'}});
+  if(new URL(url).pathname==='/Scripts/PH_Rate_Calculator.js')return new Response('request.setRequestHeader("token", "'+'a'.repeat(64)+'");');
+  assert.ok(url.startsWith('https://ratecalcapi.lbcapps.com/api/PH/'));const data=new URLSearchParams(init.body);calls.push(data);
+  if(url.endsWith('/GetProductsV2'))return Response.json({ResponseCode:'0001',ResponseData:{Products:[{ProductId:1,ProductName:'Too small',MaxWeight_Kg:10,Size_Inch:'3 X 3 X 3 IN'},{ProductId:2,ProductName:'Fits',MaxWeight_Kg:10,Size_Inch:'12 X 10 X 5 IN'}]}});
+  return Response.json({ResponseCode:'0001',ResponseData:{Price:300,ValuationFee:15}});
  });assert.equal(rate.fee,630);assert.equal(calls[1].get('ProductId'),'2');assert.equal(calls[1].get('OriginCityId'),'ORIGIN');
 });
 test('parcel facts must be configured; wrong origins, partial or negative measurements are rejected',()=>{
@@ -42,11 +42,11 @@ test('minimum J&T charge is once per order and values every item, with no invent
 test('minimum LBC chooses the lowest official first-tier total including valuation for the entire basket',async()=>{
  const declarations=[];const parcels=packItems([{id:'tshirt',quantity:2,lineTotal:600},{id:'cap',quantity:1,lineTotal:150}],{mode:'minimum_small_parcel'});
  const rate=await officialShippingRate('lbc',{id:'ORIGIN'},{id:'DESTINATION'},parcels,async(url,init)=>{
-  if(new URL(url).pathname==='/rates/')return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
+  if(new URL(url).pathname==='/Scripts/PH_Rate_Calculator.js')return new Response('request.setRequestHeader("token", "'+'a'.repeat(64)+'");');
   const data=new URLSearchParams(init.body);
-  if(data.get('action')==='get_domestic_product_types')return Response.json({success:true,data:[{ProductId:105,ProductName:'CARGO KB MINI',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:16,ProductName:'N-PACK MEDIUM',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:19,ProductName:'CARGO KB SMALL',MaxWeight_Kg:'10',IsWeightRequired:true}]});
+  if(url.endsWith('/GetProductsV2'))return Response.json({ResponseCode:'0001',ResponseData:{Products:[{ProductId:105,ProductName:'CARGO KB MINI',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:16,ProductName:'N-PACK MEDIUM',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:19,ProductName:'CARGO KB SMALL',MaxWeight_Kg:'10',IsWeightRequired:true}]}});
   declarations.push(data.get('DeclaredValue'));assert.equal(data.get('Weight'),'1');
-  return Response.json({success:true,data:{estimated_price:data.get('ProductId')==='16'?'140':'185',valuation_fee:'15'}});
+  return Response.json({ResponseCode:'0001',ResponseData:{Price:data.get('ProductId')==='16'?140:185,ValuationFee:15}});
  });assert.equal(rate.fee,155);assert.deepEqual(declarations,['750','750']);assert.match(rate.details[0].service,/N-PACK MEDIUM/);
 });
 
@@ -62,11 +62,6 @@ test('minimum quote locks the entire basket total and billing policy into the un
  const request=new Request('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...basket,fullName:'Delivery Fixture',email:'delivery@example.invalid',phone:'09171234567',address:'123 Fixture Street',city:'QUEZON-CITY',province:'METRO-MANILA',quoteId:quote.id,checkoutToken:'e'.repeat(64),shippingFee:0,total:1})});
  const result=await onRequestPost({request,env,waitUntil:()=>{}});assert.equal(result.status,200);const order=(await result.json()).order;assert.equal(order.shippingFee,103);assert.equal(order.total,853);assert.match(order.shippingMessage,/club covers any higher actual shipping cost/);assert.equal(order.paymentStatus,'pending');assert.equal(order.fulfilmentStatus,'awaiting_payment');
  const stored=sql.prepare('SELECT shipping_quote_json,total FROM orders').get();assert.equal(JSON.parse(stored.shipping_quote_json).pricingMode,'minimum_small_parcel');assert.equal(stored.total,853);sql.close();
-});
-
-test('LBC session cookies are forwarded only as provider cookie pairs',()=>{
- const headers=new Headers();headers.append('Set-Cookie','rate_session=fixture; HttpOnly; Secure; Path=/');headers.append('Set-Cookie','country=PH; Path=/');
- assert.equal(lbcCookieHeader(headers),'rate_session=fixture; country=PH');assert.equal(lbcCookieHeader(new Headers()),'');
 });
 
 test('LBC HTTP 403 never becomes an invented flat rate or enables payment',async()=>{
@@ -109,11 +104,11 @@ test('buyer-selected LBC packaging is honored and quotes exactly 1 kg once per b
  const parcels=packItems([{id:'cap',quantity:3,lineTotal:450}],{mode:'minimum_small_parcel'});
  const ids=[];
  const rate=await officialShippingRate('lbc',{id:'ORIGIN'},{id:'DESTINATION'},parcels,async(url,init)=>{
-  if(new URL(url).pathname==='/rates/')return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
+  if(new URL(url).pathname==='/Scripts/PH_Rate_Calculator.js')return new Response('request.setRequestHeader("token", "'+'a'.repeat(64)+'");');
   const data=new URLSearchParams(init.body);
-  if(data.get('action')==='get_domestic_product_types')return Response.json({success:true,data:[{ProductId:105,ProductName:'CARGO KB MINI',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:16,ProductName:'N-PACK MEDIUM',MaxWeight_Kg:'1',IsWeightRequired:false}]});
+  if(url.endsWith('/GetProductsV2'))return Response.json({ResponseCode:'0001',ResponseData:{Products:[{ProductId:105,ProductName:'CARGO KB MINI',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:16,ProductName:'N-PACK MEDIUM',MaxWeight_Kg:'1',IsWeightRequired:false}]}});
   ids.push(data.get('ProductId'));assert.equal(data.get('Weight'),'1');assert.equal(data.get('DeclaredValue'),'450');
-  return Response.json({success:true,data:{estimated_price:'199',valuation_fee:'11'}});
+  return Response.json({ResponseCode:'0001',ResponseData:{Price:199,ValuationFee:11}});
  },'kb-mini');
  assert.deepEqual(ids,['105']);assert.equal(rate.fee,210);assert.equal(parcels[0].quantity,1);
  assert.match(rate.details[0].service,/KB MINI/);
