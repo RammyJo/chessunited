@@ -1,0 +1,25 @@
+name: Merchandise checkout tests
+
+on:
+  push:
+    branches:
+      - fix/merch-checkout-2026-11-07
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run test:shipping
+      - run: npm run build
