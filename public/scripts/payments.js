@@ -24,7 +24,9 @@
  const items=()=>Array.from(form.querySelectorAll('[data-item-id]')).map(i=>({id:i.dataset.itemId,qty:Number(i.value),...(i.dataset.itemSize?{size:i.dataset.itemSize}:{})}));
  const payload=()=>({courier:courier.value,destinationId:destination.value,items:items()});
  const message=s=>{note.textContent=s;note.hidden=false;};
- const invalidate=()=>{clearTimeout(expiry);quoteId.value='';submit.disabled=true;shipping.textContent=courier.value==='pickup'?'₱0 — pick up':'—';grand.textContent='—';};
+ const invalidate=()=>{clearTimeout(expiry);quoteId.value='';// Keep the button usable so customers can see an actionable checkout error, not a silent dead end.
+  // The form handler refuses to create any order until a valid server quote exists.
+  submit.disabled=false;shipping.textContent=courier.value==='pickup'?'₱0 — pick up':'—';grand.textContent='—';};
  const quote=async()=>{
   if(prepared)return;
   const data=payload(),signature=JSON.stringify(data),version=++sequence;lastSignature=signature;invalidate();
@@ -52,6 +54,7 @@
  city.addEventListener('change',()=>{destination.value=city.selectedOptions[0]?.dataset.destinationId||'';schedule();});
  courier.addEventListener('change',loadProvinces);form.addEventListener('input',schedule);
  $('[data-shipping-refresh]')?.addEventListener('click',quote);
+ form.addEventListener('cu:shipping-refresh',()=>{void quote();});
  fetch('/data/shipping-locations.json').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{locations=data;loadProvinces();}).catch(()=>message('Delivery locations could not load. Refresh the page or choose pickup.'));
  form.addEventListener('submit',()=>{if(!token){token=makeToken();persist();}},true);
  const setPayStatus=s=>{payStatus.textContent=s;payStatus.hidden=!s;};
