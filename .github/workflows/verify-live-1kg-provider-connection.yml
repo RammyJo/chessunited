@@ -1,0 +1,42 @@
+name: Verify current courier connectors (read-only)
+on:
+  push:
+    branches: [feature/courier-service-1kg-2026-11-07]
+    paths: [.github/workflows/verify-live-1kg-provider-connection.yml]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Verify 1 kg rate requests directly through application shipping code
+        run: |
+          node --input-type=module <<'NODE'
+          import {officialShippingRate,packItems} from './functions/api/_shipping.js';
+          import {LOCATIONS} from './functions/api/_shipping-locations.js';
+          const parcel=packItems([{id:'cap',quantity:1,lineTotal:150}],{mode:'minimum_small_parcel'});
+          if(parcel.length!==1||parcel[0].weight!==1)throw Error('Invalid 1kg parcel');
+          const cases=[
+            ['jt','ez','56054','57307'],
+            ['lbc','kb-mini','103314000','1381300000'],
+            ['lbc','npack-medium','103314000','1381300000']
+          ];
+          for(const [courier,service,origId,destId] of cases){
+            const origin=LOCATIONS[courier].find(x=>x.id===origId);
+            const dest=LOCATIONS[courier].find(x=>x.id===destId);
+            if(!origin||!dest)throw Error('Missing authentic courier location IDs');
+            const start=Date.now();
+            try{
+              const r=await officialShippingRate(courier,origin,dest,parcel,fetch,service);
+              if(!Number.isFinite(r.fee)||r.fee<=0)throw Error('Invalid official returned amount');
+              console.log('REAL_COURIER_RATE',JSON.stringify({courier,service,amount:r.fee,serviceReturned:r.details?.[0]?.service,ms:Date.now()-start}));
+            }catch(e){
+              console.error('REAL_COURIER_RATE_ERROR',JSON.stringify({courier,service,error:String(e.message),ms:Date.now()-start}));
+              process.exitCode=1;
+            }
+          }
+          NODE
