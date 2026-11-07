@@ -23,3 +23,43 @@ test('parcel facts must be configured; wrong origins, partial or negative measur
  assert.throws(()=>packItems([{id:'tshirt',quantity:1}],{}),/not available/);
  const config=validateShippingConfig({origins:{jt:'56054',lbc:'103314000'},products:{tshirt:{weight:1,length:30,width:20,height:5},cap:{weight:'',length:'',width:'',height:''}}});assert.equal(packItems([{id:'tshirt',quantity:2,unitPrice:300}],config)[0].quantity,2);assert.equal(config.products.cap,undefined);
 });
+
+test('minimum mode prices a basket as one baseline parcel without inventing item measurements',()=>{
+ const config=validateShippingConfig({mode:'minimum_small_parcel',origins:{jt:'56054',lbc:'103314000'},products:{}});
+ const parcels=packItems([{id:'tshirt',quantity:2,lineTotal:600},{id:'cap',quantity:1,lineTotal:150}],config);
+ assert.deepEqual(parcels,[{minimum:true,weight:0.5,quantity:1,value:750}]);
+ assert.equal(Object.hasOwn(parcels[0],'length'),false);
+ assert.throws(()=>packItems([{id:'pen',quantity:21,lineTotal:1050}],config),/20 items/);
+ assert.throws(()=>validateShippingConfig({...config,mode:'client_discount'}),/valid delivery pricing/);
+});
+test('minimum J&T charge is once per order and values every item, with no invented dimensions',async()=>{
+ const parcels=packItems([{id:'tshirt',quantity:2,lineTotal:600},{id:'cap',quantity:1,lineTotal:150}],{mode:'minimum_small_parcel'});
+ let calls=0;const rate=await officialShippingRate('jt',{city:'ORIGIN'},{city:'DESTINATION'},parcels,async(url,init)=>{
+  calls++;const data=JSON.parse(init.body);assert.equal(data.weight,'0.5');assert.equal(data.goodsValue,'750');assert.equal(data.dimensionW,'');assert.equal(data.dimensionH,'');assert.equal(data.dimensionL,'');
+  return Response.json({succ:true,data:[{type:'fee',fees:'95',serviceFee:'0'},{type:'insured',fees:'5'}]});
+ });assert.equal(calls,1);assert.equal(rate.fee,100);assert.equal(rate.details.length,1);assert.equal(rate.details[0].quantity,1);
+});
+test('minimum LBC chooses the lowest official first-tier total including valuation for the entire basket',async()=>{
+ const declarations=[];const parcels=packItems([{id:'tshirt',quantity:2,lineTotal:600},{id:'cap',quantity:1,lineTotal:150}],{mode:'minimum_small_parcel'});
+ const rate=await officialShippingRate('lbc',{id:'ORIGIN'},{id:'DESTINATION'},parcels,async(url,init)=>{
+  if(url.endsWith('/rates/'))return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
+  const data=new URLSearchParams(init.body);
+  if(data.get('action')==='get_domestic_product_types')return Response.json({success:true,data:[{ProductId:105,ProductName:'CARGO KB MINI',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:16,ProductName:'N-PACK MEDIUM',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:19,ProductName:'CARGO KB SMALL',MaxWeight_Kg:'10',IsWeightRequired:true}]});
+  declarations.push(data.get('DeclaredValue'));assert.equal(data.get('Weight'),'1');
+  return Response.json({success:true,data:{estimated_price:data.get('ProductId')==='16'?'140':'185',valuation_fee:'15'}});
+ });assert.equal(rate.fee,155);assert.deepEqual(declarations,['750','750']);assert.match(rate.details[0].service,/N-PACK MEDIUM/);
+});
+
+test('minimum quote locks the entire basket total and billing policy into the unpaid checkout draft',async()=>{
+ const {DatabaseSync}=await import('node:sqlite');const {readFileSync}=await import('node:fs');
+ const {createShippingQuote}=await import('../functions/api/_shipping.js');const {onRequestPost}=await import('../functions/api/orders.js');
+ const sql=new DatabaseSync(':memory:');sql.exec(readFileSync(new URL('../schema.sql',import.meta.url),'utf8'));
+ const DB={prepare(query){const make=params=>({first:async()=>sql.prepare(query).get(...params)||null,run:async()=>({meta:sql.prepare(query).run(...params)})});return {...make([]),bind:(...params)=>make(params)};}};
+ const env={DB};sql.prepare('UPDATE shipping_settings SET config_json=? WHERE id=1').run(JSON.stringify({mode:'minimum_small_parcel',origins:{jt:'56054',lbc:'103314000'},products:{}}));
+ const basket={courier:'jt',destinationId:'57307',items:[{id:'tshirt',qty:2,size:'M'},{id:'cap',qty:1}]};
+ const quote=await createShippingQuote(env,basket,async()=>Response.json({succ:true,data:[{type:'fee',fees:'95',serviceFee:'0'},{type:'insured',fees:'8'}]}));
+ assert.equal(quote.subtotal,750);assert.equal(quote.shippingFee,103);assert.equal(quote.total,853);assert.equal(quote.pricingMode,'minimum_small_parcel');assert.equal(quote.details.parcels.length,1);
+ const request=new Request('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...basket,fullName:'Delivery Fixture',email:'delivery@example.invalid',phone:'09171234567',address:'123 Fixture Street',city:'QUEZON-CITY',province:'METRO-MANILA',quoteId:quote.id,checkoutToken:'e'.repeat(64),shippingFee:0,total:1})});
+ const result=await onRequestPost({request,env,waitUntil:()=>{}});assert.equal(result.status,200);const order=(await result.json()).order;assert.equal(order.shippingFee,103);assert.equal(order.total,853);assert.match(order.shippingMessage,/club covers any higher actual courier charge/);assert.equal(order.paymentStatus,'pending');assert.equal(order.fulfilmentStatus,'awaiting_payment');
+ const stored=sql.prepare('SELECT shipping_quote_json,total FROM orders').get();assert.equal(JSON.parse(stored.shipping_quote_json).pricingMode,'minimum_small_parcel');assert.equal(stored.total,853);sql.close();
+});

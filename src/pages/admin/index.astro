@@ -104,12 +104,13 @@ import Icon from '../../components/Icon.astro';
           </div>
 
           <details class="note-box mt-3" data-shipping-settings>
-            <summary><strong>Delivery setup — dispatch locations and measured parcels</strong></summary>
-            <p>Choose the actual dispatch location and enter each product’s packed weight in kg and length, width and height in cm. Each unit is quoted as a separate parcel using the courier’s public calculator, including valuation. Leave all four measurements empty to keep that product available for pickup only.</p>
-            <p>Suggested dispatch location: San Fernando City, La Union. Confirm it before saving. LBC uses the smallest official package that fits the entered packed dimensions; leave enough weight allowance for its outer box. J&amp;T uses EZ parcel service.</p>
+            <summary><strong>Delivery setup — pricing and dispatch locations</strong></summary>
+            <p>Minimum small-parcel pricing charges one courier minimum per order, including valuation of all items. The club covers any higher actual courier charge. Measured pricing uses each product’s packed kg/cm and a separate parcel per unit; blank measurements keep that product available for pickup only.</p>
+            <p>Dispatch currently uses San Fernando City, La Union. In minimum mode, J&amp;T uses its first 0.5 kg tier and LBC compares its smallest fixed-weight packages. These are billing assumptions, rather than measured product dimensions. Online delivery supports up to 20 items per order.</p>
             <form data-shipping-settings-form>
+              <div class="field"><label for="shipping-pricing-mode">Delivery pricing</label><select id="shipping-pricing-mode" data-shipping-mode><option value="minimum_small_parcel">Minimum small-parcel rate — once per order</option><option value="measured">Measured parcels — per product unit</option></select></div>
               <div class="form-grid"><div class="field"><label for="shipping-origin-jt">J&amp;T dispatch location</label><select id="shipping-origin-jt" data-shipping-origin="jt" required></select></div><div class="field"><label for="shipping-origin-lbc">LBC dispatch location</label><select id="shipping-origin-lbc" data-shipping-origin="lbc" required></select></div></div>
-              <div class="table-wrap mt-2"><table><thead><tr><th>Product</th><th>Packed kg</th><th>Length cm</th><th>Width cm</th><th>Height cm</th></tr></thead><tbody data-shipping-products></tbody></table></div>
+              <div class="table-wrap mt-2" data-shipping-measurements><table><thead><tr><th>Product</th><th>Packed kg</th><th>Length cm</th><th>Width cm</th><th>Height cm</th></tr></thead><tbody data-shipping-products></tbody></table></div>
               <p data-shipping-settings-status role="status"></p><button type="submit" class="btn btn--sm">Save delivery setup</button>
             </form>
           </details>

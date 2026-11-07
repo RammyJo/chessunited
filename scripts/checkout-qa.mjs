@@ -10,8 +10,8 @@ try{
   const path=new URL(request.url()).pathname;
   const reply=(body,status=200)=>request.respond({status,contentType:'application/json',body:JSON.stringify(body)});
   if(path==='/api/shipping/quote'){
-   const body=JSON.parse(request.postData());const fee=body.courier==='pickup'?0:195;
-   return reply({ok:true,quote:{id:'local-quote',shippingFee:fee,subtotal:300,total:300+fee,expiresAt:Date.now()+900000}});
+   const body=JSON.parse(request.postData());const fee=body.courier==='pickup'?0:100;
+   return reply({ok:true,quote:{id:'local-quote',shippingFee:fee,subtotal:300,total:300+fee,pricingMode:body.courier==='pickup'?'pickup':'minimum_small_parcel',pricingMessage:'Minimum small-parcel delivery, once per order. The club covers any higher actual courier charge.',expiresAt:Date.now()+900000}});
   }
   if(path==='/api/orders'){
    const body=JSON.parse(request.postData());assert.equal(body.quoteId,'local-quote');assert.match(body.checkoutToken,/^[a-f0-9]{64}$/);token=body.checkoutToken;orderPosts++;
@@ -24,7 +24,7 @@ try{
  });
  const base=process.env.QA_URL||'http://127.0.0.1:4321';await page.goto(base+'/shop/',{waitUntil:'networkidle0'});
  await page.click('label[for="size-tshirt-M"]');await page.click('[data-add-to-cart="tshirt"]');await page.waitForFunction(()=>document.querySelector('[data-cart-drawer]').getAttribute('aria-hidden')==='false');await page.click('[data-cart-checkout]');
- await page.type('#o-name','Checkout Test');await page.type('#o-email','checkout@example.invalid');await page.type('#o-phone','09171234567');await page.select('#o-courier','pickup');
+ await page.type('#o-name','Checkout Test');await page.type('#o-email','checkout@example.invalid');await page.type('#o-phone','09171234567');await page.select('#o-courier','jt');await page.waitForSelector('#o-province option[value="METRO-MANILA"]');await page.select('#o-province','METRO-MANILA');await page.select('#o-city','QUEZON-CITY');await page.waitForFunction(()=>document.querySelector('[data-cart-grand]').textContent.includes('400'));assert.match(await page.$eval('[data-cart-shipping-note]',e=>e.textContent),/once per order/);await page.select('#o-courier','pickup');
  await page.waitForFunction(()=>document.querySelector('[data-cart-grand]').textContent.includes('300'));
  assert.equal(await page.$eval('#o-city',e=>e.disabled),true);assert.equal(await page.$eval('#o-address',e=>e.disabled),true);
  await page.click('form[data-api="/api/orders"] [type="submit"]');await page.waitForSelector('[data-order-payment]:not([hidden])');

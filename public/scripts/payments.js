@@ -36,7 +36,7 @@
    if(version!==sequence||JSON.stringify(payload())!==signature)return;
    if(!response.ok||!body.ok)throw new Error(body.error||'Could not calculate shipping. Retry or choose pickup.');
    quoteId.value=body.quote.id;shipping.textContent=peso(body.quote.shippingFee);grand.textContent=peso(body.quote.total);submit.disabled=false;
-   message(data.courier==='pickup'?'Pickup has no shipping fee. This is the amount to pay.':'Courier fee includes valuation. Each product unit ships as a separate parcel. This is the full amount to pay.');
+   message(data.courier==='pickup'?'Pickup has no shipping fee. This is the amount to pay.':body.quote.pricingMessage||'Courier fee includes valuation. This is the full amount to pay.');
    expiry=setTimeout(()=>{invalidate();message('Refresh the delivery total before continuing.');},Math.max(0,body.quote.expiresAt-Date.now()));
   }catch(e){if(version===sequence){message(e.message||'Could not reach the shipping calculator. Please retry.');}}
  };
@@ -63,7 +63,7 @@
  const showPayment=order=>{
   clearTimeout(expiry);prepared=order;form.hidden=true;success.hidden=true;panel.hidden=false;
   const list=$('[data-payment-items]',panel);list.replaceChildren();for(const item of order.lines){const li=document.createElement('li');li.textContent=`${item.quantity} × ${item.name}${item.size?' · '+item.size:''} — ${peso(item.lineTotal)}`;list.append(li);}
-  $('[data-payment-order-no]',panel).textContent=order.orderNo;$('[data-payment-subtotal]',panel).textContent=peso(order.subtotal);$('[data-payment-shipping]',panel).textContent=peso(order.shippingFee);$('[data-payment-delivery]',panel).textContent=order.fulfilmentMessage;$('[data-gcash-amount]',panel).textContent=peso(order.total);setPayStatus('');
+  $('[data-payment-order-no]',panel).textContent=order.orderNo;$('[data-payment-subtotal]',panel).textContent=peso(order.subtotal);$('[data-payment-shipping]',panel).textContent=peso(order.shippingFee);$('[data-payment-delivery]',panel).textContent=[order.fulfilmentMessage,order.shippingMessage].filter(Boolean).join(' ');$('[data-gcash-amount]',panel).textContent=peso(order.total);setPayStatus('');
   const blocked=order.canPay===false && !order.submitted && order.paymentStatus!=='paid';
   $('[data-gcash-panel]',panel).hidden=blocked;
   const warning=$('[data-order-payment-warning]',panel);warning.hidden=!blocked;warning.textContent=blocked?'This order is '+(order.fulfilmentStatus==='cancelled'?'cancelled':'closed for payment')+'. Do not send money. If you already paid, submit the payment details below so the club can help.':'';

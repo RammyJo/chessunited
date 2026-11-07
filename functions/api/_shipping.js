@@ -2,12 +2,15 @@ import { LOCATIONS } from './_shipping-locations.js';
 import { CATALOG, priceItems } from './_catalog.js';
 export class ShippingError extends Error {constructor(message,status=503){super(message);this.status=status;}}
 export const DEFAULT_ORIGINS = { jt: '56054', lbc: '103314000' };
+export const MINIMUM_POLICY = 'minimum_small_parcel';
 export async function shippingSettings(env) {
  const row = await env.DB.prepare('SELECT config_json,revision FROM shipping_settings WHERE id=1').first();
  return { config: JSON.parse(row?.config_json || '{}'), revision: row?.revision || 1 };
 }
 export function validateShippingConfig(raw) {
  if (!raw || typeof raw !== 'object') throw new ShippingError('Enter shipping settings.');
+ const mode=raw.mode || 'measured';
+ if(!['measured',MINIMUM_POLICY].includes(mode))throw new ShippingError('Choose a valid delivery pricing mode.');
  const origins = {};
  for (const courier of ['jt','lbc']) {
   const id=String(raw.origins?.[courier] || '');
@@ -22,9 +25,16 @@ export function validateShippingConfig(raw) {
    p[k]=n;
   } products[id]=p;
  }
- return { origins, products };
+ return { mode, origins, products };
 }
 export function packItems(lines, config) {
+ const units=lines.reduce((n,line)=>n+line.quantity,0);
+ if(units>20)throw new ShippingError('Online delivery supports up to 20 items per order. Choose pickup for a larger order.',422);
+ if(config.mode===MINIMUM_POLICY) {
+  // This is the merchant's customer pricing policy, not a claim of measured
+  // merchandise weight/size. The club covers any higher actual carrier charge.
+  return [{minimum:true,weight:0.5,quantity:1,value:lines.reduce((n,line)=>n+line.lineTotal,0)}];
+ }
  // The club specifies measured packed envelopes/boxes. Each unit is priced as a
  // separate parcel. This avoids promising that unrelated fragile goods fit a box.
  const parcels=[];
@@ -61,20 +71,37 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
  for(const p of parcels) {
   let fee,service;
   if(courier==='jt') {
-   const r=await (await response(boundedFetch,JT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({country:'PH',senderAddr:origin.city,receiverAddr:destination.city,weight:String(p.weight),goodType:'PARCEL',productType:'EZ',goodsValue:String(p.value),dimensionW:String(p.width),dimensionH:String(p.height),dimensionL:String(p.length),pouchSize:''})})).json();
+   const r=await (await response(boundedFetch,JT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({country:'PH',senderAddr:origin.city,receiverAddr:destination.city,weight:String(p.weight),goodType:'PARCEL',productType:'EZ',goodsValue:String(p.value),dimensionW:p.width===undefined?'':String(p.width),dimensionH:p.height===undefined?'':String(p.height),dimensionL:p.length===undefined?'':String(p.length),pouchSize:''})})).json();
    const basic=r.data?.find(x=>x.type==='fee');const insured=r.data?.find(x=>x.type==='insured');
    if(!r.succ || !basic || !Number.isFinite(Number(basic.fees)) || Number(basic.fees)<=0)throw new ShippingError('J&T could not quote this route. Please choose another option.');
-   fee=Number(basic.fees)+Number(basic.serviceFee||0)+Number(insured?.fees||0);service='J&T EZ';
+   fee=Number(basic.fees)+Number(basic.serviceFee||0)+Number(insured?.fees||0);service=p.minimum?'J&T EZ · minimum 0.5 kg rate':'J&T EZ';
   }else{
-   // Use an official LBC fixed-size box that fits the measured packed unit,
-   // including rotations. Own-box rates omit dimensions and are not used.
-   const dims=[p.length,p.width,p.height].sort((a,b)=>a-b);
-   const fits=products.map(x=>({...x,dims:(x.Size_Inch||'').split(/X/i).map(v=>parseFloat(v)*2.54).sort((a,b)=>a-b)}))
-    .filter(x=>x.dims.length===3 && x.dims.every((n,i)=>Number.isFinite(n)&&n>=dims[i]) && Number(x.MaxWeight_Kg)>=p.weight)
-    .sort((a,b)=>a.dims.reduce((v,n)=>v*n,1)-b.dims.reduce((v,n)=>v*n,1));
-   const product=fits[0];if(!product)throw new ShippingError('This parcel does not fit an online LBC package. Choose J&T or pickup.');
-   const r=await lbcCall('get_domestic_calculate_price',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(Math.max(1,p.weight)),DeclaredValue:String(p.value)});
-   fee=Number(String(r.estimated_price).replace(/,/g,''))+Number(String(r.valuation_fee).replace(/,/g,''));service=product.ProductName;
+   const parseFee=r=>Number(String(r.estimated_price).replace(/,/g,''))+Number(String(r.valuation_fee).replace(/,/g,''));
+   if(p.minimum) {
+    // Compare the official fixed-weight minimum packages, rather than inventing
+    // parcel dimensions. Their quoted charge is the customer's final fee.
+    const fixed=products.filter(x=>x.IsWeightRequired===false && Number(x.MaxWeight_Kg)>0);
+    const minimumWeight=Math.min(...fixed.map(x=>Number(x.MaxWeight_Kg)));
+    const candidates=fixed.filter(x=>Number(x.MaxWeight_Kg)===minimumWeight);
+    if(!candidates.length || candidates.length>4)throw new ShippingError('LBC minimum packages are unavailable. Choose another courier.');
+    const offers=[];
+    for(const product of candidates) {
+     const r=await lbcCall('get_domestic_calculate_price',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(minimumWeight),DeclaredValue:String(p.value)});
+     const amount=parseFee(r);if(Number.isFinite(amount)&&amount>0)offers.push({amount,product});
+    }
+    offers.sort((a,b)=>a.amount-b.amount);
+    if(!offers.length)throw new ShippingError('LBC could not quote this route. Please choose another option.');
+    fee=offers[0].amount;service=offers[0].product.ProductName+' · minimum '+minimumWeight+' kg rate';
+   }else{
+    // Measured mode chooses an official package fitting the measured unit.
+    const dims=[p.length,p.width,p.height].sort((a,b)=>a-b);
+    const fits=products.map(x=>({...x,dims:(x.Size_Inch||'').split(/X/i).map(v=>parseFloat(v)*2.54).sort((a,b)=>a-b)}))
+     .filter(x=>x.dims.length===3 && x.dims.every((n,i)=>Number.isFinite(n)&&n>=dims[i]) && Number(x.MaxWeight_Kg)>=p.weight)
+     .sort((a,b)=>a.dims.reduce((v,n)=>v*n,1)-b.dims.reduce((v,n)=>v*n,1));
+    const product=fits[0];if(!product)throw new ShippingError('This parcel does not fit an online LBC package. Choose J&T or pickup.');
+    const r=await lbcCall('get_domestic_calculate_price',{OriginCityId:origin.id,DestinationCityId:destination.id,ProductId:String(product.ProductId),Weight:String(Math.max(1,p.weight)),DeclaredValue:String(p.value)});
+    fee=parseFee(r);service=product.ProductName;
+   }
    // The public calculator returns freight and valuation separately. Verified
    // against two declared values: freight stays fixed while valuation changes.
   }
@@ -96,8 +123,10 @@ export async function createShippingQuote(env,body,fetcher=fetch) {
   rate=await officialShippingRate(courier,origin,destination,packItems(lines,config),fetcher);
  }
  const id=crypto.randomUUID(),expiresAt=Date.now()+15*60*1000;
- const details={origin,destination,parcels:rate.details,source:courier==='pickup'?'Club pickup':courier==='jt'?JT:LBC_PAGE,quotedAt:new Date().toISOString()};
+ const pricingMode=courier==='pickup'?'pickup':config.mode||'measured';
+ const pricingMessage=pricingMode===MINIMUM_POLICY?'Minimum small-parcel delivery, once per order. The club covers any higher actual courier charge.':'Courier fee includes valuation. Each product unit ships as a separate parcel. This is the full amount to pay.';
+ const details={pricingMode,pricingMessage,origin,destination,parcels:rate.details,source:courier==='pickup'?'Club pickup':courier==='jt'?JT:LBC_PAGE,quotedAt:new Date().toISOString()};
  await env.DB.prepare('DELETE FROM shipping_quotes WHERE expires_at < ?').bind(Date.now()).run();
  await env.DB.prepare('INSERT INTO shipping_quotes(id,basket_json,courier,destination_id,shipping_fee,subtotal,details_json,config_revision,expires_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(id,JSON.stringify(lines),courier,destination?.id||'',rate.fee,subtotal,JSON.stringify(details),revision,expiresAt).run();
- return {id,shippingFee:rate.fee,subtotal,total:Math.round((subtotal+rate.fee)*100)/100,expiresAt,details};
+ return {id,shippingFee:rate.fee,subtotal,pricingMode,pricingMessage,total:Math.round((subtotal+rate.fee)*100)/100,expiresAt,details};
 }

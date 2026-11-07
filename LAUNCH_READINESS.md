@@ -29,13 +29,13 @@ The audit covers Chess United’s public pages, registration and checkout APIs, 
 
 ## Launch operation
 
-Delivery checkout still requires the real dispatch locations and packed kg/cm for merchandise in **Dashboard → Delivery setup**. Products without measurements remain available for pickup. No parcel measurements or shipping fees are fabricated.
+Delivery uses the owner-authorized **minimum small-parcel** pricing policy: one minimum courier charge per order, valued at the full merchandise subtotal, dispatched from San Fernando City, La Union. J&T uses its first 0.5 kg tier; LBC compares its smallest fixed-weight packages. These are billing assumptions, not measured product weights. The club covers any higher actual carrier charge, so buyers pay the complete total shown before GCash payment. Pickup stays free. Officers can later switch to measured pricing in **Dashboard → Delivery setup**.
 
 All payments use the supplied GCash/InstaPay QR. Officers must match actual receipt in GCash before selecting Paid. The website does not collect PINs or OTPs. A buyer’s payment claim is not automatic verification. Courier quotes do not book a shipment.
 
 In the private spreadsheet, use the paid dropdown. Select **Sync now** in the dashboard to import sheet edits and reload the queues. Failed mirrors remain queued in D1; background sync depends on website/dashboard activity.
 
-For pre-existing members, use **New private card link** in the officer dashboard and share that link with the member or guardian. Old number-only links no longer expose names. Replacement links invalidate the earlier card key.
+The owner confirmed there are no existing members to migrate. Members will register through the website; an import can be handled later if supplied. No stored records were deleted. Officers can issue replacement private card links when needed; replacement links invalidate the earlier key.
 
 Keep ADMIN_TOKEN unique and random, with at least 24 characters; changing it revokes existing officer sessions. Keep the Google service-account credential in Cloudflare secrets. Use the Cloudflare D1 recovery tools for operational recovery; do not apply the fresh schema to an existing database instead of migrations.
 
