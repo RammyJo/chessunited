@@ -1,0 +1,81 @@
+name: Diagnose Chess United checkout in live browser
+on:
+  push:
+    branches: [diagnose/checkout-browser-jt-2026-11-07]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Test courier quote API and browser without payments or real orders
+        run: |
+          node --input-type=module <<'NODE'
+          import puppeteer from 'puppeteer-core';
+          const BASE='https://chessunitedglobal.com';
+          const response=await fetch(BASE+'/data/shipping-locations.json');
+          const loc=await response.json();
+          const candidates={
+            jt:loc.jt.find(x=>x.province==='METRO-MANILA'&&x.city.includes('QUEZON')),
+            lbc:loc.lbc.find(x=>x.province==='NATIONAL CAPITAL REGION NCR'&&x.city==='QUEZON CITY')
+          };
+          console.log('LOCATION CANDIDATES',JSON.stringify(candidates));
+          for(const courier of ['jt','lbc','pickup']){
+            const body={courier,items:[{id:'cap',qty:1}],destinationId:candidates[courier]?.id||''};
+            try{
+              const start=Date.now();
+              const r=await fetch(BASE+'/api/shipping/quote',{method:'POST',headers:{'Content-Type':'application/json','Origin':BASE},body:JSON.stringify(body),signal:AbortSignal.timeout(28000)});
+              const raw=await r.text();let p;try{p=JSON.parse(raw)}catch{p={raw:raw.slice(0,140)}}
+              console.log('LIVE_QUOTE',JSON.stringify({courier,http:r.status,ms:Date.now()-start,ok:p.ok,fee:p.quote?.shippingFee,fallback:p.quote?.details?.fallbackApplied,error:p.error}));
+            }catch(e){console.log('LIVE_QUOTE_ERROR',courier,e.message)}
+          }
+          const browserPath=['/usr/bin/google-chrome','/usr/bin/chromium','/usr/bin/chromium-browser'].find(p=>{try{return require('node:fs').existsSync(p)}catch{return false}})||'/usr/bin/google-chrome';
+          const {existsSync}=await import('node:fs');
+          const executablePath=['/usr/bin/google-chrome','/usr/bin/chromium','/usr/bin/chromium-browser'].find(p=>existsSync(p));
+          if(!executablePath){console.log('BROWSER_UNAVAILABLE',JSON.stringify({paths:['/usr/bin/google-chrome','/usr/bin/chromium']}));process.exit(2);}
+          console.log('BROWSER',executablePath);
+          const browser=await puppeteer.launch({executablePath,args:['--no-sandbox','--disable-dev-shm-usage']});
+          try{
+            const page=await browser.newPage();await page.setViewport({width:390,height:844,isMobile:true,hasTouch:true});
+            page.on('pageerror',err=>console.log('PAGE_JS_ERROR',String(err.message).slice(0,200)));
+            page.on('console',msg=>{if(msg.type()==='error')console.log('CONSOLE_ERROR',msg.text().slice(0,200))});
+            page.on('response',async resp=>{if(new URL(resp.url()).pathname==='/api/shipping/quote'){const b=await resp.json().catch(()=>({}));console.log('BROWSER_SHIPPING',JSON.stringify({status:resp.status(),ok:b.ok,fee:b.quote?.shippingFee,error:b.error,courier:JSON.parse(resp.request().postData()||'{}').courier}))}});
+            await page.goto(BASE+'/shop/',{waitUntil:'domcontentloaded',timeout:30000});await page.waitForSelector('[data-add-to-cart="cap"]');
+            await page.click('[data-add-to-cart="cap"]');await page.click('[data-cart-checkout]');
+            await page.type('#o-name','CHECKOUT DIAGNOSTIC ONLY');
+            await page.type('#o-email','checkout@example.invalid');
+            await page.type('#o-phone','09170000000');
+            await page.select('#o-courier','jt');
+            await page.waitForSelector('#o-province option[value="METRO-MANILA"]',{timeout:12000});
+            await page.select('#o-province','METRO-MANILA');
+            await page.waitForSelector('#o-city option[value="QUEZON-CITY"]');
+            await page.select('#o-city','QUEZON-CITY');
+            await page.type('#o-address','123 Example St');
+            await new Promise(r=>setTimeout(r,14000));
+            const state=()=>page.evaluate(()=>({courier:document.querySelector('#o-courier')?.value,btnDisabled:document.querySelector('form[data-api="/api/orders"] [type="submit"]')?.disabled,note:document.querySelector('[data-cart-shipping-note]')?.textContent,quote:document.querySelector('[data-shipping-quote-id]')?.value?.length,grand:document.querySelector('[data-cart-grand]')?.textContent,formValid:document.querySelector('form[data-api="/api/orders"]')?.checkValidity(),invalid:[...document.querySelectorAll('form[data-api="/api/orders"] :invalid')].map(x=>x.name)}));
+            console.log('UI_JT',JSON.stringify(await state()));
+            await page.select('#o-courier','pickup');
+            await new Promise(r=>setTimeout(r,2200));
+            console.log('UI_PICKUP',JSON.stringify(await state()));
+            await page.setRequestInterception(true);
+            page.on('request',req=>{
+              if(new URL(req.url()).pathname==='/api/orders'){
+                const payload=JSON.parse(req.postData());
+                console.log('UI_ORDER_BODY',JSON.stringify({items:payload.items,quotePresent:!!payload.quoteId,tokenPresent:!!payload.checkoutToken,courier:payload.courier}));
+                req.respond({status:200,contentType:'application/json',body:JSON.stringify({ok:true,order:{orderNo:'TEST-MOCK',subtotal:150,shippingFee:0,total:150,courier:'Pickup',lines:[{name:'Cap',quantity:1,lineTotal:150}],fulfilmentMessage:'Pickup',paymentStatus:'pending',fulfilmentStatus:'awaiting_payment',submitted:false,canPay:true}})});return;
+              }req.continue();
+            });
+            if(!(await state()).btnDisabled){
+               await page.click('form[data-api="/api/orders"] [type="submit"]');
+               await new Promise(r=>setTimeout(r,1500));
+            }
+            console.log('UI_PAYMENT_PANEL',JSON.stringify(await page.evaluate(()=>({visible:!document.querySelector('[data-order-payment]')?.hidden,status:document.querySelector('[data-form-status]')?.textContent,buttonDisabled:document.querySelector('form[data-api="/api/orders"] [type="submit"]')?.disabled}))));
+          } finally{await browser.close();}
+          NODE
