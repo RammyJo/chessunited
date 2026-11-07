@@ -41,9 +41,9 @@ jobs:
             await page.locator('[data-add-to-cart="cap"]').click();await page.locator('[data-cart-checkout]').click();
             await page.locator('#o-name').fill('TEST WEBKIT CHECKOUT');await page.locator('#o-email').fill('webkit@example.invalid');await page.locator('#o-phone').fill('09170000000');await page.locator('#o-address').fill('123 Test Street');
             await page.locator('#o-courier').selectOption('jt');
-            await page.locator('#o-province option[value="METRO-MANILA"]').waitFor({timeout:15000});
+            await page.locator('#o-province option[value="METRO-MANILA"]').waitFor({state:'attached',timeout:15000});
             await page.locator('#o-province').selectOption('METRO-MANILA');
-            await page.locator('#o-city option[value="QUEZON-CITY"]').waitFor();
+            await page.locator('#o-city option[value="QUEZON-CITY"]').waitFor({state:'attached'});
             await page.locator('#o-city').selectOption('QUEZON-CITY');
             await page.waitForTimeout(6000);
             const state=()=>page.evaluate(()=>({courier:document.querySelector('#o-courier').value,disabled:document.querySelector('form[data-api="/api/orders"] [type="submit"]').disabled,valid:document.querySelector('form[data-api="/api/orders"]').checkValidity(),invalid:[...document.querySelectorAll('form[data-api="/api/orders"] :invalid')].map(x=>x.name),note:document.querySelector('[data-cart-shipping-note]').textContent,quoteId:document.querySelector('[data-shipping-quote-id]').value.length}));
