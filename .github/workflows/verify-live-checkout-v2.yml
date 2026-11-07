@@ -1,0 +1,41 @@
+name: Verify deployed checkout behavior without payments
+on:
+  push:
+    branches: [qa/live-checkout-v2-2026-11-07]
+permissions: {contents: read}
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Exercise deployed shop in real Chrome with mocked orders/payments
+        env:
+          QA_URL: https://chessunitedglobal.com
+        run: node scripts/checkout-error-qa.mjs
+      - name: Verify real production J&T quoting and LBC fallback status
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const base='https://chessunitedglobal.com';
+          const locations=await (await fetch(base+'/data/shipping-locations.json')).json();
+          const routes=[
+           {courier:'jt',loc:locations.jt.find(x=>x.province==='METRO-MANILA'&&x.city==='QUEZON-CITY')},
+           {courier:'jt',loc:locations.jt.find(x=>x.province==='LA-UNION'&&x.city==='AGOO')},
+           {courier:'lbc',loc:locations.lbc.find(x=>x.province==='NATIONAL CAPITAL REGION NCR'&&x.city==='QUEZON CITY')},
+          ];
+          for(const {courier,loc} of routes){
+           assert.ok(loc,'Destination must be available');
+           const response=await fetch(base+'/api/shipping/quote',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({courier,destinationId:loc.id,items:[{id:'cap',qty:1}]}),signal:AbortSignal.timeout(28000)});
+           const body=await response.json().catch(()=>({}));
+           console.log('PRODUCTION_RATE',JSON.stringify({courier,province:loc.province,city:loc.city,status:response.status,amount:body.quote?.shippingFee,fallback:body.quote?.details?.fallbackApplied,error:body.error}));
+           assert.equal(response.status,200,'Quote endpoint must respond for listed test destination');
+           assert.ok(body.quote.shippingFee>0);
+           if(courier==='jt')assert.equal(body.quote.details.fallbackApplied,false,'J&T must use provider rate');
+          }
+          NODE
