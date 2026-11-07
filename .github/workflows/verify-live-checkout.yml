@@ -1,0 +1,64 @@
+name: Verify live Chess United merchandise checkout
+
+on:
+  push:
+    branches: [qa/production-checkout-2026-11-07]
+
+permissions:
+  contents: read
+
+jobs:
+  live-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create one clearly marked UNPAID test draft (no GCash request)
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {randomBytes} from 'node:crypto';
+          const base='https://chessunitedglobal.com';
+          async function post(path,body){
+            const response=await fetch(base+path,{method:'POST',headers:{'content-type':'application/json','Origin':base},body:JSON.stringify(body),signal:AbortSignal.timeout(30000)});
+            const data=await response.json().catch(()=>({error:'Non-JSON API response'}));
+            if(!response.ok||!data.ok)throw Error(path+' returned HTTP '+response.status+': '+(data.error||'unknown'));
+            return data;
+          }
+          const locRes=await fetch(base+'/data/shipping-locations.json',{signal:AbortSignal.timeout(15000)});
+          assert.equal(locRes.status,200,'shipping locations must be public');
+          const locations=await locRes.json();
+          const dest=locations.lbc.find(x=>x.province==='NATIONAL CAPITAL REGION NCR'&&x.city==='QUEZON CITY');
+          assert.ok(dest,'Valid LBC destination must be present');
+          const items=[{id:'cap',qty:1}];
+          const quote=(await post('/api/shipping/quote',{courier:'lbc',destinationId:dest.id,items})).quote;
+          assert.ok(quote.id,'Quote ID must be present');
+          assert.equal(quote.subtotal,150);
+          assert.ok(Number.isFinite(quote.shippingFee)&&quote.shippingFee>0,'LBC rate cannot be free');
+          assert.equal(quote.total,150+quote.shippingFee);
+          assert.ok(['minimum_small_parcel'].includes(quote.pricingMode),'Minimum shipping policy');
+          if(quote.details?.fallbackApplied)assert.equal(quote.shippingFee,100,'Approved fallback');
+          console.log('LBC QUOTE PASS, rate:',quote.shippingFee,'fallback:',quote.details?.fallbackApplied===true);
+          const pickup=(await post('/api/shipping/quote',{courier:'pickup',items})).quote;
+          assert.equal(pickup.shippingFee,0,'Pickup must remain free');
+          console.log('PICKUP QUOTE PASS');
+          const token=randomBytes(32).toString('hex');
+          const orderBody={
+            courier:'lbc',destinationId:dest.id,items,quoteId:quote.id,checkoutToken:token,
+            fullName:'TEST CHECKOUT NO PAYMENT',
+            email:'test-checkout@example.invalid',
+            phone:'09170000000',
+            address:'TEST ONLY DO NOT DELIVER 123 Sample Street',
+            city:dest.city,province:dest.province,country:'Philippines',
+            notes:'AUTOMATED PRODUCTION TEST. DO NOT PROCESS, DO NOT SHIP, DO NOT REQUEST PAYMENT.'
+          };
+          const order=(await post('/api/orders',orderBody)).order;
+          assert.ok(order.orderNo,'Order should be saved');
+          assert.equal(order.shippingFee,quote.shippingFee);
+          assert.equal(order.total,quote.total);
+          assert.equal(order.paymentStatus,'pending');
+          assert.equal(order.canPay,true,'Customer must be able to proceed to GCash panel');
+          assert.equal(order.submitted,false,'Payment was never submitted');
+          console.log('PRODUCTION TEST ORDER:',order.orderNo);
+          console.log('PAYMENT DRAFT PASS — Unpaid, GCash not opened or charged');
+          NODE
