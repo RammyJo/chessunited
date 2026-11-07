@@ -38,6 +38,7 @@
    if(version!==sequence||JSON.stringify(payload())!==signature)return;
    if(!response.ok||!body.ok)throw new Error(body.error||'Could not calculate shipping. Retry or choose pickup.');
    quoteId.value=body.quote.id;shipping.textContent=peso(body.quote.shippingFee);grand.textContent=peso(body.quote.total);submit.disabled=false;
+   const formStatus=form.querySelector('[data-form-status]');if(formStatus&&/shipping total is not ready/i.test(formStatus.textContent||'')){formStatus.textContent='';formStatus.hidden=true;}
    message(data.courier==='pickup'?'Pickup has no shipping fee. This is the amount to pay.':body.quote.pricingMessage||'Courier fee includes valuation. This is the full amount to pay.');
    expiry=setTimeout(()=>{invalidate();message('Refresh the delivery total before continuing.');},Math.max(0,body.quote.expiresAt-Date.now()));
   }catch(e){if(version===sequence){message(e.message||'Could not reach the shipping calculator. Please retry.');}}
