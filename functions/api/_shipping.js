@@ -52,18 +52,24 @@ async function response(fetcher,url,init={}) {
  let r;try{r=await fetcher(url,{...init,headers:{'User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)',...init.headers},signal:AbortSignal.timeout(10000)});}catch{throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');}
  if(!r.ok)throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');return r;
 }
+export function lbcCookieHeader(headers) {
+ const values=typeof headers.getSetCookie==='function'?headers.getSetCookie():typeof headers.getAll==='function'?headers.getAll('Set-Cookie'):[headers.get('Set-Cookie')||''];
+ return values.map(value=>value.split(';')[0]).filter(value=>/^[^\s=;]+=[^;\r\n]*$/.test(value)).join('; ');
+}
 export async function officialShippingRate(courier,origin,destination,parcels,fetcher=fetch) {
  const deadline=Date.now()+22000;
  const boundedFetch=(url,init={})=>fetcher(url,{...init,signal:AbortSignal.timeout(Math.max(1,Math.min(10000,deadline-Date.now())))});
- let context;
+ let context,lbcCookies='';
  if(courier==='lbc') {
-  const html=await (await response(boundedFetch,LBC_PAGE+'?cu_rates='+Math.floor(Date.now()/300000),{cf:{cacheTtl:300,cacheEverything:true,cacheTtlByStatus:{'400-599':-1}}})).text();
+  const page=await response(boundedFetch,LBC_PAGE+'?cu_rates='+crypto.randomUUID(),{headers:{'Cache-Control':'no-cache'},cf:{cacheTtl:0,cacheEverything:false}});
+  lbcCookies=lbcCookieHeader(page.headers);
+  const html=await page.text();
   const found=html.match(/var ajax_object\s*=\s*(\{[^;]+\});/);
   try{context=JSON.parse(found?.[1]||'');}catch{throw new ShippingError('LBC calculator settings are unavailable. Please retry or choose another option.');}
  }
  const lbcCall=async(action,data)=>{
   const security=context[action+'_nonce'];if(!/^[a-f0-9]{10}$/.test(security||''))throw new ShippingError('LBC calculator settings have changed. Please choose another option.');
-  const r=await (await response(boundedFetch,LBC_AJAX,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({action,security,...data})})).json();
+  const r=await (await response(boundedFetch,LBC_AJAX,{method:'POST',redirect:'error',headers:{'Content-Type':'application/x-www-form-urlencoded',...(lbcCookies?{Cookie:lbcCookies}:{})},body:new URLSearchParams({action,security,...data})})).json();
   if(!r.success)throw new ShippingError('LBC could not quote this parcel and destination. Please choose another option.');return r.data;
  };
  let products;if(courier==='lbc')products=await lbcCall('get_domestic_product_types',{is_cargo:'true'});

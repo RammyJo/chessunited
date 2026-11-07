@@ -1,4 +1,5 @@
 import {sheetsConfig} from './_sheets.js';
+import {lbcCookieHeader} from './_shipping.js';
 /** Read only configuration metadata; credentials never leave their runtime. */
 export async function runRequestedSecurityCheck(env) {
  const claimed=await env.DB.prepare('UPDATE security_check SET requested=0 WHERE id=1 AND requested=1 RETURNING id,checks_json').first();
@@ -11,10 +12,10 @@ export async function runRequestedSecurityCheck(env) {
  if(probe){
   const sources={};const start=Date.now();
   try{
-   const page=await fetch('https://www.lbcexpress.com/rates/?cu_rates='+Math.floor(Date.now()/300000),{headers:{'User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)'},signal:AbortSignal.timeout(12000)});
-   sources.pageStatus=page.status;sources.pageMs=Date.now()-start;
+   const page=await fetch('https://www.lbcexpress.com/rates/?cu_rates='+crypto.randomUUID(),{headers:{'Cache-Control':'no-cache','User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)'},signal:AbortSignal.timeout(12000)});
+   sources.pageStatus=page.status;sources.pageMs=Date.now()-start;sources.pageCache=page.headers.get('CF-Cache-Status');const cookies=lbcCookieHeader(page.headers);sources.sessionCookieProvided=!!cookies;
    if(page.ok){const html=await page.text();const found=html.match(/var ajax_object\s*=\s*(\{[^;]+\});/);sources.publicConfigFound=!!found;
-    if(found){const config=JSON.parse(found[1]);const before=Date.now();const products=await fetch('https://www.lbcexpress.com/wp-admin/admin-ajax.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)'},body:new URLSearchParams({action:'get_domestic_product_types',security:config.get_domestic_product_types_nonce,is_cargo:'true'}),signal:AbortSignal.timeout(10000)});sources.productsStatus=products.status;sources.productsMs=Date.now()-before;if(products.ok){const data=await products.json();sources.productsSuccess=data.success;}else{const text=await products.text();sources.nonceRejected=text.trim()==='-1';sources.accessChallenge=/challenge-platform|cf-chl-|captcha/i.test(text);sources.errorBodyLength=text.length;}}
+    if(found){const config=JSON.parse(found[1]);const before=Date.now();const products=await fetch('https://www.lbcexpress.com/wp-admin/admin-ajax.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded',...(cookies?{Cookie:cookies}:{}),'User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)'},body:new URLSearchParams({action:'get_domestic_product_types',security:config.get_domestic_product_types_nonce,is_cargo:'true'}),signal:AbortSignal.timeout(10000)});sources.productsStatus=products.status;sources.productsMs=Date.now()-before;if(products.ok){const data=await products.json();sources.productsSuccess=data.success;}else{const text=await products.text();sources.nonceRejected=text.trim()==='-1';sources.accessChallenge=/challenge-platform|cf-chl-|captcha/i.test(text);sources.errorBodyLength=text.length;}}
    }
   }catch(e){sources.networkFailure=e.name;sources.totalMs=Date.now()-start;}
   checks.shippingSourceProbe=sources;

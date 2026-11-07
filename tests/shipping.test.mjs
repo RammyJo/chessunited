@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {officialShippingRate,validateShippingConfig,packItems} from '../functions/api/_shipping.js';
+import {officialShippingRate,validateShippingConfig,packItems,lbcCookieHeader} from '../functions/api/_shipping.js';
 const parcel={weight:1,length:20,width:20,height:10,value:300,quantity:2};
 test('J&T uses official route and dimensions; includes valuation and service fee for every parcel',async()=>{
  let posted;const rate=await officialShippingRate('jt',{city:'ORIGIN'},{city:'DESTINATION'},[parcel],async(url,init)=>{assert.equal(new URL(url).hostname,'ylofficialjw.jtexpress.ph');posted=JSON.parse(init.body);return Response.json({succ:true,data:[{type:'fee',fees:'190',serviceFee:'10'},{type:'insured',fees:'5'}]});});
@@ -62,4 +62,9 @@ test('minimum quote locks the entire basket total and billing policy into the un
  const request=new Request('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...basket,fullName:'Delivery Fixture',email:'delivery@example.invalid',phone:'09171234567',address:'123 Fixture Street',city:'QUEZON-CITY',province:'METRO-MANILA',quoteId:quote.id,checkoutToken:'e'.repeat(64),shippingFee:0,total:1})});
  const result=await onRequestPost({request,env,waitUntil:()=>{}});assert.equal(result.status,200);const order=(await result.json()).order;assert.equal(order.shippingFee,103);assert.equal(order.total,853);assert.match(order.shippingMessage,/club covers any higher actual courier charge/);assert.equal(order.paymentStatus,'pending');assert.equal(order.fulfilmentStatus,'awaiting_payment');
  const stored=sql.prepare('SELECT shipping_quote_json,total FROM orders').get();assert.equal(JSON.parse(stored.shipping_quote_json).pricingMode,'minimum_small_parcel');assert.equal(stored.total,853);sql.close();
+});
+
+test('LBC session cookies are forwarded only as provider cookie pairs',()=>{
+ const headers=new Headers();headers.append('Set-Cookie','rate_session=fixture; HttpOnly; Secure; Path=/');headers.append('Set-Cookie','country=PH; Path=/');
+ assert.equal(lbcCookieHeader(headers),'rate_session=fixture; country=PH');assert.equal(lbcCookieHeader(new Headers()),'');
 });
