@@ -57,7 +57,7 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
  const boundedFetch=(url,init={})=>fetcher(url,{...init,signal:AbortSignal.timeout(Math.max(1,Math.min(10000,deadline-Date.now())))});
  let context;
  if(courier==='lbc') {
-  const html=await (await response(boundedFetch,LBC_PAGE,{cf:{cacheTtl:300,cacheEverything:true}})).text();
+  const html=await (await response(boundedFetch,LBC_PAGE+'?cu_rates='+Math.floor(Date.now()/300000),{cf:{cacheTtl:300,cacheEverything:true,cacheTtlByStatus:{'400-599':-1}}})).text();
   const found=html.match(/var ajax_object\s*=\s*(\{[^;]+\});/);
   try{context=JSON.parse(found?.[1]||'');}catch{throw new ShippingError('LBC calculator settings are unavailable. Please retry or choose another option.');}
  }

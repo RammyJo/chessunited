@@ -11,7 +11,7 @@ test('a zero J&T route rate never becomes free delivery',async()=>{
 });
 test('LBC selects a fitting official package, fetches fresh public calculator configuration and adds valuation',async()=>{
  const calls=[];const rate=await officialShippingRate('lbc',{id:'ORIGIN'},{id:'DESTINATION'},[parcel],async(url,init)=>{
-  if(url.endsWith('/rates/'))return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
+  if(new URL(url).pathname==='/rates/')return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
   assert.equal(url,'https://www.lbcexpress.com/wp-admin/admin-ajax.php');const data=new URLSearchParams(init.body);calls.push(data);
   if(data.get('action')==='get_domestic_product_types')return Response.json({success:true,data:[{ProductId:1,ProductName:'Too small',MaxWeight_Kg:10,Size_Inch:'3 X 3 X 3 IN'},{ProductId:2,ProductName:'Fits',MaxWeight_Kg:10,Size_Inch:'12 X 10 X 5 IN'}]});
   return Response.json({success:true,data:{estimated_price:'300.00',valuation_fee:'15.00'}});
@@ -42,7 +42,7 @@ test('minimum J&T charge is once per order and values every item, with no invent
 test('minimum LBC chooses the lowest official first-tier total including valuation for the entire basket',async()=>{
  const declarations=[];const parcels=packItems([{id:'tshirt',quantity:2,lineTotal:600},{id:'cap',quantity:1,lineTotal:150}],{mode:'minimum_small_parcel'});
  const rate=await officialShippingRate('lbc',{id:'ORIGIN'},{id:'DESTINATION'},parcels,async(url,init)=>{
-  if(url.endsWith('/rates/'))return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
+  if(new URL(url).pathname==='/rates/')return new Response('var ajax_object = {"get_domestic_product_types_nonce":"1234567890","get_domestic_calculate_price_nonce":"abcdef0123"};');
   const data=new URLSearchParams(init.body);
   if(data.get('action')==='get_domestic_product_types')return Response.json({success:true,data:[{ProductId:105,ProductName:'CARGO KB MINI',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:16,ProductName:'N-PACK MEDIUM',MaxWeight_Kg:'1',IsWeightRequired:false},{ProductId:19,ProductName:'CARGO KB SMALL',MaxWeight_Kg:'10',IsWeightRequired:true}]});
   declarations.push(data.get('DeclaredValue'));assert.equal(data.get('Weight'),'1');
