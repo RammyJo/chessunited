@@ -49,12 +49,12 @@ const JT='https://ylofficialjw.jtexpress.ph/website/fee/findRates';
 const LBC_PAGE='https://www.lbcexpress.com/rates/';
 const LBC_AJAX='https://www.lbcexpress.com/wp-admin/admin-ajax.php';
 async function response(fetcher,url,init={}) {
- let r;try{r=await fetcher(url,{...init,signal:AbortSignal.timeout(6000)});}catch{throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');}
+ let r;try{r=await fetcher(url,{...init,headers:{'User-Agent':'ChessUnited/1.0 (+https://chessunitedglobal.com)',...init.headers},signal:AbortSignal.timeout(10000)});}catch{throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');}
  if(!r.ok)throw new ShippingError('The courier calculator is unavailable. Please retry or choose pickup.');return r;
 }
 export async function officialShippingRate(courier,origin,destination,parcels,fetcher=fetch) {
- const deadline=Date.now()+18000;
- const boundedFetch=(url,init={})=>fetcher(url,{...init,signal:AbortSignal.timeout(Math.max(1,Math.min(6000,deadline-Date.now())))});
+ const deadline=Date.now()+22000;
+ const boundedFetch=(url,init={})=>fetcher(url,{...init,signal:AbortSignal.timeout(Math.max(1,Math.min(10000,deadline-Date.now())))});
  let context;
  if(courier==='lbc') {
   const html=await (await response(boundedFetch,LBC_PAGE,{cf:{cacheTtl:300,cacheEverything:true}})).text();
