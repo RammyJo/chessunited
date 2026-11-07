@@ -270,6 +270,21 @@ const orderTemplate = `
                 <p class="hint" data-pickup-note hidden>The club will contact you to arrange the pickup place and time. No shipping fee.</p>
               </div>
 
+              <div class="field field--wide" data-courier-service-field>
+                <label for="o-service">Courier service / parcel option</label>
+                <select id="o-service" name="serviceId" required data-courier-service>
+                  <option value="">Select the courier above first</option>
+                </select>
+                <p class="hint">Select your available parcel service. The club quotes one 1 kg shipment per order and covers any higher carrier charge.</p>
+                <p class="field-error" data-error-for="serviceId" hidden></p>
+              </div>
+
+              <div class="field field--wide" data-shipping-policy data-delivery-field>
+                <strong>Shipping details</strong>
+                <p class="hint">Sending from: San Fernando City, La Union (club dispatch). Parcel weight: 1 kg per order. No dimensions required from buyers. Declared item value: your cart subtotal.</p>
+                <p class="hint">Official courier calculators: <a href="https://www.lbcexpress.com/rates/" target="_blank" rel="noopener noreferrer">LBC Rates</a> and <a href="https://www.jtexpress.ph/shipping-rates" target="_blank" rel="noopener noreferrer">J&amp;T Shipping Rates</a>. The final website total uses only a successful courier rate response.</p>
+              </div>
+
               <div class="field" data-delivery-field>
                 <label for="o-country">Country</label>
                 <input id="o-country" name="country" readonly value="Philippines" maxlength="80" autocomplete="country-name" />
@@ -326,7 +341,7 @@ const orderTemplate = `
                   <dd class="amount" data-cart-grand>₱0</dd>
                 </div>
               </dl>
-              <p class="cart-review-note" data-cart-shipping-note role="status">Choose a courier and location to calculate delivery.</p>
+              <p class="cart-review-note" data-cart-shipping-note role="status">Choose your courier service and delivery location to calculate shipping for 1 kg.</p>
               <button class="btn btn--sm btn--ghost" type="button" data-shipping-refresh>Refresh delivery total</button>
             </div>
 
