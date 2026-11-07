@@ -68,3 +68,43 @@ test('LBC session cookies are forwarded only as provider cookie pairs',()=>{
  const headers=new Headers();headers.append('Set-Cookie','rate_session=fixture; HttpOnly; Secure; Path=/');headers.append('Set-Cookie','country=PH; Path=/');
  assert.equal(lbcCookieHeader(headers),'rate_session=fixture; country=PH');assert.equal(lbcCookieHeader(new Headers()),'');
 });
+
+test('LBC HTTP 403 falls back to approved ₱100 once per order and unlocks payment draft',async()=>{
+ const {DatabaseSync}=await import('node:sqlite');const {readFileSync}=await import('node:fs');
+ const {createShippingQuote,LBC_FALLBACK_FEE_PHP}=await import('../functions/api/_shipping.js');
+ const {LOCATIONS}=await import('../functions/api/_shipping-locations.js');
+ const {onRequestPost}=await import('../functions/api/orders.js');
+ const sql=new DatabaseSync(':memory:');sql.exec(readFileSync(new URL('../schema.sql',import.meta.url),'utf8'));
+ const DB={prepare(query){const make=params=>({first:async()=>sql.prepare(query).get(...params)||null,run:async()=>({meta:sql.prepare(query).run(...params)})});return {...make([]),bind:(...params)=>make(params)};}};
+ const env={DB};
+ sql.prepare('UPDATE shipping_settings SET config_json=? WHERE id=1').run(JSON.stringify({mode:'minimum_small_parcel',origins:{jt:'56054',lbc:'103314000'},products:{}}));
+ const dest=LOCATIONS.lbc.find(x=>x.id!=='103314000'&&x.city&&x.province);
+ assert.ok(dest,'Test requires a valid LBC delivery location');
+ const basket={courier:'lbc',destinationId:dest.id,items:[{id:'tshirt',qty:2,size:'M'},{id:'cap',qty:1}]};
+ let attempts=0;
+ const quote=await createShippingQuote(env,basket,async()=>{attempts++;return new Response('Forbidden',{status:403});});
+ assert.equal(attempts,1);assert.equal(LBC_FALLBACK_FEE_PHP,100);
+ assert.equal(quote.shippingFee,100);assert.equal(quote.subtotal,750);assert.equal(quote.total,850);
+ assert.equal(quote.details.fallbackApplied,true);assert.equal(quote.details.parcels.length,1);
+ assert.equal(quote.details.parcels[0].quantity,1);
+ assert.match(quote.pricingMessage,/₱100 once per order/);
+ const request=new Request('https://example.com/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...basket,fullName:'TEST Checkout Fixture',email:'test@example.invalid',phone:'09171234567',address:'123 Fixture Street',city:dest.city,province:dest.province,quoteId:quote.id,checkoutToken:'b'.repeat(64)})});
+ const result=await onRequestPost({request,env,waitUntil:()=>{}});
+ assert.equal(result.status,200);
+ const order=(await result.json()).order;
+ assert.equal(order.total,850);assert.equal(order.shippingFee,100);
+ assert.equal(order.paymentStatus,'pending');assert.equal(order.canPay,true);
+ assert.match(order.shippingMessage,/club-approved flat shipping/);
+ sql.close();
+});
+
+test('LBC fallback must not silently apply to a failed J&T request',async()=>{
+ const {DatabaseSync}=await import('node:sqlite');const {readFileSync}=await import('node:fs');
+ const {createShippingQuote}=await import('../functions/api/_shipping.js');
+ const sql=new DatabaseSync(':memory:');sql.exec(readFileSync(new URL('../schema.sql',import.meta.url),'utf8'));
+ const DB={prepare(query){const make=params=>({first:async()=>sql.prepare(query).get(...params)||null,run:async()=>({meta:sql.prepare(query).run(...params)})});return {...make([]),bind:(...params)=>make(params)};}};
+ const env={DB};
+ sql.prepare('UPDATE shipping_settings SET config_json=? WHERE id=1').run(JSON.stringify({mode:'minimum_small_parcel',origins:{jt:'56054',lbc:'103314000'},products:{}}));
+ await assert.rejects(createShippingQuote(env,{courier:'jt',destinationId:'57307',items:[{id:'cap',qty:1}]},async()=>new Response('Unavailable',{status:503})),/courier calculator is unavailable/);
+ sql.close();
+});
