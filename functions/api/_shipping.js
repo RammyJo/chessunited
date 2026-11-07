@@ -64,12 +64,12 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
   const page=await response(boundedFetch,LBC_PAGE+'?cu_rates='+crypto.randomUUID(),{headers:{'Cache-Control':'no-cache'},cf:{cacheTtl:0,cacheEverything:false}});
   lbcCookies=lbcCookieHeader(page.headers);
   const html=await page.text();
-  const found=html.match(/var ajax_object\s*=\s*(\{[^;]+\});/);
+  const found=[...html.matchAll(/var ajax_object\s*=\s*(\{[^;]+\});/g)].at(-1);
   try{context=JSON.parse(found?.[1]||'');}catch{throw new ShippingError('LBC calculator settings are unavailable. Please retry or choose another option.');}
  }
  const lbcCall=async(action,data)=>{
   const security=context[action+'_nonce'];if(!/^[a-f0-9]{10}$/.test(security||''))throw new ShippingError('LBC calculator settings have changed. Please choose another option.');
-  const r=await (await response(boundedFetch,LBC_AJAX,{method:'POST',redirect:'error',headers:{'Content-Type':'application/x-www-form-urlencoded',...(lbcCookies?{Cookie:lbcCookies}:{})},body:new URLSearchParams({action,security,...data})})).json();
+  const r=await (await response(boundedFetch,LBC_AJAX,{method:'POST',redirect:'error',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8','Origin':'https://www.lbcexpress.com','Referer':LBC_PAGE,'X-Requested-With':'XMLHttpRequest',...(lbcCookies?{Cookie:lbcCookies}:{})},body:new URLSearchParams({action,security,...data}).toString()})).json();
   if(!r.success)throw new ShippingError('LBC could not quote this parcel and destination. Please choose another option.');return r.data;
  };
  let products;if(courier==='lbc')products=await lbcCall('get_domestic_product_types',{is_cargo:'true'});
