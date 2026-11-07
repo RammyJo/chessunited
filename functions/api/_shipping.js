@@ -79,7 +79,14 @@ export async function officialShippingRate(courier,origin,destination,parcels,fe
  for(const p of parcels) {
   let fee,service;
   if(courier==='jt') {
-   const r=await (await response(boundedFetch,JT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({country:'PH',senderAddr:origin.city,receiverAddr:destination.city,weight:String(p.weight),goodType:'PARCEL',productType:'EZ',goodsValue:String(p.value),dimensionW:p.width===undefined?'':String(p.width),dimensionH:p.height===undefined?'':String(p.height),dimensionL:p.length===undefined?'':String(p.length),pouchSize:''})})).json();
+   const requestBody=JSON.stringify({country:'PH',senderAddr:origin.city,receiverAddr:destination.city,weight:String(p.weight),goodType:'PARCEL',productType:'EZ',goodsValue:String(p.value),dimensionW:p.width===undefined?'':String(p.width),dimensionH:p.height===undefined?'':String(p.height),dimensionL:p.length===undefined?'':String(p.length),pouchSize:''});
+   let r;
+   // J&T's public rate endpoint can briefly fail even for otherwise serviceable routes.
+   // Retry one failed transport/HTTP request; never substitute an invented amount.
+   for(let attempt=0;attempt<2;attempt++){
+    try{r=await (await response(boundedFetch,JT,{method:'POST',headers:{'Content-Type':'application/json'},body:requestBody})).json();break;}
+    catch(error){if(attempt===1)throw error;}
+   }
    const basic=r.data?.find(x=>x.type==='fee');const insured=r.data?.find(x=>x.type==='insured');
    if(!r.succ || !basic || !Number.isFinite(Number(basic.fees)) || Number(basic.fees)<=0)throw new ShippingError('J&T could not quote this route. Please choose another option.');
    fee=Number(basic.fees)+Number(basic.serviceFee||0)+Number(insured?.fees||0);service=p.minimum?'J&T EZ · minimum 0.5 kg rate':'J&T EZ';

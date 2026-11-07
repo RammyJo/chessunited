@@ -108,3 +108,16 @@ test('LBC fallback must not silently apply to a failed J&T request',async()=>{
  await assert.rejects(createShippingQuote(env,{courier:'jt',destinationId:'57307',items:[{id:'cap',qty:1}]},async()=>new Response('Unavailable',{status:503})),/courier calculator is unavailable/);
  sql.close();
 });
+
+test('retries a transient J&T HTTP failure without inventing a shipping price',async()=>{
+ let requests=0;
+ const parcel={minimum:true,weight:0.5,value:150,quantity:1};
+ const rate=await officialShippingRate('jt',{city:'SAN-FERNANDO-CITY'},{city:'QUEZON-CITY'},[parcel],async()=>{
+  requests++;
+  if(requests===1)return new Response('Unavailable',{status:503});
+  return Response.json({succ:true,data:[{type:'fee',fees:'95',serviceFee:'0'},{type:'insured',fees:'5'}]});
+ });
+ assert.equal(requests,2);
+ assert.equal(rate.fee,100);
+ assert.match(rate.details[0].service,/J&T EZ/);
+});

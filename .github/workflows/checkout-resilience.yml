@@ -1,0 +1,25 @@
+name: Checkout resilience browser and shipping tests
+on:
+  push:
+    branches: [fix/checkout-jt-button-2026-11-07]
+  pull_request:
+    branches: [main]
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run test:shipping
+      - run: npm run build
+      - name: Browser regression for courier failure and checkout recovery
+        run: |
+          npx astro preview --host 127.0.0.1 --port 4321 > /tmp/cu-preview.log 2>&1 &
+          for i in $(seq 1 30); do if curl -fsS http://127.0.0.1:4321/shop/ >/dev/null; then break; fi; sleep 1; done
+          node scripts/checkout-error-qa.mjs

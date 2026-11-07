@@ -146,6 +146,14 @@
       const endpoint = form.getAttribute('data-api');
       const payload = collect(form);
 
+      // Don't silently disable checkout while an external courier is being quoted.
+      // An order must still have an unexpired, server-generated shipping quote.
+      if (endpoint === '/api/orders' && !payload.quoteId) {
+        showErrors('The shipping total is not ready. Check the delivery message above, then select Refresh delivery total. For immediate checkout, select Pick up.');
+        form.dispatchEvent(new Event('cu:shipping-refresh'));
+        return;
+      }
+
       if (button) {
         button.disabled = true;
         if (busyLabel) button.textContent = busyLabel;
@@ -215,7 +223,8 @@
         showErrors('Could not reach the club’s server. Check your connection and try again.');
       } finally {
         if (button) {
-          button.disabled = endpoint === '/api/orders' && !form.querySelector('[data-shipping-quote-id]')?.value;
+          // Re-enable submit after a response; quote validity is enforced above and on the server.
+          button.disabled = false;
           if (idleLabel) button.textContent = idleLabel;
         }
       }
