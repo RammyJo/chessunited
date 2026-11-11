@@ -44,6 +44,7 @@ export type Event = {
   highlight: string;
   note?: string;
   ics?: string;
+  recurrence?: string;
 };
 
 /* `id` doubles as the icon name, so it is narrowed to the accounts the site has
@@ -130,7 +131,7 @@ export const events: Event[] = [
     slug: 'tournament-2-0',
     name: 'Chess United Tournament 2.0',
     shortName: 'Tournament 2.0',
-    kicker: 'Up next',
+    kicker: 'Completed',
     date: '2026-11-07',
     dateLabel: 'Saturday, 7 November 2026',
     day: '07',
@@ -143,7 +144,7 @@ export const events: Event[] = [
     venueShort: 'Robinsons Mall, San Fernando',
     address: 'Robinsons Place La Union, San Fernando City, La Union',
     mapsQuery: 'Robinsons Mall La Union, San Fernando City, La Union',
-    status: 'upcoming',
+    status: 'past',
     poster: '/images/posters/tournament-2-0-900.webp',
     posterWidth: 900,
     posterHeight: 675,
@@ -351,6 +352,48 @@ export const weeklySessions: WeeklySession[] = [
 ];
 
 export const upcomingEvents = events.filter((e) => e.status === 'upcoming');
+
+/** The recurring community session is featured separately from paid tournaments.
+ * The calendar anchor is the first Saturday after the November schedule update;
+ * recurrence keeps subsequent Saturdays available without a dated countdown.
+ */
+export const saturdayEvent: Event = {
+  slug: 'saturday-chess',
+  name: 'Saturday chess at Robinsons La Union',
+  shortName: 'Saturday chess',
+  kicker: 'Next up · Every Saturday',
+  date: '2026-11-14',
+  dateLabel: 'Every Saturday',
+  day: 'SAT', month: 'WEEKLY', year: 'ALL AGES',
+  start: '10:00', end: '14:00', timeLabel: '10:00 AM – 2:00 PM',
+  venue: weeklySessions[0].venue,
+  venueShort: weeklySessions[0].venue,
+  address: weeklySessions[0].address,
+  mapsQuery: weeklySessions[0].mapsQuery,
+  poster: weeklySessions[0].poster,
+  posterWidth: weeklySessions[0].posterWidth,
+  posterHeight: weeklySessions[0].posterHeight,
+  status: 'upcoming', divisions: [], highlight: 'Kids, teens & adults',
+  recurrence: 'FREQ=WEEKLY;BYDAY=SA',
+  ics: '/calendar/chess-united-saturday-chess.ics',
+};
+
+export const saturdayJsonLd = (origin: string) => ({
+  '@context': 'https://schema.org', '@type': 'SportsEvent',
+  name: saturdayEvent.name,
+  description: 'Community chess for kids, teens and adults. Every Saturday, 10:00 AM–2:00 PM, at Robinsons Mall La Union.',
+  url: new URL('/events/#saturday-chess', origin).href,
+  image: new URL(saturdayEvent.poster!, origin).href,
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  eventSchedule: {
+    '@type': 'Schedule', repeatFrequency: 'P1W', byDay: 'https://schema.org/Saturday',
+    startTime: '10:00:00', endTime: '14:00:00', scheduleTimezone: 'Asia/Manila',
+  },
+  location: { '@type': 'Place', name: saturdayEvent.venue,
+    address: { '@type': 'PostalAddress', streetAddress: saturdayEvent.address,
+      addressLocality: 'San Fernando City', addressRegion: 'La Union', addressCountry: 'PH' } },
+  organizer: { '@type': 'Organization', name: site.name, url: origin },
+});
 
 /* `id` is the key the order form posts and the key `functions/api/_catalog.js`
    prices server-side. The two lists must stay in step. `sizes` is the list of
@@ -609,8 +652,10 @@ export const googleCalendarUrl = (event: Event, link: string) => {
     action: 'TEMPLATE',
     text: event.name,
     dates: `${utcStamp(event.date, event.start)}/${utcStamp(event.date, event.end)}`,
-    details: `${event.dateLabel}, ${event.timeLabel} at ${event.venue}. ${fees}. ${link}`,
+    details: `${event.dateLabel}, ${event.timeLabel} at ${event.venue}. ${fees ? fees + '. ' : ''}${link}`,
     location: event.address,
+    ctz: 'Asia/Manila',
   });
+  if(event.recurrence)params.set('recur','RRULE:'+event.recurrence);
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 };

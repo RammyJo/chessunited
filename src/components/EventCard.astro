@@ -10,7 +10,7 @@ const { event } = Astro.props;
 ---
 
 <article class="event-card reveal">
-  <time class="event-date" datetime={event.date} aria-label={`${event.dateLabel}, ${event.timeLabel}`}>
+  <time class="event-date" datetime={event.recurrence ? event.start : event.date} aria-label={`${event.dateLabel}, ${event.timeLabel}`}>
     <span class="day">{event.day}</span>
     <span class="month">{event.month}</span>
     <span class="year">{event.year}</span>
@@ -33,7 +33,7 @@ const { event } = Astro.props;
     </ul>
     <div class="event-foot">
       <p class="event-prize">
-        <span>Top prize</span>
+        <span>{event.recurrence ? 'Community chess' : 'Top prize'}</span>
         {event.highlight}
       </p>
       <a class="text-link" href={`/events/#${event.slug}`} aria-label={`Details for ${event.name}`}>

@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chess United//Events//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:chess-united-saturday-chess@chessunited
+DTSTAMP:20261023T000000Z
+DTSTART:20261114T020000Z
+DTEND:20261114T060000Z
+RRULE:FREQ=WEEKLY;BYDAY=SA
+SUMMARY:Saturday chess at Robinsons La Union
+LOCATION:Robinsons Mall La Union\, San Fernando City\, La Union
+DESCRIPTION:Chess for everyone: kids\, teens and adults. Every Saturday\, 1
+ 0:00 AM to 2:00 PM. Join the club group for updates: https://m.me/j/HytA8i
+ gzNnAWDEXo/?send_source=gc:qr_code_scan_c
+URL:https://chessunitedglobal.com/events/#saturday-chess
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

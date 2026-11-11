@@ -5,12 +5,13 @@ import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import GcashPayment from '../components/GcashPayment.astro';
 import AddToCalendar from '../components/AddToCalendar.astro';
-import { site, events, upcomingEvents, formatPeso, gcash, mapsUrl } from '../data/site';
+import { site, events, upcomingEvents, formatPeso, gcash, mapsUrl, saturdayEvent, saturdayJsonLd } from '../data/site';
 import { photos } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
-const past = events.find((event) => event.status === 'past')!;
+const past = events.find((event) => event.slug === 'tournament-1-0')!;
+const completedTournament = events.find((event) => event.slug === 'tournament-2-0')!;
 
 /* Held as a string so Astro does not read `{{…}}` in markup as a JS expression.
    forms.js fills these tokens from the JSON the API returns. */
@@ -30,8 +31,8 @@ const remainingLabel =
   upcomingEvents.length === 0
     ? 'Season complete'
     : upcomingEvents.length === 1
-      ? 'One event remaining'
-      : `${upcomingEvents.length} events remaining`;
+      ? 'One upcoming tournament + weekly chess'
+      : `${upcomingEvents.length} upcoming tournaments + weekly chess`;
 
 const eventJsonLd = upcomingEvents.map((event) => ({
   '@context': 'https://schema.org',
@@ -79,8 +80,8 @@ const breadcrumbJsonLd = {
 
 <Base
   title="Tournaments & events — Chess United"
-  description="Chess United Tournament 2.0 on 7 November 2026 at Robinsons Mall La Union, plus the Super Mario Cup on 5 December. Divisions, prizes, venues, fees."
-  jsonLd={[...eventJsonLd, breadcrumbJsonLd]}
+  description="Saturday chess at Robinsons La Union, 10 AM–2 PM. Join the weekly table, enter the Super Mario Cup on 5 December, and revisit completed tournaments."
+  jsonLd={[saturdayJsonLd(origin.href), ...eventJsonLd, breadcrumbJsonLd]}
 >
   <Header />
 
@@ -88,10 +89,10 @@ const breadcrumbJsonLd = {
     <header class="page-hero">
       <div class="wrap">
         <p class="eyebrow">2026 season</p>
-        <h1>Tournament days.</h1>
+        <h1>Make your next move.</h1>
         <p class="lede">
-          Age divisions, cash prizes and a hall of boards. Here's what's coming up — and what
-          just happened.
+          Next up: Saturday chess at Robinsons La Union, 10 AM–2 PM. Join the weekly table,
+          explore upcoming tournaments, and look back at completed events.
         </p>
         <div class="page-hero-meta">
           <span><Icon name="trophy" size={15} /> Open + Kiddies</span>
@@ -100,6 +101,32 @@ const breadcrumbJsonLd = {
         </div>
       </div>
     </header>
+
+    <section class="section" id="saturday-chess" aria-labelledby="saturday-chess-title">
+      <div class="wrap event-detail">
+        <div>
+          <div class="event-detail-head"><span class="status-pill">Next up · Every Saturday</span><span class="badge">Kids, teens &amp; adults</span></div>
+          <h2 id="saturday-chess-title">{saturdayEvent.name}</h2>
+          <p class="event-big-date">Every Saturday <span>{saturdayEvent.timeLabel}</span></p>
+          <dl class="fact-grid">
+            <div class="fact"><dt>When</dt><dd>Every Saturday<span>10:00 AM–2:00 PM</span></dd></div>
+            <div class="fact"><dt>Where</dt><dd>Robinsons La Union<span>San Fernando City, La Union</span></dd></div>
+            <div class="fact"><dt>Who</dt><dd>Chess for everyone<span>Kids, teens, adults and beginners</span></dd></div>
+          </dl>
+          <p class="lede mt-3">Pull up a chair for community chess. No tournament entry form is needed for the weekly session. Join the club group for session updates, tournament announcements and more.</p>
+          <div class="event-actions">
+            <a class="btn" href={site.groupUrl} target="_blank" rel="noopener noreferrer">Join the community <Icon name="external" size={15} /></a>
+            <a class="btn btn--ghost" href={mapsUrl(saturdayEvent.mapsQuery)} target="_blank" rel="noopener noreferrer">Open in Maps <Icon name="pin" size={15} /></a>
+            <a class="text-link" href="/visit/#first-saturday">Your first Saturday <Icon name="arrow" size={14} /></a>
+          </div>
+          <AddToCalendar event={saturdayEvent} link={abs('/events/#saturday-chess')} />
+        </div>
+        <figure class="poster-card">
+          <img src={saturdayEvent.poster} width={saturdayEvent.posterWidth} height={saturdayEvent.posterHeight} alt="Chess United weekly chess at Robinsons La Union. Every Saturday, 10:00 AM to 2:00 PM. Chess for everyone." loading="lazy" decoding="async" />
+          <figcaption>Weekly community chess · Robinsons La Union</figcaption>
+        </figure>
+      </div>
+    </section>
 
     {upcomingEvents.map((event) => (
       <section class="section" id={event.slug} aria-labelledby={`${event.slug}-title`}>
@@ -341,29 +368,20 @@ const breadcrumbJsonLd = {
       </div>
     </section>
 
-    <section class="section section--paper" aria-labelledby="weekly-note-title">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Between tournaments</p>
-            <h2 id="weekly-note-title">The weekly table.</h2>
-          </div>
-          <p class="lede">
-            Tournament day is the loud one. The weekly session happens every Saturday at
-            Robinsons Mall La Union.
-          </p>
+    <section class="section section--paper" id="tournament-2-0" aria-labelledby="tournament-2-0-title">
+      <div class="wrap event-detail">
+        <div>
+          <div class="event-detail-head"><span class="status-pill status-pill--past"><Icon name="check" size={12} /> Completed</span></div>
+          <h2 id="tournament-2-0-title">{completedTournament.name}</h2>
+          <p class="event-big-date">{completedTournament.dateLabel} <span>{completedTournament.timeLabel}</span></p>
+          <p class="lede">Tournament 2.0 at Robinsons Mall La Union is complete. Registration and payment for this event are closed.</p>
+          <p class="mt-2">The weekly Saturday table continues from 10 AM to 2 PM. Check the club group for announcements and future tournaments.</p>
+          <div class="event-actions"><a class="btn" href="#saturday-chess">Join Saturday chess <Icon name="arrow" size={14} /></a><a class="text-link" href={site.groupUrl} target="_blank" rel="noopener noreferrer">Club updates <Icon name="external" size={14} /></a></div>
         </div>
-
-        <div class="mini-event">
-          <p class="mini-date">SAT<span>Weekly</span></p>
-          <div>
-            <h3>Open chess at Robinsons Mall La Union</h3>
-            <p>
-              Every Saturday · 10:00 AM – 2:00 PM · kids, teens and adults
-            </p>
-          </div>
-          <a class="text-link" href="/visit/">Weekly play <Icon name="arrow" size={14} class="arrow" /></a>
-        </div>
+        <figure class="poster-card">
+          <img src={completedTournament.poster} width={completedTournament.posterWidth} height={completedTournament.posterHeight} alt="Archived poster for Chess United Tournament 2.0, held 7 November 2026 at Robinsons Mall La Union." loading="lazy" decoding="async" />
+          <figcaption>Completed event · 7 November 2026</figcaption>
+        </figure>
       </div>
     </section>
 

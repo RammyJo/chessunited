@@ -1,5 +1,5 @@
 /**
- * Generate RFC 5545 calendar files for the two upcoming tournaments.
+ * Generate RFC 5545 calendars for tournaments and recurring Saturday chess.
  *
  * Times are converted from Asia/Manila (UTC+08:00) to UTC so no VTIMEZONE
  * block is required. Output uses CRLF and RFC-compliant line folding.
@@ -15,6 +15,17 @@ const OUT = path.join(ROOT, 'public', 'calendar');
 const SITE = SITE_URL;
 
 const events = [
+  {
+    file: 'chess-united-saturday-chess.ics',
+    uid: 'chess-united-saturday-chess@chessunited',
+    start: '20261114T020000Z', // 10:00 Asia/Manila
+    end: '20261114T060000Z', // 14:00 Asia/Manila
+    recurrence: 'FREQ=WEEKLY;BYDAY=SA',
+    summary: 'Saturday chess at Robinsons La Union',
+    location: 'Robinsons Mall La Union, San Fernando City, La Union',
+    description: 'Chess for everyone: kids, teens and adults. Every Saturday, 10:00 AM to 2:00 PM. Join the club group for updates: https://m.me/j/HytA8igzNnAWDEXo/?send_source=gc:qr_code_scan_c',
+    url: `${SITE}/events/#saturday-chess`,
+  },
   {
     file: 'chess-united-tournament-2-0.ics',
     uid: 'chess-united-tournament-2-0-2026@chessunited',
@@ -74,7 +85,7 @@ for (const event of events) {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Chess United//Tournaments//EN',
+    'PRODID:-//Chess United//Events//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
@@ -82,6 +93,7 @@ for (const event of events) {
     'DTSTAMP:20261023T000000Z',
     `DTSTART:${event.start}`,
     `DTEND:${event.end}`,
+    ...(event.recurrence ? [`RRULE:${event.recurrence}`] : []),
     `SUMMARY:${esc(event.summary)}`,
     `LOCATION:${esc(event.location)}`,
     `DESCRIPTION:${esc(event.description)}`,

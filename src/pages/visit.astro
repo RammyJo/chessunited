@@ -9,7 +9,6 @@ import { photos } from '../data/images';
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 
-const tournament2 = events.find((event) => event.slug === 'tournament-2-0')!;
 const mario = events.find((event) => event.slug === 'super-mario-cup')!;
 
 const breadcrumbJsonLd = {
@@ -47,8 +46,8 @@ const faqs = [
     a: 'The weekly poster does not list a session fee. Tournament entry fees are published on each event on the Events page.',
   },
   {
-    q: 'Where is Tournament 2.0?',
-    a: 'Robinsons Mall La Union, on Saturday 7 November 2026 from 10:00 AM to 6:00 PM.',
+    q: 'Is Tournament 2.0 still open for registration?',
+    a: 'No. Tournament 2.0 at Robinsons Mall La Union finished on 7 November 2026. Weekly chess continues every Saturday, 10 AM to 2 PM.',
   },
   {
     q: 'Where is the Super Mario Cup?',
@@ -148,16 +147,6 @@ const faqJsonLd = {
               </figure>
             </article>
           ))}
-
-          <article class="venue-card reveal">
-            <span class="tag">Tournament 2.0 · 7 Nov</span>
-            <h3>{tournament2.venue}</h3>
-            <address>San Fernando City, La Union</address>
-            <p class="venue-time">10:00 AM – 6:00 PM · Open &amp; Kiddies</p>
-            <a class="text-link" href={mapsUrl(tournament2.mapsQuery)} target="_blank" rel="noopener">
-              Open in Google Maps <Icon name="external" size={13} />
-            </a>
-          </article>
 
           <article class="venue-card reveal">
             <span class="tag">Super Mario Cup · 5 Dec</span>

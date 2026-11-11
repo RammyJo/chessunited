@@ -6,7 +6,7 @@ import Icon from '../components/Icon.astro';
 import EventCard from '../components/EventCard.astro';
 import AddToCalendar from '../components/AddToCalendar.astro';
 import MerchPromos from '../components/MerchPromos.astro';
-import { site, upcomingEvents, partnerTiers, weeklySessions } from '../data/site';
+import { site, upcomingEvents, partnerTiers, weeklySessions, saturdayEvent, saturdayJsonLd } from '../data/site';
 import { heroImage } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
@@ -78,13 +78,9 @@ const eventJsonLd = upcomingEvents.map((event) => ({
   })),
 }));
 
-/* The countdown below is pinned to Tournament 2.0, so the calendar link follows
-   the same event rather than whichever happens to be first. */
-const countdownEvent = upcomingEvents.find((event) => event.slug === 'tournament-2-0');
-
 const tickerItems = [
   'Every Saturday · 10 AM – 2 PM · Robinsons Mall La Union',
-  'Tournament 2.0 · 7 November · Robinsons Mall',
+  'Join the community group for updates',
   'Super Mario Cup · 5 December · ₱50,000',
   'Chess for everyone',
 ];
@@ -95,7 +91,7 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
 <Base
   title="Chess United — chess for everyone in San Fernando, La Union"
   description={site.description}
-  jsonLd={[clubJsonLd, websiteJsonLd, ...eventJsonLd]}
+  jsonLd={[clubJsonLd, websiteJsonLd, saturdayJsonLd(origin.href), ...eventJsonLd]}
 >
   <link
     slot="head"
@@ -154,15 +150,15 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
             <strong>Every<br />Saturday</strong>
             <small>Robinsons Mall · 10 AM</small>
           </div>
-          <a class="hero-ticket" href="/events/#tournament-2-0">
+          <a class="hero-ticket" href="/events/#saturday-chess">
             <span class="hero-ticket-date">
-              <strong>07</strong>
-              <span>NOV</span>
+              <strong>SAT</strong>
+              <span>WEEKLY</span>
             </span>
             <span class="hero-ticket-body">
               <small>Next up</small>
-              <strong>Tournament 2.0</strong>
-              <span>Robinsons Mall →</span>
+              <strong>Saturday chess</strong>
+              <span>Robinsons La Union · 10 AM–2 PM →</span>
             </span>
           </a>
         </div>
@@ -189,29 +185,22 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
             <h2 id="next-title">Next up.</h2>
           </div>
           <p class="lede">
-            Two tournament days before the year ends. Same club, bigger board — with divisions
-            for kids and for everyone 13 and above.
+            Join the weekly table at Robinsons La Union, then get ready for the Super Mario Cup
+            in December. Chess for everyone, every Saturday.
           </p>
         </div>
 
         <div class="event-grid">
+          <EventCard event={saturdayEvent} />
           {upcomingEvents.map((event) => <EventCard event={event} />)}
         </div>
 
         <div class="countdown-row reveal">
           <p class="countdown-label">
-            Countdown to Tournament 2.0
-            <strong>Saturday, 7 November · Robinsons Mall</strong>
+            Your next Saturday move
+            <strong>Every Saturday · 10 AM–2 PM · Robinsons La Union</strong>
           </p>
-          <div class="countdown" data-countdown data-deadline="2026-11-07T10:00:00+08:00" role="timer" aria-label="Time until Tournament 2.0">
-            <div><strong data-days>--</strong><span>days</span></div>
-            <div><strong data-hours>--</strong><span>hours</span></div>
-            <div><strong data-mins>--</strong><span>mins</span></div>
-            <div><strong data-secs>--</strong><span>secs</span></div>
-          </div>
-          {countdownEvent && (
-            <AddToCalendar event={countdownEvent} link={abs('/events/#tournament-2-0')} />
-          )}
+          <AddToCalendar event={saturdayEvent} link={abs('/events/#saturday-chess')} />
         </div>
       </div>
     </section>
@@ -296,7 +285,7 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
               </p>
               <p class="division-prize">
                 <Icon name="trophy" size={20} />
-                <span><strong>₱3,000</strong> champion prize at Tournament 2.0</span>
+                <span><strong>₱5,000</strong> kids prize at the Super Mario Cup</span>
               </p>
             </div>
           </article>
@@ -309,12 +298,12 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
             <div class="division-body">
               <h3>All comers.</h3>
               <p>
-                Teens and adults, club players and first-timers. Tournament 2.0 also awards a
-                Top Lady and Top Senior prize in the open bracket.
+                Teens and adults, club players and first-timers. The Super Mario Cup brings
+                the Open Division together in December.
               </p>
               <p class="division-prize">
                 <Icon name="trophy" size={20} />
-                <span><strong>₱5,000</strong> champion prize at Tournament 2.0</span>
+                <span><strong>₱50,000</strong> winner take all at the Super Mario Cup</span>
               </p>
             </div>
           </article>
