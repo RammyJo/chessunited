@@ -1,0 +1,97 @@
+---
+import { scriptUrl } from '../lib/assets';
+import Icon from './Icon.astro';
+
+interface Props {
+  src: string;
+  poster: string;
+  posterSrcset?: string;
+  width?: number;
+  height?: number;
+  durationLabel?: string;
+}
+
+const { src, poster, posterSrcset, width = 1920, height = 1080, durationLabel } = Astro.props;
+---
+
+<section class="highlights" id="highlights" aria-labelledby="highlights-title" data-highlight>
+  <div class="wrap">
+    <header class="highlight-heading">
+      <div>
+        <p class="highlight-eyebrow"><span aria-hidden="true"></span> Inside Chess United</p>
+        <h2 id="highlights-title">This is<br /><em>Chess United.</em></h2>
+      </div>
+      <p class="highlight-intro">Get a feel for the club before you join us at the board. Press play and watch our latest highlights.</p>
+    </header>
+
+    <div class="highlight-player" style={`--video-ratio: ${width} / ${height}`}>
+      <video
+        id="club-highlight-video"
+        data-highlight-video
+        data-video-src={src}
+        data-video-poster={poster}
+        width={width}
+        height={height}
+        preload="none"
+        playsinline
+        tabindex="-1"
+        aria-label="Chess United highlights video"
+        aria-describedby="highlight-playback-status"
+      ></video>
+      <button class="highlight-cover" type="button" data-highlight-play aria-controls="club-highlight-video" aria-label="Play Chess United highlights">
+        <img class="highlight-poster" src={poster} srcset={posterSrcset} sizes="(max-width: 760px) 92vw, 1200px" width={width} height={height} alt="" loading="lazy" decoding="async" />
+        <span class="highlight-shade" aria-hidden="true"></span>
+        <span class="highlight-play-action">
+          <span class="highlight-play-icon" aria-hidden="true"><svg width="28" height="32" viewBox="0 0 28 32" fill="currentColor"><path d="M3 1.5 26 16 3 30.5Z" /></svg></span>
+          <span class="highlight-play-label">Watch the highlights</span>
+          {durationLabel && <span class="highlight-duration">{durationLabel}</span>}
+        </span>
+        <span class="highlight-poster-caption" aria-hidden="true">Chess for everyone.<span>Your next move starts here.</span></span>
+      </button>
+    </div>
+
+    <div class="highlight-bottom">
+      <p id="highlight-playback-status" class="highlight-status" data-highlight-status role="status" aria-live="polite" hidden></p>
+      <p class="highlight-caption">Chess United · Latest highlights</p>
+      <a class="highlight-next" href="/events/#saturday-chess">Be part of the next one <Icon name="external" size={18} /></a>
+    </div>
+    <noscript><p class="highlight-noscript"><a href={src}>Open the highlights video</a> to watch it in your browser.</p></noscript>
+  </div>
+  <script is:inline src={scriptUrl('highlight-video.js')} defer></script>
+</section>
+
+<style>
+  .highlights{position:relative;padding-block:clamp(3.5rem,7vw,6.5rem);background:var(--ink);color:var(--white);overflow:hidden}
+  .highlights::before{content:'';position:absolute;top:0;right:0;width:12rem;height:12rem;opacity:.08;background:conic-gradient(var(--azure) 25%,transparent 0 50%,var(--azure) 0 75%,transparent 0) 0 0 / 3rem 3rem;pointer-events:none}
+  .highlight-heading{position:relative;display:grid;grid-template-columns:1fr minmax(15rem,.65fr);gap:2rem;align-items:end;margin-bottom:2rem}
+  .highlight-eyebrow{display:flex;align-items:center;gap:.65rem;color:var(--azure);font-size:.72rem;letter-spacing:.17em;text-transform:uppercase;font-weight:800;margin-bottom:1rem}
+  .highlight-eyebrow span{width:.55rem;height:.55rem;background:var(--red);flex:none}
+  .highlight-heading h2{font-family:var(--font-display);font-size:clamp(2.4rem,5.6vw,5.25rem);line-height:1;letter-spacing:-.055em;text-transform:uppercase}
+  .highlight-heading em{color:var(--azure);font-style:normal}
+  .highlight-intro{max-width:28rem;color:#c2dce9;font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.7;padding-bottom:.2rem}
+  .highlight-player{position:relative;aspect-ratio:var(--video-ratio);background:#050a17;border:2px solid var(--azure);box-shadow:7px 7px 0 #176083;isolation:isolate}
+  .highlight-player video{width:100%;height:100%;aspect-ratio:var(--video-ratio);object-fit:contain;background:#050a17}
+  .highlight-cover{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--ink);padding:0;display:grid;place-items:center;color:var(--white);text-align:center;overflow:hidden}
+  .highlight-cover[hidden]{display:none}
+  .highlight-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease)}
+  .highlight-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,12,30,.12) 5%,rgba(4,12,30,.36) 45%,rgba(4,12,30,.92) 100%)}
+  .highlight-play-action{position:relative;z-index:1;display:grid;justify-items:center;gap:.7rem;padding:1rem}
+  .highlight-play-icon{display:grid;place-items:center;width:clamp(4.5rem,8vw,6.5rem);aspect-ratio:1;background:var(--red-ink);border:2px solid var(--white);border-radius:50%;box-shadow:0 0 0 9px rgba(255,255,255,.15);transition:transform .2s var(--ease),background .2s var(--ease)}
+  .highlight-play-icon svg{margin-left:5px;width:28%;height:34%}
+  .highlight-play-label{font-size:clamp(.85rem,1.3vw,1.05rem);font-weight:800;letter-spacing:.04em;text-shadow:0 2px 6px #050a17}
+  .highlight-duration{font-size:.72rem;font-weight:700;padding:.15rem .55rem;border:1px solid rgba(255,255,255,.65);background:rgba(5,10,23,.65)}
+  .highlight-poster-caption{position:absolute;left:clamp(1rem,3vw,2.5rem);bottom:clamp(1rem,3vw,2.3rem);text-align:left;text-transform:uppercase;font-family:var(--font-display);font-size:clamp(.95rem,2vw,1.7rem);line-height:1.2}
+  .highlight-poster-caption span{display:block;margin-top:.5rem;font-family:var(--font-body);font-size:.65rem;letter-spacing:.13em;font-weight:700;color:#c2dce9}
+  .highlight-cover:hover .highlight-play-icon{background:var(--red);transform:scale(1.06)}
+  .highlight-cover:hover .highlight-poster{transform:scale(1.025)}
+  .highlight-cover:focus-visible{outline:4px solid var(--gold);outline-offset:5px}
+  .highlight-bottom{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.75rem 1.5rem;margin-top:1.3rem}
+  .highlight-caption{color:#c2dce9;font-size:.78rem}
+  .highlight-next{display:inline-flex;align-items:center;gap:1rem;color:var(--white);font-size:.85rem;font-weight:800;text-decoration:underline;text-underline-offset:5px}
+  .highlight-next :global(svg){color:var(--azure);flex:none}
+  .highlight-status{flex-basis:100%;color:var(--white);font-size:.9rem}
+  .highlight-status[hidden]{display:none}
+  .highlight-noscript{margin-top:1rem}.highlight-noscript a{text-decoration:underline}
+  @media(max-width:650px){.highlight-heading{grid-template-columns:1fr;gap:1.25rem}.highlight-heading h2{font-size:clamp(2.3rem,10.8vw,3.5rem)}.highlight-intro{max-width:32rem}.highlight-poster-caption{display:none}.highlight-player{box-shadow:5px 5px 0 #176083}.highlight-play-action{gap:.55rem}.highlight-bottom{align-items:flex-start;flex-direction:column}}
+  @media(prefers-reduced-motion:reduce){.highlight-poster,.highlight-play-icon{transition:none}.highlight-cover:hover .highlight-poster,.highlight-cover:hover .highlight-play-icon{transform:none}}
+</style>

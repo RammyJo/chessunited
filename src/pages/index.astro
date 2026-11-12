@@ -6,6 +6,8 @@ import Icon from '../components/Icon.astro';
 import EventCard from '../components/EventCard.astro';
 import AddToCalendar from '../components/AddToCalendar.astro';
 import MerchPromos from '../components/MerchPromos.astro';
+import HighlightVideo from '../components/HighlightVideo.astro';
+import { highlightVideo } from '../data/highlights';
 import { site, upcomingEvents, partnerTiers, weeklySessions, saturdayEvent, saturdayJsonLd } from '../data/site';
 import { heroImage } from '../data/images';
 
@@ -176,6 +178,8 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
         ))}
       </div>
     </div>
+
+    {highlightVideo && <HighlightVideo {...highlightVideo} />}
 
     <section class="section" aria-labelledby="next-title">
       <div class="wrap">
