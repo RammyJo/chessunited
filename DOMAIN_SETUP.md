@@ -1,6 +1,6 @@
 # Domain setup — Spaceship → Cloudflare
 
-Status: **Apex live; www DNS repaired on 12 November 2026.** The canonical host is https://chessunitedglobal.com. The www hostname now has a proxied DNS record and a zone-level canonical redirect. See section 10 for the deployed configuration and verification. The migration runbook below is retained for future maintenance.
+Status: **Apex live; www DNS repaired on 12 November 2026.** The canonical host is https://chessunitedglobal.com. The www hostname has a proxied originless DNS record and the Pages-specific Bulk Redirect setup. See section 10 for the deployed configuration and verification. The migration runbook below is retained for future maintenance.
 
 The `pages.dev` hostname still answers
 (<https://chessunited.pages.dev>) because Cloudflare keeps it for every project. It
@@ -178,7 +178,7 @@ Check:
 ## 9. What is still open
 
 - **`www` DNS is repaired.** The former missing record was added on 12 November
-  2026, with a proxied CNAME and canonical redirect. See section 10.
+  2026; the final setup uses a proxied A record and Pages Bulk Redirect. See section 10.
 - **`pages.dev` answers without redirecting.** Both hosts serve the same content and
   only the apex is canonical. That is tolerable, but a Redirect Rule from
   `chessunited.pages.dev` to the domain is cleaner if the dashboard offers one.
@@ -188,65 +188,91 @@ Check:
 
 ## 10. Production repair — 12 November 2026
 
-Canonical website: **https://chessunitedglobal.com**.
+Canonical website: **https://chessunitedglobal.com**. Cloudflare zone:
+`0e295bc3d4012ebf33c82105960359c2`; account:
+`a1535c96f8ebe5df3bbd767a4367914c`; Pages project: `chessunited`.
 
-The Cloudflare zone is `chessunitedglobal.com` (`0e295bc3d4012ebf33c82105960359c2`),
-in account `a1535c96f8ebe5df3bbd767a4367914c`. The existing Pages project is
-`chessunited`; application content is served on the canonical domain.
+### DNS and HTTPS
 
-## DNS and HTTPS
-
-| Name | Type | Target | Cloudflare proxy | TTL |
+| Name | Type | Target | Proxy | TTL |
 | --- | --- | --- | --- | --- |
 | `chessunitedglobal.com` | CNAME | `chessunited.pages.dev` | Enabled | Auto |
-| `www.chessunitedglobal.com` | CNAME | `chessunitedglobal.com` | Enabled | Auto |
+| `www.chessunitedglobal.com` | A | `192.0.2.1` | Enabled | Auto |
 
-The active Universal SSL certificate covers the apex and
-`*.chessunitedglobal.com`. Keep the `www` record proxied: its redirect runs on
-Cloudflare before requests reach Pages.
+The www address is an **originless, proxied** hostname following
+[Cloudflare's Pages www redirect setup](https://developers.cloudflare.com/pages/how-to/www-redirect/).
+The reserved address is a placeholder; visitors receive Cloudflare edge IPs,
+not this placeholder. Keep it proxied. The existing active Universal SSL
+certificate covers the apex and `*.chessunitedglobal.com`.
 
-## Canonical redirect
+DNS record ID: `ad8e8f105f928d942c99c747889b18dc`.
 
-The zone-level Single Redirect runs in `http_request_dynamic_redirect`:
+### Bulk Redirect
+
+List: `chess_united_www_redirects` (`c4b8329d390a4413ad116a61dd8324c8`).
+The list contains only this redirect:
 
 ```json
 {
-  "ref": "chess_united_www_to_apex",
+  "source_url": "www.chessunitedglobal.com/",
+  "target_url": "https://chessunitedglobal.com/",
+  "status_code": 308,
+  "include_subdomains": false,
+  "subpath_matching": true,
+  "preserve_path_suffix": true,
+  "preserve_query_string": true
+}
+```
+
+The source omits a scheme to match both HTTP and HTTPS. The account-level
+`http_request_redirect` ruleset (`f79c70f73ee64ea988b3cebd951945b8`)
+enables the list with rule `434da8eaed11409e8e7f1341325154b2`:
+
+```json
+{
+  "ref": "chess_united_enable_www_redirects",
   "enabled": true,
-  "expression": "http.host eq \"www.chessunitedglobal.com\"",
+  "expression": "http.request.full_uri in $chess_united_www_redirects",
   "action": "redirect",
   "action_parameters": {
-    "from_value": {
-      "target_url": {
-        "expression": "concat(\"https://chessunitedglobal.com\", http.request.uri.path)"
-      },
-      "status_code": 308,
-      "preserve_query_string": true
+    "from_list": {
+      "name": "chess_united_www_redirects",
+      "key": "http.request.full_uri"
     }
   }
 }
 ```
 
-Ruleset ID: `ee665c90681a455baded4641ce9e9512`.
-Rule ID: `42a47190a33044e8ac6a1fd921d0073b`.
-The added `www` DNS record ID is `ad8e8f105f928d942c99c747889b18dc`.
-
-This handles HTTP and HTTPS links, including links shared through Messenger.
-Page paths and query parameters are retained; browsers inherit the original
-fragment when the redirect does not supply a replacement. Status 308 preserves
-the HTTP method. The apex is not matched, so the rule cannot loop back to `www`.
+The previous zone Single Redirect, rule
+`42a47190a33044e8ac6a1fd921d0073b` in ruleset
+`ee665c90681a455baded4641ce9e9512`, is **disabled**. It did not consistently
+redirect Pages traffic in validation. Use the Pages-specific Bulk Redirect
+above rather than re-enabling both. No unrelated account lists/rules existed
+when this dedicated list and rule were added.
 
 These settings live in Cloudflare DNS and Rules, separately from Pages builds.
-A website deployment alone cannot repair a missing DNS hostname.
+Pages `_redirects` does not support domain-level redirects; no catch-all Pages
+Function or application deployment was added for this infrastructure repair.
 
-## Verification and cache behavior
+### Verification and client DNS diagnosis
 
-On 12 November 2026, `www` returned NXDOMAIN while the apex worked. Adding its
-DNS record and the redirect repaired the shared-link failure. Public Cloudflare
-and Google resolvers returned valid addresses after the change. Browser checks
-with a Messenger-style user agent retained the page, query and event fragment.
+Fresh browsers verified HTTPS www home, Events and Shop returning 308 to the
+canonical domain and then loading the site. Event query parameters and the
+`#saturday-chess` fragment survived. An HTTP browser can upgrade to HTTPS first;
+the network redirect then takes it to the canonical domain. Public Cloudflare
+and Google DNS returned valid A and AAAA answers for www.
 
-Use the canonical URL in new messages. A device or DNS resolver that cached the
-old NXDOMAIN response may need up to 30 minutes to expire it, based on the zone's
-negative-cache TTL at the time of repair. The non-`www` address remains usable
-while that cache expires.
+A previous NXDOMAIN answer may remain cached on a device, router or resolver.
+At the time of repair, the negative-cache SOA TTL was 1,800 seconds. A Windows
+DNS flush clears the local cache, but does not clear an upstream router or ISP
+cache. If a visitor still gets a DNS error, compare their network's answer with
+Cloudflare's public resolver before attributing it to browser caching:
+
+```powershell
+ipconfig /flushdns
+nslookup www.chessunitedglobal.com
+nslookup www.chessunitedglobal.com 1.1.1.1
+```
+
+Use https://chessunitedglobal.com in new messages. Preserve mail records and
+nameservers; neither needed changes for this repair.
