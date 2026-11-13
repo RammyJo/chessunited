@@ -24,13 +24,17 @@ full video.
 
 - `src/data/highlights.ts` checks that both films and all covers exist, then
   fingerprints their URLs so a replacement refreshes cached media.
-- `HighlightVideo.astro` shows the cover and play button. No video source is
-  assigned until the visitor chooses to watch. The hero's Watch button starts
-  playback and takes the visitor to the feature.
+- `HighlightVideo.astro` shows the cover until playback starts. The film starts
+  automatically, muted, when at least a quarter of the player comes into view.
+  No video source is assigned while the feature is below the viewport. A visible
+  sound button lets visitors enable the original audio; native controls also
+  support pausing, seeking and volume. The hero's Watch button starts playback
+  with sound and takes the visitor to the feature.
 - `highlight-video.js` chooses 720p at viewport widths up to 760 CSS pixels and
-  1080p above that. Native inline controls and sound follow the play gesture.
-  Keyboard activation, retry after an error and pausing on a hidden tab are
-  supported. The film does not autoplay on page load.
+  1080p above that. Playback pauses offscreen or on a hidden tab, and resumes
+  when visible unless the visitor paused it or the film finished. It does not
+  loop. If browser autoplay restrictions prevent playback, the cover remains
+  available for a tap or keyboard activation. Loading failures offer a retry.
 - Video responses are cached for 30 days; URLs include a content fingerprint.
   The security policy explicitly permits same-origin media.
 

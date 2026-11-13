@@ -35,6 +35,7 @@ const { src, mobileSrc, poster, posterSrcset, width = 1920, height = 1080, durat
         width={width}
         height={height}
         preload="none"
+        muted
         playsinline
         tabindex="-1"
         aria-label="Chess United highlights video"
@@ -55,6 +56,7 @@ const { src, mobileSrc, poster, posterSrcset, width = 1920, height = 1080, durat
     <div class="highlight-bottom">
       <p id="highlight-playback-status" class="highlight-status" data-highlight-status role="status" aria-live="polite" hidden></p>
       <p class="highlight-caption">Chess United · Latest highlights</p>
+      <button class="highlight-sound" type="button" data-highlight-sound aria-controls="club-highlight-video" aria-pressed="false" hidden>Turn sound on</button>
       <a class="highlight-next" href="/events/#saturday-chess">Be part of the next one <Icon name="external" size={18} /></a>
     </div>
     <noscript><p class="highlight-noscript"><a href={src}>Open the highlights video</a> to watch it in your browser.</p></noscript>
@@ -89,6 +91,9 @@ const { src, mobileSrc, poster, posterSrcset, width = 1920, height = 1080, durat
   .highlight-cover:focus-visible{outline:4px solid var(--gold);outline-offset:5px}
   .highlight-bottom{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.75rem 1.5rem;margin-top:1.3rem}
   .highlight-caption{color:#c2dce9;font-size:.78rem}
+  .highlight-sound{min-height:44px;padding:.55rem .9rem;border:1px solid var(--azure);background:#050a17;color:var(--white);font:inherit;font-size:.85rem;font-weight:800;cursor:pointer}
+  .highlight-sound[hidden]{display:none}
+  .highlight-sound:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
   .highlight-next{display:inline-flex;align-items:center;gap:1rem;color:var(--white);font-size:.85rem;font-weight:800;text-decoration:underline;text-underline-offset:5px}
   .highlight-next :global(svg){color:var(--azure);flex:none}
   .highlight-status{flex-basis:100%;color:var(--white);font-size:.9rem}
