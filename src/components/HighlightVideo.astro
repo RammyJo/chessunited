@@ -4,6 +4,7 @@ import Icon from './Icon.astro';
 
 interface Props {
   src: string;
+  mobileSrc?: string;
   poster: string;
   posterSrcset?: string;
   width?: number;
@@ -11,7 +12,7 @@ interface Props {
   durationLabel?: string;
 }
 
-const { src, poster, posterSrcset, width = 1920, height = 1080, durationLabel } = Astro.props;
+const { src, mobileSrc, poster, posterSrcset, width = 1920, height = 1080, durationLabel } = Astro.props;
 ---
 
 <section class="highlights" id="highlights" aria-labelledby="highlights-title" data-highlight>
@@ -21,7 +22,7 @@ const { src, poster, posterSrcset, width = 1920, height = 1080, durationLabel } 
         <p class="highlight-eyebrow"><span aria-hidden="true"></span> Inside Chess United</p>
         <h2 id="highlights-title">This is<br /><em>Chess United.</em></h2>
       </div>
-      <p class="highlight-intro">Get a feel for the club before you join us at the board. Press play and watch our latest highlights.</p>
+      <p class="highlight-intro">One minute of focus, competition and community. Watch the highlights, then join us at the board.</p>
     </header>
 
     <div class="highlight-player" style={`--video-ratio: ${width} / ${height}`}>
@@ -29,6 +30,7 @@ const { src, poster, posterSrcset, width = 1920, height = 1080, durationLabel } 
         id="club-highlight-video"
         data-highlight-video
         data-video-src={src}
+        data-video-mobile-src={mobileSrc}
         data-video-poster={poster}
         width={width}
         height={height}

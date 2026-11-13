@@ -52,6 +52,7 @@ const csp = [
   "form-action 'self'",
   "img-src 'self' data:",
   "font-src 'self'",
+  "media-src 'self'",
   "frame-src https://maps.google.com https://www.google.com",
   "style-src 'self' 'unsafe-inline'",
   `script-src ${scriptSrc}`,
@@ -85,6 +86,9 @@ const headers = `# Cloudflare Pages headers
 
 /scripts/*
   Cache-Control: public, max-age=86400
+
+/videos/*
+  Cache-Control: public, max-age=2592000
 `;
 
 await writeFile(path.join(DIST, '_headers'), headers, 'utf8');

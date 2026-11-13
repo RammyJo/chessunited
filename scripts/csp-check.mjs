@@ -28,6 +28,7 @@ const mime = {
   '.ics': 'text/calendar; charset=utf-8',
   '.ico': 'image/x-icon',
   '.json': 'application/json; charset=utf-8',
+  '.mp4': 'video/mp4',
 };
 
 const headers = await readFile(path.join(DIST, '_headers'), 'utf8');

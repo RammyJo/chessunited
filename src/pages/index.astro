@@ -80,6 +80,18 @@ const eventJsonLd = upcomingEvents.map((event) => ({
   })),
 }));
 
+const highlightJsonLd = highlightVideo ? [{
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: 'Chess United highlights',
+  description: 'One minute of focus, competition and community at the chess board.',
+  thumbnailUrl: abs(highlightVideo.poster),
+  contentUrl: abs(highlightVideo.src),
+  uploadDate: '2026-11-13',
+  duration: 'PT1M',
+  url: abs('/#highlights'),
+}] : [];
+
 const tickerItems = [
   'Every Saturday · 10 AM – 2 PM · Robinsons Mall La Union',
   'Join the community group for updates',
@@ -93,7 +105,7 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
 <Base
   title="Chess United — chess for everyone in San Fernando, La Union"
   description={site.description}
-  jsonLd={[clubJsonLd, websiteJsonLd, saturdayJsonLd(origin.href), ...eventJsonLd]}
+  jsonLd={[clubJsonLd, websiteJsonLd, saturdayJsonLd(origin.href), ...eventJsonLd, ...highlightJsonLd]}
 >
   <link
     slot="head"
@@ -125,7 +137,11 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
               Join Saturday chess
               <Icon name="arrow" size={17} class="arrow" />
             </a>
-            <a class="btn btn--ghost" href="/events/">See the tournaments</a>
+            {highlightVideo ? (
+              <a class="btn btn--ghost" href="#highlights" data-highlight-jump><Icon name="youtube" size={18} /> Watch the highlights</a>
+            ) : (
+              <a class="btn btn--ghost" href="/events/">See the tournaments</a>
+            )}
           </div>
           <ul class="hero-facts">
             <li><Icon name="check" size={15} /> Kids &amp; adults</li>
