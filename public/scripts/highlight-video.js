@@ -7,6 +7,7 @@
   const status=section.querySelector('[data-highlight-status]');
   if(!video||!button||!status)return;
   const message=text=>{status.textContent=text;status.hidden=!text;};
+  const showPlayer=()=>video.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   const retry=()=>{
    const restoreFocus=document.activeElement===video;
    video.controls=false;video.tabIndex=-1;button.hidden=false;button.disabled=false;
@@ -21,6 +22,7 @@
    video.src=smallScreen&&video.dataset.videoMobileSrc?video.dataset.videoMobileSrc:video.dataset.videoSrc;
    video.controls=true;video.tabIndex=0;button.hidden=true;
    video.focus({preventScroll:true});
+   showPlayer();
    try{await video.play();message('');}
    catch{retry();}
   });
@@ -28,7 +30,9 @@
   video.addEventListener('error',retry);
   document.querySelectorAll('[data-highlight-jump]').forEach(link=>link.addEventListener('click',event=>{
    if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
-   if(button.hidden)void video.play().catch(retry);
+   event.preventDefault();
+   if(location.hash!=='#highlights')history.pushState(null,'','#highlights');
+   if(button.hidden){showPlayer();void video.play().catch(retry);}
    else button.click();
   }));
   document.addEventListener('visibilitychange',()=>{if(document.hidden)video.pause();});
