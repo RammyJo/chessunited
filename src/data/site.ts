@@ -488,6 +488,13 @@ export const announcedEvents: AnnouncedEvent[] = [
 ];
 
 
+// Community partners supplied separately from the Tournament 1.0 tier poster.
+export const communityPartners = [
+  "Chess Player’s Parents Association of the Philippines (CPPAP)",
+  'Trainer Fish Chess Academy',
+  'Central La Union Chess Knights',
+];
+
 export const partnerTiers = [
   {
     tier: 'King',

@@ -8,7 +8,7 @@ import AddToCalendar from '../components/AddToCalendar.astro';
 import MerchPromos from '../components/MerchPromos.astro';
 import HighlightVideo from '../components/HighlightVideo.astro';
 import { highlightVideo } from '../data/highlights';
-import { site, upcomingEvents, partnerTiers, weeklySessions, saturdayEvent, saturdayJsonLd } from '../data/site';
+import { site, upcomingEvents, partnerTiers, communityPartners, weeklySessions, saturdayEvent, saturdayJsonLd } from '../data/site';
 import { heroImage } from '../data/images';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
@@ -99,7 +99,7 @@ const tickerItems = [
   'Chess for everyone',
 ];
 
-const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
+const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => tier.partners)];
 ---
 
 <Base
@@ -338,16 +338,16 @@ const partnerNames = partnerTiers.flatMap((tier) => tier.partners);
         <div class="section-head">
           <div>
             <p class="eyebrow">Backed by the community</p>
-            <h2 id="partners-title">Tournament 1.0 partners.</h2>
+            <h2 id="partners-title">Our partners &amp; sponsors.</h2>
           </div>
           <p class="lede">
-            Local government, malls, businesses and community groups that made the first
-            tournament day possible.
+            Local government, businesses, chess clubs and community groups helping
+            Chess United bring more people to the board.
           </p>
         </div>
       </div>
 
-      <div class="partners-strip" aria-label="Tournament 1.0 partners and sponsors">
+      <div class="partners-strip" aria-label="Chess United partners and sponsors">
         <div class="partners-track">
           {[0, 1].map((group) => (
             <div class="partners-group" aria-hidden={group === 1 ? 'true' : undefined}>

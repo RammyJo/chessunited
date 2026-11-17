@@ -1,5 +1,23 @@
 # Sponsor logo sources
 
+## Community partners added 2026-11-17
+
+Names transcribed from the three logos supplied in chat. Listed without a
+sponsorship tier; they are not additions to the Tournament 1.0 tier poster.
+The image attachments currently provide Windows-local paths, which are not
+readable from the cloud workspace. The existing shared Drive sponsor folder was
+checked and does not contain these three logos. Publish the original artwork
+once it is transferred as a ZIP or an accessible Drive link; do not substitute
+another organisation's artwork or generate replacement logos.
+
+| Partner | Chat attachment |
+| --- | --- |
+| Chess Player’s Parents Association of the Philippines (CPPAP) | `a17deb83-a709-45c2-9558-96c8fb96c139.jpg` |
+| Trainer Fish Chess Academy | `6c580e7f-5d9c-478b-9a25-81de6b523ff0.jpg` |
+| Central La Union Chess Knights | `7d3a8ff2-4982-4b80-b60c-bc0ef72771b3.jpg` |
+
+## Existing artwork
+
 Originals: Google Drive folder "SPONSOR LOGOS"
 (https://drive.google.com/drive/u/0/folders/1hKqRfUzgSW5vmyNcJHCODnxYiHQWjgFE),
 downloaded 2026-10-27 into `sponsors-raw/` (files unmodified, Drive file IDs below).

@@ -1,0 +1,18 @@
+---
+import { communityPartners } from '../data/site';
+---
+
+<div class="community-partners">
+  <h3>Community partners</h3>
+  <ul>
+    {communityPartners.map(name => <li>{name}</li>)}
+  </ul>
+</div>
+
+<style>
+  .community-partners{margin-block:2rem}
+  h3{font-family:var(--font-display);font-size:clamp(1.3rem,2.4vw,1.8rem);margin-bottom:1rem}
+  ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;list-style:none;padding:0}
+  li{display:flex;align-items:center;padding:1.5rem;border:2px solid var(--ink);border-top:5px solid var(--azure);background:var(--surface);font-family:var(--font-display);font-size:1rem;line-height:1.5;overflow-wrap:anywhere}
+  @media(max-width:650px){ul{grid-template-columns:1fr}li{padding:1rem 1.25rem}}
+</style>

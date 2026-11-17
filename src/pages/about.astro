@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
+import CommunityPartners from '../components/CommunityPartners.astro';
 import { site, officerGroups, partnerTiers, globalHubs, globalNetworks, globalMarkers, team } from '../data/site';
 import { photos, sponsors } from '../data/images';
 
@@ -313,15 +314,18 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
         <div class="section-head">
           <div>
             <p class="eyebrow">Backed by the community</p>
-            <h2 id="partners-title">Tournament 1.0 partners<br />and sponsors.</h2>
+            <h2 id="partners-title">Our partners<br />and sponsors.</h2>
           </div>
           <p class="lede">
-            Tournament day took a village: local government, malls, businesses, media and
-            community groups. These names are reproduced from the club's official partners
-            poster.
+            Local government, businesses, chess clubs and community groups help bring
+            people together at the board. Meet the organisations behind Chess United.
           </p>
         </div>
 
+        <CommunityPartners />
+
+        <h3 class="sponsor-logos-title">Tournament 1.0 partners</h3>
+        <p class="partner-note">Sponsorship tiers from the club's official Tournament 1.0 partners poster.</p>
         <dl class="partner-tiers">
           {partnerTiers.map((tier) => (
             <div class="partner-tier">
