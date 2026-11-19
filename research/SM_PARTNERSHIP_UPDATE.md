@@ -1,5 +1,17 @@
 # Exclusive partners and SM venue update — 19 November 2026
 
+## Subsequent owner correction: restore sponsors
+
+The owner then explicitly requested: "return the sponsors, just remove the
+robinsons one." The previous sponsor logo collection and historical partner
+list are restored, including CSI La Union Mall, Manna Mall and Chingo Spot.
+The non-Robinsons gallery selections removed in the broad category cleanup are
+also restored. Robinsons remains excluded from sponsor listings. Current SM
+venue branding, the December 12 event and the restored highlights stay intact.
+Treat the historical partner list separately from current category partnerships;
+do not remove these restored supporters again under the earlier broad cleanup.
+This correction supersedes the removal notes below where they conflict.
+
 The user supplied `SMLU LOGO-20261119T090756Z-1-001.zip` and asked us to implement
 the following club instructions. They subsequently confirmed that the December
 12 event replaces the previously listed Super Mario Cup and that the weekly

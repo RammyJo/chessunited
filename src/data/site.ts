@@ -478,6 +478,8 @@ export const partnerTiers = [
       'Province of La Union',
       'City of San Fernando, La Union',
       'SM City La Union',
+      'CSI La Union Mall',
+      'Manna Mall',
       'Rovers',
       'Let There Be Matcha',
     ],

@@ -237,7 +237,9 @@ export const galleryHome = [photos.table19, photos.hall, photos.medals, photos.f
   photos.flatlay,
   photos.merchheld,
   photos.selfie,
+  photos.crew,
   photos.club,
+  photos.restaurant,
   photos.idcard,
 ];
 
@@ -287,4 +289,5 @@ export const sponsors: Sponsor[] = [
   sponsor('VALUE · La Union Emcees', 'VALUE logo: the Vibrant Association of La Union Emcees, with a microphone and waves.', 'value'),
   sponsor("Children's Island Boodle Fight", "Children's Island Boodle Fight logo: a child holding a boodle fight spread.", 'childrens-island'),
   sponsor('Sto. Tomas Batangas Chess Players Association', 'City of Sto. Tomas Batangas Chess Players Association logo with a knight in Philippine colours.', 'sto-tomas-chess'),
+  sponsor('Chingo Spot', 'Chingo Spot logo: a monkey chef in a blue hat holding ramen and fried chicken.', 'chingo-spot'),
 ];
