@@ -45,9 +45,12 @@ or website content. Their sample BPI/restaurant ads are not published.
   posters are no longer rendered. Historical event facts remain in source;
   they are not relabelled as events held at SM. Community supporter lists are
   curated for current exclusivity rather than described as verbatim poster copies.
-- The existing highlight film explicitly promotes the former mall partner.
-  Homepage publication is held pending an updated approved film. The original
-  and existing web encodes remain intact; no attribution is removed or replaced.
+- The existing highlight film includes the former mall partner. It was initially
+  hidden during this update, then restored on 19 November after the owner
+  reported the missing highlights. It remains visible with muted autoplay and
+  past-event context; current venue promotion remains SM. The full film and
+  original audio/attribution are intact. Keep the highlights visible in future
+  sponsor updates.
 - Gallery photos used to promote a competing fast-food venue are no longer
   selected. Ordinary historical tournament photos remain a record of club play.
 
