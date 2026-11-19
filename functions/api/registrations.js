@@ -41,6 +41,7 @@ export async function onRequestPost(context) {
   const notes = clean(body.notes, 400);
 
   const event = Object.hasOwn(TOURNAMENTS,eventSlug) ? TOURNAMENTS[eventSlug] : null;
+  if (event?.registrationPending) return fail('Registration opens when the new official poster confirms the divisions and entry fees. Please check the Events page for updates.', 409);
 
   const fields = {};
   if (!event) fields.eventSlug = 'Choose a tournament.';

@@ -18,11 +18,12 @@ const events = [
   {
     file: 'chess-united-saturday-chess.ics',
     uid: 'chess-united-saturday-chess@chessunited',
-    start: '20261114T020000Z', // 10:00 Asia/Manila
-    end: '20261114T060000Z', // 14:00 Asia/Manila
+    updated: true,
+    start: '20261121T020000Z', // 10:00 Asia/Manila
+    end: '20261121T060000Z', // 14:00 Asia/Manila
     recurrence: 'FREQ=WEEKLY;BYDAY=SA',
-    summary: 'Saturday chess at Robinsons La Union',
-    location: 'Robinsons Mall La Union, San Fernando City, La Union',
+    summary: 'Saturday chess at SM City La Union',
+    location: 'SM City La Union, San Fernando City, La Union',
     description: 'Chess for everyone: kids, teens and adults. Every Saturday, 10:00 AM to 2:00 PM. Join the club group for updates: https://m.me/j/HytA8igzNnAWDEXo/?send_source=gc:qr_code_scan_c',
     url: `${SITE}/events/#saturday-chess`,
   },
@@ -42,17 +43,13 @@ const events = [
   {
     file: 'chess-united-super-mario-cup.ics',
     uid: 'ortega-super-mario-cup-2026@chessunited',
-    start: '20261205T010000Z', // 09:00 Asia/Manila
-    end: '20261205T090000Z', // 17:00 Asia/Manila
-    summary: 'Ortega Chess Tournament: Super Mario Cup',
-    location:
-      'Ortega Convention Center, New Government Center, ' +
-      'Barangay Sevilla / Sagayad, San Fernando City, La Union',
-    description:
-      'Open Division (13 and above): registration PHP 500, ' +
-      'PHP 50,000 winner take all. Kiddies Division (12 and below): ' +
-      'registration PHP 400, PHP 5,000 kids prize. ' +
-      '100% of proceeds go to NASUDI. Runs 9:00 AM to 5:00 PM.',
+    start: '20261212',
+    end: '20261213',
+    dateOnly: true,
+    updated: true,
+    summary: 'Chess United Tournament at SM City La Union',
+    location: 'SM City La Union, San Fernando City, La Union',
+    description: 'Date and venue confirmed. Time, divisions, entry fees and prizes will be announced with the new official poster. Registration details coming soon.',
     url: `${SITE}/events/#super-mario-cup`,
   },
 ];
@@ -90,9 +87,10 @@ for (const event of events) {
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
     `UID:${event.uid}`,
-    'DTSTAMP:20261023T000000Z',
-    `DTSTART:${event.start}`,
-    `DTEND:${event.end}`,
+    event.updated ? 'DTSTAMP:20261119T090000Z' : 'DTSTAMP:20261023T000000Z',
+    ...(event.updated ? ['LAST-MODIFIED:20261119T090000Z', 'SEQUENCE:1'] : []),
+    `DTSTART${event.dateOnly ? ';VALUE=DATE' : ''}:${event.start}`,
+    `DTEND${event.dateOnly ? ';VALUE=DATE' : ''}:${event.end}`,
     ...(event.recurrence ? [`RRULE:${event.recurrence}`] : []),
     `SUMMARY:${esc(event.summary)}`,
     `LOCATION:${esc(event.location)}`,

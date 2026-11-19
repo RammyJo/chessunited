@@ -1,0 +1,45 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { upcomingEvents, saturdayEvent, googleCalendarUrl } from '../src/data/site.ts';
+import { TOURNAMENTS } from '../functions/api/_catalog.js';
+import { onRequestPost } from '../functions/api/registrations.js';
+
+const event = upcomingEvents.find(event => event.slug === 'super-mario-cup');
+
+test('rescheduled event publishes the confirmed date and venue without old fees or times', () => {
+  assert.equal(event.date, '2026-12-12');
+  assert.equal(event.venue, 'SM City La Union');
+  assert.equal(event.detailsPending, true);
+  assert.deepEqual(event.divisions, []);
+  assert.equal(event.start, '');
+  assert.equal(event.end, '');
+  assert.equal(event.poster, undefined);
+  assert.equal(TOURNAMENTS[event.slug].registrationPending, true);
+  assert.equal(saturdayEvent.venue, event.venue);
+});
+
+test('calendar links reserve the correct day without inventing a start time', async () => {
+  const url = new URL(googleCalendarUrl(event, 'https://chessunitedglobal.com/events/'));
+  assert.equal(url.searchParams.get('dates'), '20261212/20261213');
+  assert.match(url.searchParams.get('location'), /SM City La Union/);
+  const ics = (await readFile(new URL('../public/calendar/chess-united-super-mario-cup.ics', import.meta.url), 'utf8')).replace(/\r?\n /g, '');
+  assert.match(ics, /DTSTART;VALUE=DATE:20261212/);
+  assert.match(ics, /DTEND;VALUE=DATE:20261213/);
+  assert.match(ics, /SEQUENCE:1/);
+  assert.doesNotMatch(ics, /50000|50,000|20261205/);
+});
+
+test('stale registration clients cannot create or charge an entry while fees are pending', async () => {
+  let databaseTouched = false;
+  const response = await onRequestPost({
+    request: new Request('https://chessunitedglobal.com/api/registrations', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventSlug: event.slug, division: 'Open Division', fullName: 'Fixture Player', email: 'fixture@example.invalid', phone: '09171234567', gcashRef: '1234567890123' }),
+    }),
+    env: { DB: { prepare() { databaseTouched = true; throw new Error('Must not write'); } } },
+  });
+  assert.equal(response.status, 409);
+  assert.match((await response.json()).error, /official poster/i);
+  assert.equal(databaseTouched, false);
+});

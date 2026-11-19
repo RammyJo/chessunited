@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Icon from '../../components/Icon.astro';
+import ExclusiveSponsors from '../../components/ExclusiveSponsors.astro';
 import CommunityPartners from '../../components/CommunityPartners.astro';
 import { site, partnerTiers } from '../../data/site';
 
@@ -152,7 +153,7 @@ const breadcrumbJsonLd = {
                     name="meetingPlace"
                     required
                     maxlength="200"
-                    placeholder="e.g. Robinsons Mall La Union, ground floor"
+                    placeholder="e.g. SM City La Union, ground floor"
                   />
                   <p class="field-error" data-error-for="meetingPlace" hidden></p>
                 </div>
@@ -262,14 +263,15 @@ const breadcrumbJsonLd = {
             <h2 id="tiers-title">The clubs and organisations already behind us.</h2>
           </div>
           <p class="lede">
-            Meet our community partners, followed by the sponsorship tiers from the
-            club's Tournament 1.0 partners poster.
+            Meet our exclusive category partners and the community organisations supporting
+            Chess United.
           </p>
         </div>
 
+        <ExclusiveSponsors />
         <CommunityPartners />
 
-        <h3 class="sponsor-logos-title">Tournament 1.0 partners</h3>
+        <h3 class="sponsor-logos-title">Community supporters</h3>
         <dl class="partner-tiers">
           {partnerTiers.map((tier) => (
             <div class="partner-tier">

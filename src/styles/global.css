@@ -1470,7 +1470,7 @@ a:hover .arrow { transform: translateX(4px); }
 .results { margin-top: clamp(40px, 5vw, 64px); }
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: clamp(20px, 3vw, 32px);
   align-items: start;
 }
@@ -1700,7 +1700,7 @@ a:hover .arrow { transform: translateX(4px); }
    -------------------------------------------------------------------------- */
 
 .venue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 26px); }
-.venue-card { border: 2px solid var(--ink); background: var(--card); padding: clamp(20px, 2.6vw, 28px); display: flex; flex-direction: column; }
+.venue-card { border: 2px solid var(--ink); background: var(--card); padding: clamp(20px, 2.6vw, 28px); display: flex; flex-direction: column; min-width: 0; }
 .venue-card .tag { align-self: flex-start; padding: 3px 8px; background: var(--azure); color: var(--ink); font-size: .56rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .venue-card h3 { margin-top: 14px; font-size: 1.25rem; }
 .venue-card address { font-style: normal; font-size: .86rem; color: var(--muted); margin-top: 8px; }
@@ -1726,7 +1726,7 @@ a:hover .arrow { transform: translateX(4px); }
   font-size: .7rem;
   line-height: 1.45;
 }
-.venue-card .text-link { margin-top: 14px; align-self: flex-start; }
+.venue-card .text-link { margin-top: 14px; align-self: flex-start; max-width: 100%; white-space: normal; }
 
 .qr-card {
   display: grid;

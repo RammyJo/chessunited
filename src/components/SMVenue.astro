@@ -1,0 +1,20 @@
+---
+import { smLogo } from '../data/partners';
+interface Props { tournament?: boolean; }
+const { tournament = false } = Astro.props;
+---
+<aside class="sm-venue" data-sm-venue aria-label={tournament ? 'December tournament at SM City La Union' : 'Weekly chess at SM City La Union'}>
+  <img {...smLogo} sizes="(max-width:760px) 85vw, 480px" alt="SM City La Union" loading="lazy" decoding="async" />
+  <p class="eyebrow">Chess United · Chess for everyone</p>
+  <h3>{tournament ? 'Your next tournament.' : 'Our new home for chess.'}</h3>
+  <p class="date">{tournament ? 'Saturday, 12 December 2026' : 'Every Saturday'}</p>
+  <p>{tournament ? 'Time, divisions, entry fees and prizes will be announced with the new official poster.' : '10:00 AM–2:00 PM · Kids, teens and adults'}</p>
+  <p class="location">SM City La Union · San Fernando City</p>
+</aside>
+<style>
+  .sm-venue{padding:clamp(1.5rem,4vw,3rem);border:2px solid var(--ink);border-top:6px solid #2448ff;background:#fff;color:var(--ink);display:flex;flex-direction:column;gap:1.2rem;align-items:center;text-align:center;justify-content:center;min-width:0}
+  img{width:100%;height:auto;object-fit:contain;margin-bottom:.8rem}
+  h3{font-family:var(--font-display);font-size:clamp(1.7rem,3vw,2.6rem);line-height:1.1}
+  .date{font-size:1.15rem;font-weight:800}.location{font-size:.85rem;color:var(--muted)}
+  p{max-width:32rem;line-height:1.6}.eyebrow{font-size:.65rem}
+</style>

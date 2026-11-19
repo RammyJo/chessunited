@@ -1,5 +1,12 @@
 # Homepage highlights
 
+Publication is on hold as of 19 November 2026: the supplied film includes the
+former mall partner's promotional logo. Under the club's new SM-only mall
+partnership, `src/data/highlights.ts` sets `approvedForCurrentPartners` to false.
+The original film, full web encodes and autoplay player remain intact. Publish
+an updated film approved for the current partners before enabling this flag.
+The behavior below applies when publication is enabled.
+
 The homepage features the supplied **Chess United Video Highlights 5.0 Version**
 as a complete one-minute film, directly below the opening hero/ticker.
 

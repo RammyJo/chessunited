@@ -45,6 +45,7 @@ export type Event = {
   note?: string;
   ics?: string;
   recurrence?: string;
+  detailsPending?: boolean;
 };
 
 /* `id` doubles as the icon name, so it is narrowed to the accounts the site has
@@ -60,7 +61,7 @@ export const site = {
   legalName: 'Chess United',
   tagline: 'Chess for everyone.',
   description:
-    'Community chess in San Fernando City, La Union. Weekly Saturday play at Robinsons Mall La Union, plus age-division tournaments with cash prizes.',
+    'Community chess in San Fernando City, La Union. Weekly Saturday play at SM City La Union, plus age-division tournaments with cash prizes.',
   city: 'San Fernando City',
   region: 'La Union',
   country: 'Philippines',
@@ -186,45 +187,23 @@ export const events: Event[] = [
     ],
   },
   {
+    // Keep the old slug so shared links and existing registration records survive.
     slug: 'super-mario-cup',
-    name: 'Ortega Chess Tournament: Super Mario Cup',
-    shortName: 'Super Mario Cup',
-    kicker: 'December',
-    date: '2026-12-05',
-    dateLabel: 'Saturday, 5 December 2026',
-    day: '05',
-    month: 'DEC',
-    year: '2026',
-    start: '09:00',
-    end: '17:00',
-    timeLabel: '9:00 AM – 5:00 PM',
-    venue: 'Ortega Convention Center',
-    venueShort: 'Ortega Convention Center',
-    address:
-      'Ortega Convention Center, New Government Center, Barangay Sevilla / Sagayad, San Fernando City, La Union',
-    mapsQuery:
-      'Ortega Convention Center, New Government Center, Barangay Sevilla, San Fernando City, La Union',
-    status: 'upcoming',
-    poster: '/images/posters/super-mario-cup-900.webp',
-    posterWidth: 900,
-    posterHeight: 636,
-    highlight: '₱50,000 winner take all',
-    note: 'Christmas blessing: 100% of proceeds will go to NASUDI.',
+    name: 'Chess United Tournament at SM City La Union',
+    shortName: 'December tournament',
+    kicker: 'Date & venue confirmed',
+    date: '2026-12-12',
+    dateLabel: 'Saturday, 12 December 2026',
+    day: '12', month: 'DEC', year: '2026',
+    start: '', end: '', timeLabel: 'Time to be announced',
+    venue: 'SM City La Union', venueShort: 'SM City La Union',
+    address: 'SM City La Union, San Fernando City, La Union',
+    mapsQuery: 'SM City La Union, San Fernando City, La Union',
+    status: 'upcoming', detailsPending: true,
+    highlight: 'New poster coming soon',
+    note: 'The tournament has moved to 12 December at SM City La Union. The official poster will confirm the time, divisions, fees and prizes. Registration opens when those details are published.',
     ics: '/calendar/chess-united-super-mario-cup.ics',
-    divisions: [
-      {
-        name: 'Open Division',
-        ages: '13 & above',
-        fee: 500,
-        prizes: [{ place: 'Winner take all', amount: 50000 }],
-      },
-      {
-        name: 'Kiddies Division',
-        ages: '12 & below',
-        fee: 400,
-        prizes: [{ place: 'Kids prize', amount: 5000 }],
-      },
-    ],
+    divisions: [],
   },
   {
     slug: 'tournament-1-0',
@@ -327,9 +306,9 @@ export type WeeklySession = {
   venue: string;
   address: string;
   mapsQuery: string;
-  poster: string;
-  posterWidth: number;
-  posterHeight: number;
+  poster?: string;
+  posterWidth?: number;
+  posterHeight?: number;
   blurb: string;
 };
 
@@ -337,15 +316,12 @@ export type WeeklySession = {
    Saturday table the club used to run is no longer on the schedule. */
 export const weeklySessions: WeeklySession[] = [
   {
-    name: 'Robinsons Mall La Union',
+    name: 'SM City La Union',
     when: 'Every Saturday',
     time: '10:00 AM – 2:00 PM',
-    venue: 'Robinsons Mall La Union',
-    address: 'Robinsons Place La Union, San Fernando City, La Union',
-    mapsQuery: 'Robinsons Mall La Union, San Fernando City, La Union',
-    poster: '/images/posters/weekly-chess-900.webp',
-    posterWidth: 900,
-    posterHeight: 1273,
+    venue: 'SM City La Union',
+    address: 'SM City La Union, San Fernando City, La Union',
+    mapsQuery: 'SM City La Union, San Fernando City, La Union',
     blurb:
       'The weekly session: a four-hour table in the mall for kids, teens and adults, whether you are learning the moves or preparing for tournament day.',
   },
@@ -359,10 +335,10 @@ export const upcomingEvents = events.filter((e) => e.status === 'upcoming');
  */
 export const saturdayEvent: Event = {
   slug: 'saturday-chess',
-  name: 'Saturday chess at Robinsons La Union',
+  name: 'Saturday chess at SM City La Union',
   shortName: 'Saturday chess',
   kicker: 'Next up · Every Saturday',
-  date: '2026-11-14',
+  date: '2026-11-21',
   dateLabel: 'Every Saturday',
   day: 'SAT', month: 'WEEKLY', year: 'ALL AGES',
   start: '10:00', end: '14:00', timeLabel: '10:00 AM – 2:00 PM',
@@ -381,9 +357,9 @@ export const saturdayEvent: Event = {
 export const saturdayJsonLd = (origin: string) => ({
   '@context': 'https://schema.org', '@type': 'SportsEvent',
   name: saturdayEvent.name,
-  description: 'Community chess for kids, teens and adults. Every Saturday, 10:00 AM–2:00 PM, at Robinsons Mall La Union.',
+  description: 'Community chess for kids, teens and adults. Every Saturday, 10:00 AM–2:00 PM, at SM City La Union.',
   url: new URL('/events/#saturday-chess', origin).href,
-  image: new URL(saturdayEvent.poster!, origin).href,
+  image: new URL('/images/partners/sm-city-la-union-blue-1200.webp', origin).href,
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   eventSchedule: {
     '@type': 'Schedule', repeatFrequency: 'P1W', byDay: 'https://schema.org/Saturday',
@@ -476,10 +452,10 @@ export const announcedEvents: AnnouncedEvent[] = [
   {
     slug: 'sm-la-union',
     name: 'Chess United Tournament — SM La Union',
-    date: '2027-01-09',
-    dateLabel: 'Saturday, 9 January 2027',
-    month: 'JAN',
-    year: '2027',
+    date: '2026-12-12',
+    dateLabel: 'Saturday, 12 December 2026',
+    month: 'DEC',
+    year: '2026',
     venue: 'SM City La Union',
     address: 'SM City La Union, San Fernando City, La Union',
     mapsQuery: 'SM City La Union, San Fernando City, La Union',
@@ -501,10 +477,7 @@ export const partnerTiers = [
     partners: [
       'Province of La Union',
       'City of San Fernando, La Union',
-      'SM',
-      'Robinsons Place La Union',
-      'CSI La Union Mall',
-      'Manna Mall',
+      'SM City La Union',
       'Rovers',
       'Let There Be Matcha',
     ],
@@ -655,10 +628,15 @@ export const googleCalendarUrl = (event: Event, link: string) => {
   const fees = event.divisions
     .map((division) => `${division.name} (${division.ages}) registration ${formatPeso(division.fee)}`)
     .join('; ');
+  const nextDay = new Date(`${event.date}T00:00:00Z`);
+  nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+  const dates = event.detailsPending
+    ? `${event.date.replaceAll('-', '')}/${nextDay.toISOString().slice(0, 10).replaceAll('-', '')}`
+    : `${utcStamp(event.date, event.start)}/${utcStamp(event.date, event.end)}`;
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: event.name,
-    dates: `${utcStamp(event.date, event.start)}/${utcStamp(event.date, event.end)}`,
+    dates,
     details: `${event.dateLabel}, ${event.timeLabel} at ${event.venue}. ${fees ? fees + '. ' : ''}${link}`,
     location: event.address,
     ctz: 'Asia/Manila',

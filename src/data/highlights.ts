@@ -11,7 +11,10 @@ const local = (path: string) => resolve(process.cwd(), 'public' + path);
 const fingerprint = (path: string) => `${path}?v=${createHash('sha256').update(readFileSync(local(path))).digest('hex').slice(0,12)}`;
 const ready = [src, mobileSrc, `${posterBase}-640.webp`, `${posterBase}-1280.webp`, `${posterBase}-1920.webp`].every(path => existsSync(local(path)));
 
-export const highlightVideo = ready
+// This film carries the former mall partner's promotional logo. Keep the source
+// intact, but hold publication until an updated film respects SM exclusivity.
+const approvedForCurrentPartners = false;
+export const highlightVideo = ready && approvedForCurrentPartners
   ? {
       src: fingerprint(src),
       mobileSrc: fingerprint(mobileSrc),

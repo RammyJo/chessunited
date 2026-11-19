@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
+import ExclusiveSponsors from '../components/ExclusiveSponsors.astro';
 import EventCard from '../components/EventCard.astro';
 import AddToCalendar from '../components/AddToCalendar.astro';
 import MerchPromos from '../components/MerchPromos.astro';
@@ -10,6 +11,7 @@ import HighlightVideo from '../components/HighlightVideo.astro';
 import { highlightVideo } from '../data/highlights';
 import { site, upcomingEvents, partnerTiers, communityPartners, weeklySessions, saturdayEvent, saturdayJsonLd } from '../data/site';
 import { heroImage } from '../data/images';
+import { smLogo } from '../data/partners';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
@@ -50,9 +52,9 @@ const eventJsonLd = upcomingEvents.map((event) => ({
   '@context': 'https://schema.org',
   '@type': 'SportsEvent',
   name: event.name,
-  description: `${event.name} at ${event.venue}, San Fernando City, La Union. Open Division (13 & above) and Kiddies Division (12 & below).`,
-  startDate: `${event.date}T${event.start}:00+08:00`,
-  endDate: `${event.date}T${event.end}:00+08:00`,
+  description: `${event.name} at ${event.venue}, San Fernando City, La Union. ${event.note ?? "Community chess tournament."}`,
+  startDate: event.detailsPending ? event.date : `${event.date}T${event.start}:00+08:00`,
+  endDate: event.detailsPending ? undefined : `${event.date}T${event.end}:00+08:00`,
   eventStatus: 'https://schema.org/EventScheduled',
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   url: abs(`/events/#${event.slug}`),
@@ -62,16 +64,14 @@ const eventJsonLd = upcomingEvents.map((event) => ({
     name: event.venue,
     address: {
       '@type': 'PostalAddress',
-      ...(event.slug === 'super-mario-cup'
-        ? { streetAddress: 'New Government Center, Barangay Sevilla' }
-        : {}),
+      streetAddress: event.address,
       addressLocality: 'San Fernando City',
       addressRegion: 'La Union',
       addressCountry: 'PH',
     },
   },
   organizer: { '@type': 'Organization', name: site.name, url: abs('/') },
-  offers: event.divisions.map((division) => ({
+  offers: event.detailsPending ? undefined : event.divisions.map((division) => ({
     '@type': 'Offer',
     name: division.name,
     price: division.fee,
@@ -93,9 +93,9 @@ const highlightJsonLd = highlightVideo ? [{
 }] : [];
 
 const tickerItems = [
-  'Every Saturday · 10 AM – 2 PM · Robinsons Mall La Union',
+  'Every Saturday · 10 AM – 2 PM · SM City La Union',
   'Join the community group for updates',
-  'Super Mario Cup · 5 December · ₱50,000',
+  '12 December · Tournament at SM City La Union',
   'Chess for everyone',
 ];
 
@@ -132,6 +132,10 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
             A community chess club for kids, teens and adults in San Fernando. Pull up a chair
             on Saturday, or test your game on tournament day.
           </p>
+          <div class="hero-sm">
+            <span>Now playing at</span>
+            <img {...smLogo} sizes="(max-width:650px) 80vw, 380px" alt="SM City La Union" decoding="async" />
+          </div>
           <div class="hero-actions">
             <a class="btn" href="/visit/">
               Join Saturday chess
@@ -166,7 +170,7 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
           </div>
           <div class="hero-sticker" aria-hidden="true">
             <strong>Every<br />Saturday</strong>
-            <small>Robinsons Mall · 10 AM</small>
+            <small>SM City La Union · 10 AM</small>
           </div>
           <a class="hero-ticket" href="/events/#saturday-chess">
             <span class="hero-ticket-date">
@@ -176,7 +180,7 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
             <span class="hero-ticket-body">
               <small>Next up</small>
               <strong>Saturday chess</strong>
-              <span>Robinsons La Union · 10 AM–2 PM →</span>
+              <span>SM City La Union · 10 AM–2 PM →</span>
             </span>
           </a>
         </div>
@@ -205,8 +209,8 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
             <h2 id="next-title">Next up.</h2>
           </div>
           <p class="lede">
-            Join the weekly table at Robinsons La Union, then get ready for the Super Mario Cup
-            in December. Chess for everyone, every Saturday.
+            Join the weekly table at SM City La Union, then get ready for our tournament
+            there on 12 December. Chess for everyone, every Saturday.
           </p>
         </div>
 
@@ -218,7 +222,7 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
         <div class="countdown-row reveal">
           <p class="countdown-label">
             Your next Saturday move
-            <strong>Every Saturday · 10 AM–2 PM · Robinsons La Union</strong>
+            <strong>Every Saturday · 10 AM–2 PM · SM City La Union</strong>
           </p>
           <AddToCalendar event={saturdayEvent} link={abs('/events/#saturday-chess')} />
         </div>
@@ -231,7 +235,7 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
           <p class="eyebrow eyebrow--light">Every Saturday</p>
           <h2 id="weekly-title" class="display-lg">The board is <em>always</em> set.</h2>
           <p>
-            Chess United plays every Saturday at Robinsons Mall La Union — the long afternoon
+            Chess United plays every Saturday at SM City La Union — the long afternoon
             table, from 10 AM to 2 PM. Kids, teens, adults, first-timers — the club's promise is in
             its tagline: chess for everyone.
           </p>
@@ -305,7 +309,7 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
               </p>
               <p class="division-prize">
                 <Icon name="trophy" size={20} />
-                <span><strong>₱5,000</strong> kids prize at the Super Mario Cup</span>
+                <span>December divisions and prizes will be announced with the new poster.</span>
               </p>
             </div>
           </article>
@@ -318,12 +322,12 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
             <div class="division-body">
               <h3>All comers.</h3>
               <p>
-                Teens and adults, club players and first-timers. The Super Mario Cup brings
-                the Open Division together in December.
+                Teens and adults, club players and first-timers. Join the community and follow
+                the next tournament announcement.
               </p>
               <p class="division-prize">
                 <Icon name="trophy" size={20} />
-                <span><strong>₱50,000</strong> winner take all at the Super Mario Cup</span>
+                <span>Next tournament: <strong>12 December</strong> at SM City La Union.</span>
               </p>
             </div>
           </article>
@@ -346,6 +350,8 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
           </p>
         </div>
       </div>
+
+      <div class="wrap"><ExclusiveSponsors /></div>
 
       <div class="partners-strip" aria-label="Chess United partners and sponsors">
         <div class="partners-track">
@@ -383,3 +389,9 @@ const partnerNames = [...communityPartners, ...partnerTiers.flatMap((tier) => ti
 
   <Footer />
 </Base>
+
+<style>
+  .hero-sm{display:flex;flex-direction:column;gap:.65rem;margin-block:1.5rem;max-width:380px}
+  .hero-sm span{font-size:.65rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .hero-sm img{width:100%;height:auto;object-fit:contain}
+</style>
