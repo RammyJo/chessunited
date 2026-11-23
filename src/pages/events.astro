@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import SMVenue from '../components/SMVenue.astro';
+import EventNotice from '../components/EventNotice.astro';
 import GcashPayment from '../components/GcashPayment.astro';
 import AddToCalendar from '../components/AddToCalendar.astro';
 import { site, events, upcomingEvents, formatPeso, gcash, mapsUrl, saturdayEvent, saturdayJsonLd } from '../data/site';
@@ -40,7 +41,7 @@ const eventJsonLd = upcomingEvents.map((event) => ({
   '@context': 'https://schema.org',
   '@type': 'SportsEvent',
   name: event.name,
-  description: `${event.name} at ${event.venue}, San Fernando City, La Union. ${event.note ?? "Community chess tournament."}`,
+  description: event.note ?? `${event.name} at ${event.venue}.`,
   startDate: event.detailsPending ? event.date : `${event.date}T${event.start}:00+08:00`,
   endDate: event.detailsPending ? undefined : `${event.date}T${event.end}:00+08:00`,
   eventStatus: 'https://schema.org/EventScheduled',
@@ -48,13 +49,13 @@ const eventJsonLd = upcomingEvents.map((event) => ({
   url: abs(`/events/#${event.slug}`),
   image: abs(event.poster ?? '/images/og.jpg'),
   location: {
-    '@type': 'Place',
-    name: event.venue,
+    '@type': event.venuePending ? 'City' : 'Place',
+    name: event.venuePending ? event.city : event.venue,
     address: {
       '@type': 'PostalAddress',
       streetAddress: event.address,
-      addressLocality: 'San Fernando City',
-      addressRegion: 'La Union',
+      addressLocality: event.city ?? 'San Fernando City',
+      addressRegion: event.region ?? 'La Union',
       addressCountry: 'PH',
     },
   },
@@ -80,7 +81,7 @@ const breadcrumbJsonLd = {
 
 <Base
   title="Tournaments & events — Chess United"
-  description="Saturday chess at SM City La Union, 10 AM–2 PM. Join the weekly table and the 12 December tournament at SM City La Union. Official poster coming soon."
+  description="Saturday chess at SM City La Union, 10 AM–2 PM. December tournaments: 12 December in La Union and 19 December in Manila. Entry details coming soon."
   jsonLd={[saturdayJsonLd(origin.href), ...eventJsonLd, breadcrumbJsonLd]}
 >
   <Header />
@@ -91,11 +92,10 @@ const breadcrumbJsonLd = {
         <p class="eyebrow">2026 season</p>
         <h1>Make your next move.</h1>
         <p class="lede">
-          Next up: Saturday chess at SM City La Union, 10 AM–2 PM. Join the weekly table,
-          explore upcoming tournaments, and look back at completed events.
+          Play weekly at SM City La Union. Next tournaments: La Union on 12 December and Manila on 19 December.
         </p>
         <div class="page-hero-meta">
-          <span><Icon name="trophy" size={15} /> Tournament · 12 December</span>
+          <span><Icon name="trophy" size={15} /> December tournaments</span>
           <span><Icon name="pin" size={15} /> San Fernando City</span>
           <span><Icon name="calendar" size={15} /> {remainingLabel}</span>
         </div>
@@ -188,9 +188,7 @@ const breadcrumbJsonLd = {
                 Ask in the group
                 <Icon name="external" size={15} />
               </a>
-              <a class="btn btn--ghost" href={mapsUrl(event.mapsQuery)} target="_blank" rel="noopener">
-                <Icon name="pin" size={16} /> Open in Maps
-              </a>
+              {!event.venuePending && <a class="btn btn--ghost" href={mapsUrl(event.mapsQuery)} target="_blank" rel="noopener"><Icon name="pin" size={16} /> Open in Maps</a>}
               <button
                 class="btn btn--ghost"
                 type="button"
@@ -203,7 +201,7 @@ const breadcrumbJsonLd = {
             <AddToCalendar event={event} link={abs(`/events/#${event.slug}`)} />
 
             <p class="event-note">
-              {event.detailsPending ? 'Date and venue are confirmed by the club. The new official poster is coming soon.' : 'Details are from the official event poster. Check the community group for updates.'}
+              {event.detailsPending ? 'Follow the club for the official event announcement.' : 'Details are from the official event poster. Check the community group for updates.'}
             </p>
           </div>
 
@@ -219,7 +217,7 @@ const breadcrumbJsonLd = {
             />
             <figcaption>Official event poster · {event.month} {event.year}</figcaption>
           </figure>
-          ) : <SMVenue tournament />}
+           ) : <EventNotice event={event} />}
         </div>
       </section>
     ))}
@@ -237,7 +235,7 @@ const breadcrumbJsonLd = {
             the entry fee, then paste the {gcash.referenceLength}-digit reference number from your
             receipt. A club officer matches every reference by hand before your slot is confirmed.
           </p>
-          ) : <p class="lede">The tournament is confirmed for 12 December at SM City La Union. Online entry opens once the new poster confirms divisions and fees. Join the community group for the announcement.</p>}
+          ) : <p class="lede">Online entry opens when each tournament’s divisions and fees are confirmed. Join the community group for registration announcements.</p>}
         </div>
 
         <div class="entry-grid">
@@ -365,6 +363,9 @@ const breadcrumbJsonLd = {
       </div>
     </section>
 
+    <div class="wrap past-events">
+      <details class="past-events-disclosure">
+        <summary>Past tournaments &amp; results</summary>
     <section class="section section--paper" id="tournament-2-0" aria-labelledby="tournament-2-0-title">
       <div class="wrap event-detail">
         <div>
@@ -517,11 +518,14 @@ const breadcrumbJsonLd = {
       </div>
     </section>
 
+      </details>
+    </div>
+
     <section class="cta-band" aria-labelledby="events-cta">
       <div class="wrap cta-inner">
         <div>
           <h2 id="events-cta" class="display-lg">Bring your board face.</h2>
-          <p>The next tournament is 12 December at SM City La Union. Join the group for the new poster.</p>
+          <p>La Union on 12 December. Manila on 19 December. Join the group for the latest announcements.</p>
         </div>
         <div class="cta-actions">
           <a class="btn" href="#register">
@@ -535,3 +539,7 @@ const breadcrumbJsonLd = {
 
   <Footer />
 </Base>
+
+<style>
+ .past-events{margin-block:2rem}.past-events-disclosure>summary{padding:1rem 1.25rem;border:2px solid var(--ink);font-weight:800;cursor:pointer;min-height:44px}.past-events-disclosure :global(.wrap){max-width:100%;padding-inline:0}
+</style>

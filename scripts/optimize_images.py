@@ -121,19 +121,20 @@ for key, (fn, stem, widths, _crop) in POSTERS.items():
     manifest["posters"][key] = {"source": fn, "width": im.width, "height": im.height,
                                 "sizes": resize_widths(im, widths, OUT / "posters", stem)}
 
-# Sponsors: artwork on white, padded to a uniform 4:3 tile so the grid stays even.
+# Sponsors: preserve the full artwork inside each 4:3 tile.
 (OUT / "sponsors").mkdir(exist_ok=True)
 for key, (fn, _label) in SPONSORS.items():
-    im = Image.open(SPONSORS_SRC / fn)
-    im = ImageOps.exif_transpose(im).convert("RGB")
-    im.thumbnail((1000, 1000), Image.LANCZOS)
-    side = max(im.size)
-    pad = int(side * 0.08)
-    tile_w, tile_h = side + pad * 2, round((side + pad * 2) * 3 / 4)
-    tile = Image.new("RGB", (tile_w, tile_h), "#ffffff")
-    tile.paste(im, ((tile_w - im.width) // 2, (tile_h - im.height) // 2))
-    manifest["sponsors"][key] = {"source": fn, "width": tile.width, "height": tile.height,
-                                 "sizes": resize_widths(tile, [600, 300], OUT / "sponsors", key)}
+    im = ImageOps.exif_transpose(Image.open(SPONSORS_SRC / fn)).convert("RGBA")
+    sizes = []
+    for width in (600, 300):
+        height, padding = width * 3 // 4, round(width * .055)
+        artwork = ImageOps.contain(im, (width - 2 * padding, height - 2 * padding), Image.Resampling.LANCZOS)
+        tile = Image.new("RGB", (width, height), "white")
+        tile.paste(artwork, ((width - artwork.width) // 2, (height - artwork.height) // 2), artwork)
+        path = OUT / "sponsors" / f"{key}-{width}.webp"
+        tile.save(path, "WEBP", quality=90, method=6)
+        sizes.append({"w": width, "h": height, "path": "/" + path.relative_to(ROOT / "public").as_posix(), "bytes": path.stat().st_size})
+    manifest["sponsors"][key] = {"source": fn, "width": 600, "height": 450, "sizes": sizes}
 
 # Hero: portrait original, responsive + JPEG fallback
 hero = load(HERO_SRC)

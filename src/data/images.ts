@@ -1,3 +1,5 @@
+import { imageUrl } from '../lib/assets';
+
 export type Photo = {
   key: string;
   src: string;
@@ -244,6 +246,7 @@ export const galleryHome = [photos.table19, photos.hall, photos.medals, photos.f
 ];
 
 export type Sponsor = {
+  key: string;
   name: string;
   src: string;
   srcset: string;
@@ -254,9 +257,10 @@ export type Sponsor = {
 // placed on a white 4:3 tile by scripts/optimize_images.py. Sources and Drive
 // file IDs are logged in research/SPONSOR_SOURCES.md.
 const sponsor = (name: string, alt: string, key = name): Sponsor => ({
+  key,
   name,
-  src: `/images/sponsors/${key}-600.webp`,
-  srcset: `/images/sponsors/${key}-300.webp 300w, /images/sponsors/${key}-600.webp 600w`,
+  src: imageUrl(`/images/sponsors/${key}-600.webp`),
+  srcset: `${imageUrl(`/images/sponsors/${key}-300.webp`)} 300w, ${imageUrl(`/images/sponsors/${key}-600.webp`)} 600w`,
   alt,
 });
 

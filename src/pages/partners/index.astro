@@ -5,7 +5,9 @@ import Footer from '../../components/Footer.astro';
 import Icon from '../../components/Icon.astro';
 import ExclusiveSponsors from '../../components/ExclusiveSponsors.astro';
 import CommunityPartners from '../../components/CommunityPartners.astro';
-import { site, partnerTiers } from '../../data/site';
+import NetworkPartner from '../../components/NetworkPartner.astro';
+import { clubConnections, additionalSupporters } from '../../data/partners';
+import { site } from '../../data/site';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
@@ -44,6 +46,10 @@ const breadcrumbJsonLd = {
       </div>
     </header>
 
+    <section class="section section--paper" aria-label="Strategic partnership">
+      <div class="wrap"><NetworkPartner /></div>
+    </section>
+
     <section class="section" aria-labelledby="directory-title">
       <div class="wrap" data-club-directory>
         <div class="section-head">
@@ -68,8 +74,8 @@ const breadcrumbJsonLd = {
         <p class="club-empty" data-club-loading hidden>Loading the clubs…</p>
 
         <p class="club-empty" data-club-empty hidden>
-          <strong>No clubs are listed yet.</strong> The directory opens as soon as the first club
-          officers send their details — a club signing up below is all it takes.
+          <strong>Add your club’s meeting details.</strong> Club officers can submit a location,
+          schedule and contact information using the form below.
         </p>
 
         <p class="club-empty" data-club-error hidden>
@@ -263,25 +269,22 @@ const breadcrumbJsonLd = {
             <h2 id="tiers-title">The clubs and organisations already behind us.</h2>
           </div>
           <p class="lede">
-            Meet our current category partners, community organisations and the supporters
-            of the club's first tournament.
+            The organisations and chess communities connected with the club.
           </p>
         </div>
 
         <ExclusiveSponsors />
         <CommunityPartners />
 
-        <h3 class="sponsor-logos-title">Tournament 1.0 partners</h3>
-        <dl class="partner-tiers">
-          {partnerTiers.map((tier) => (
-            <div class="partner-tier">
-              <dt>{tier.tier}</dt>
-              <dd>
-                {tier.partners.map((partner) => <span class="partner-chip">{partner}</span>)}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <details class="community-connections" id="community-clubs">
+          <summary>Chess community connections</summary>
+          <ul>{clubConnections.map(name => <li>{name}</li>)}</ul>
+        </details>
+        <details class="community-connections">
+          <summary>More community supporters</summary>
+          <ul>{additionalSupporters.map(name => <li>{name}</li>)}</ul>
+        </details>
+        <div class="hero-actions"><a class="btn btn--ghost" href="/about/#partners">All sponsors &amp; supporter logos <Icon name="arrow" size={16} /></a></div>
       </div>
     </section>
 
@@ -301,3 +304,8 @@ const breadcrumbJsonLd = {
 
   <Footer />
 </Base>
+
+<style>
+ .community-connections{margin-block:1rem}.community-connections summary{cursor:pointer;padding:1rem;border:2px solid var(--ink);font-weight:800;min-height:44px}.community-connections ul{list-style:none;padding:1rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;line-height:1.6;font-size:.85rem}
+ @media(max-width:650px){.community-connections ul{grid-template-columns:1fr}}
+</style>

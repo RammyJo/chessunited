@@ -1,0 +1,30 @@
+---
+import { sponsors } from '../data/images';
+// One tile per supporter, with club self-branding and alternate artwork omitted.
+// The original collection remains in data; no supporter relationship is deleted.
+const alternateArtwork = new Set(['chess-united', 'chess-united-wordmark', 'bless-la-union', 'sports-clinic']);
+const collection = sponsors.filter(sponsor => !alternateArtwork.has(sponsor.key));
+const featured = collection.slice(0, 8);
+const remaining = collection.slice(8);
+---
+<div class="sponsor-gallery" data-sponsor-gallery>
+  <ul class="sponsor-grid">
+    {featured.map(sponsor => <li class="supporter-card"><img src={sponsor.src} srcset={sponsor.srcset} sizes="(max-width:650px) 44vw, 260px" width="600" height="450" alt={sponsor.alt} loading="lazy" decoding="async" /><span>{sponsor.name}</span></li>)}
+  </ul>
+  <details>
+    <summary>See all {collection.length} supporters</summary>
+    <ul class="sponsor-grid">
+      {remaining.map(sponsor => <li class="supporter-card"><img src={sponsor.src} srcset={sponsor.srcset} sizes="(max-width:650px) 44vw, 260px" width="600" height="450" alt={sponsor.alt} loading="lazy" decoding="async" /><span>{sponsor.name}</span></li>)}
+    </ul>
+  </details>
+</div>
+<style>
+  .sponsor-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;list-style:none;padding:0;margin-top:1.5rem}
+  .supporter-card{min-width:0;display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--surface)}
+  img{width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;background:#fff}
+  span{display:block;padding:.8rem;font-size:.75rem;font-weight:800;line-height:1.5;overflow-wrap:anywhere}
+  details{margin-top:1.5rem}summary{cursor:pointer;min-height:44px;padding:.8rem 1rem;border:2px solid var(--ink);font-size:.85rem;font-weight:800;background:var(--azure-tint)}
+  summary:focus-visible{outline:3px solid var(--azure-ink);outline-offset:3px}
+  @media(max-width:850px){.sponsor-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:650px){.sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}}
+</style>

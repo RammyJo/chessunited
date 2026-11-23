@@ -45,7 +45,6 @@ const groups = merch.map((group) => ({
 }));
 
 const products: Product[] = groups.flatMap((group) => group.items);
-const missingPhotos = products.filter((item) => !item.photo).length;
 
 const feeLabel = (fee: number | null) => fee === null ? 'calculated before payment' : `${formatPeso(fee)} shipping`;
 
@@ -95,8 +94,7 @@ const orderTemplate = `
             <h2 id="products-title">Pick your kit.</h2>
           </div>
           <p class="lede">
-            Choose a size where there is one, set a quantity, add it to the cart — and the cart keeps
-            it, even if you close the page. The order form opens once the cart has something in it.
+            Choose your items and size, then add them to your cart. Your full total, including shipping, is shown before payment.
           </p>
         </div>
 
@@ -118,27 +116,10 @@ const orderTemplate = `
                   data-product-price={item.price}
                   data-product-sizes={item.sizes?.join(',') ?? undefined}
                 >
-                  <div class="product-media">
-                    {item.photo ? (
-                      <img
-                        src={item.photo}
-                        width="600"
-                        height="600"
-                        alt={`${item.name} — Chess United merchandise`}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : (
-                      <div class="product-placeholder">
-                        <Icon name="spark" size={28} />
-                        <span>{item.name}</span>
-                        <small>Photo coming</small>
-                      </div>
-                    )}
-                  </div>
+                  {item.photo && <div class="product-media"><img src={item.photo} width="600" height="600" alt={`${item.name} — Chess United merchandise`} loading="lazy" decoding="async" /></div>}
 
                   <h4 class="product-name">{item.name}</h4>
-                  <p class="product-note">{item.note || ' '}</p>
+                  {item.note && <p class="product-note">{item.note}</p>}
                   <p class="product-price">{formatPeso(item.price)}</p>
 
                   {item.sizes && item.sizes.length > 0 && (
@@ -187,13 +168,7 @@ const orderTemplate = `
           </div>
         ))}
 
-        {missingPhotos > 0 && (
-          <p class="merch-note">
-            {missingPhotos} of {products.length} products are still waiting for their photo. The
-            price and the order line are already correct — the picture appears as soon as the club
-            sends it.
-          </p>
-        )}
+
       </div>
     </section>
 

@@ -43,3 +43,19 @@ test('stale registration clients cannot create or charge an entry while fees are
   assert.match((await response.json()).error, /official poster/i);
   assert.equal(databaseTouched, false);
 });
+
+test('Manila event reserves 19 December without assigning the Pasay partner centre as its venue', async () => {
+  const manila = upcomingEvents.find(event => event.slug === 'manila-december-19');
+  assert.equal(manila.date, '2026-12-19');
+  assert.equal(manila.detailsPending, true);
+  assert.equal(manila.venuePending, true);
+  assert.equal(manila.start, '');
+  assert.deepEqual(manila.divisions, []);
+  assert.doesNotMatch(manila.venue, /SM City|NUCFP|Pasay|Rufino/);
+  const url = new URL(googleCalendarUrl(manila, 'https://chessunitedglobal.com/events/'));
+  assert.equal(url.searchParams.get('dates'), '20261219/20261220');
+  const ics = (await readFile(new URL(`../public${manila.ics}`, import.meta.url), 'utf8')).replace(/\r?\n /g, '');
+  assert.match(ics, /DTSTART;VALUE=DATE:20261219/);
+  assert.match(ics, /DTEND;VALUE=DATE:20261220/);
+  assert.doesNotMatch(ics, /DTSTART;TZID|SM City|NUCFP|Pasay|Rufino/);
+});

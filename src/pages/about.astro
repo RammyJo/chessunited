@@ -6,7 +6,8 @@ import Icon from '../components/Icon.astro';
 import ExclusiveSponsors from '../components/ExclusiveSponsors.astro';
 import CommunityPartners from '../components/CommunityPartners.astro';
 import { site, officerGroups, partnerTiers, globalHubs, globalNetworks, globalMarkers, team } from '../data/site';
-import { photos, sponsors } from '../data/images';
+import { photos } from '../data/images';
+import SponsorGallery from '../components/SponsorGallery.astro';
 
 const publishedOfficerGroups = officerGroups
   .map(group => ({ ...group, officers: group.officers.filter(person => !person.open) }))
@@ -32,8 +33,6 @@ const initials = (name: string) =>
     .map((part) => part[0])
     .join('');
 
-const sponsorHalf = Math.ceil(sponsors.length / 2);
-const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)];
 ---
 
 <Base
@@ -325,52 +324,15 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
         <ExclusiveSponsors />
         <CommunityPartners />
 
-        <h3 class="sponsor-logos-title">Tournament 1.0 partners</h3>
-        <p class="partner-note">The organisations that supported the club's first tournament.</p>
-        <dl class="partner-tiers">
-          {partnerTiers.map((tier) => (
-            <div class="partner-tier">
-              <dt>{tier.tier}</dt>
-              <dd>
-                {tier.partners.map((partner) => <span class="partner-chip">{partner}</span>)}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <p class="partner-note">
-          Thank you to the businesses, organisations and community groups behind the club.
-        </p>
+        <details class="historical-partners">
+          <summary>Tournament 1.0 partners</summary>
+          <dl class="partner-tiers">
+            {partnerTiers.map(tier => <div class="partner-tier"><dt>{tier.tier}</dt><dd>{tier.partners.map(partner => <span class="partner-chip">{partner}</span>)}</dd></div>)}
+          </dl>
+        </details>
 
-        <h3 class="sponsor-logos-title" id="sponsor-logos-title">The logos, in one place.</h3>
-        <p class="partner-note">
-          Community supporter artwork supplied by the club.
-        </p>
-        {sponsorRows.map((row, rowIndex) => (
-          <div class={`sponsor-marquee${rowIndex === 1 ? ' sponsor-marquee--rev' : ''}`}>
-            <div class={`sponsor-track sponsor-track--${rowIndex}`}>
-              {/* second group is visual padding for the seamless loop */}
-              {[0, 1].map((group) => (
-                <div class="sponsor-group" aria-hidden={group === 1 ? 'true' : undefined}>
-                  {row.map((sponsor) => (
-                    <div class="sponsor-card">
-                      <img
-                        src={sponsor.src}
-                        srcset={sponsor.srcset}
-                        sizes="220px"
-                        width="600"
-                        height="450"
-                        alt={`${sponsor.name} logo`}
-                        loading="eager"
-                        decoding="async"
-                      />
-                      <span class="sponsor-name">{sponsor.name}</span>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+        <h3 class="sponsor-logos-title" id="sponsor-logos-title">Our supporters.</h3>
+        <SponsorGallery />
       </div>
     </section>
 
@@ -411,3 +373,7 @@ const sponsorRows = [sponsors.slice(0, sponsorHalf), sponsors.slice(sponsorHalf)
 
   <Footer />
 </Base>
+
+<style>
+ .historical-partners{margin-top:2rem}.historical-partners summary{font-weight:800;cursor:pointer;min-height:44px;padding:.85rem 1rem;border:2px solid var(--ink)}
+</style>

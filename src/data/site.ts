@@ -46,6 +46,9 @@ export type Event = {
   ics?: string;
   recurrence?: string;
   detailsPending?: boolean;
+  venuePending?: boolean;
+  city?: string;
+  region?: string;
 };
 
 /* `id` doubles as the icon name, so it is narrowed to the accounts the site has
@@ -71,8 +74,8 @@ export const site = {
      Leave a href as an empty string until the account exists — empty entries are
      hidden everywhere they are rendered, so nothing half-live is ever published. */
   social: [
-    { id: 'facebook', label: 'Facebook', href: '' },
-    { id: 'instagram', label: 'Instagram', href: '' },
+    { id: 'facebook', label: 'Facebook', href: 'https://www.facebook.com/chessunited.global' },
+    { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/chessunited.global/' },
     { id: 'youtube', label: 'YouTube', href: '' },
   ] as SocialAccount[],
   nav: [
@@ -204,6 +207,24 @@ export const events: Event[] = [
     note: 'The tournament has moved to 12 December at SM City La Union. The official poster will confirm the time, divisions, fees and prizes. Registration opens when those details are published.',
     ics: '/calendar/chess-united-super-mario-cup.ics',
     divisions: [],
+  },
+  {
+    slug: 'manila-december-19',
+    name: 'Chess United Manila Tournament',
+    shortName: 'Manila tournament',
+    kicker: '19 December · Manila',
+    date: '2026-12-19',
+    dateLabel: 'Saturday, 19 December 2026',
+    day: '19', month: 'DEC', year: '2026',
+    start: '', end: '', timeLabel: 'Time to be announced',
+    venue: 'Manila · Venue to be announced',
+    venueShort: 'Manila · Venue to be announced',
+    address: 'Manila, Metro Manila', mapsQuery: '',
+    city: 'Manila', region: 'Metro Manila',
+    status: 'upcoming', detailsPending: true, venuePending: true,
+    divisions: [], highlight: 'Details coming soon',
+    note: 'The club has announced the Manila tournament for 19 December. Venue, time, divisions and entry details will follow.',
+    ics: '/calendar/chess-united-manila-december-19.ics',
   },
   {
     slug: 'tournament-1-0',
@@ -469,6 +490,9 @@ export const communityPartners = [
   "Chess Player’s Parents Association of the Philippines (CPPAP)",
   'Trainer Fish Chess Academy',
   'Central La Union Chess Knights',
+  'Signs, Wonders and Miracles',
+  'Love God and Thy Neighbor Fellowship',
+  'Freedom in Christ Center Fellowship Bangcusay Inc.',
 ];
 
 export const partnerTiers = [

@@ -1,5 +1,22 @@
 # Sponsor logo sources
 
+## November 23 cleanup
+
+The user supplied community, club and merchandise artwork in chat. Readable
+organisation names are listed on the site; exact new image files still need an
+accessible transfer before publishing those artworks or mapping merchandise
+photos to products. Do not derive prices, officer identities or tournament
+venues from unrelated photos. Duplicate image attachments do not create extra
+partners or products. The Robinsons certificate remains historical evidence,
+not a current sponsor listing. The table-tennis poster is outside this chess
+site’s event calendar.
+
+The existing 29 sponsor artworks were rebuilt with `scripts/optimize_sponsors.py`.
+Each complete original fits within both dimensions of a white 4:3 tile with
+padding. This corrects the former crop of square artwork. The public gallery
+shows one tile per supporter, omitting club self-branding and alternate artwork;
+the originals and complete source mapping are retained.
+
 ## Community partners added 2026-11-17
 
 Names transcribed from the three logos supplied in chat. Listed without a

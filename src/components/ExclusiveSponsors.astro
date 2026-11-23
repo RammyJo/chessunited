@@ -1,7 +1,9 @@
 ---
 import { exclusiveSponsors, smLogo } from '../data/partners';
+interface Props { compact?: boolean; }
+const { compact = false } = Astro.props;
 ---
-<div class="exclusive-sponsors" data-exclusive-sponsors>
+<div class:list={['exclusive-sponsors', { 'exclusive-sponsors--compact': compact }]} data-exclusive-sponsors>
   <p class="eyebrow">Our exclusive category partners</p>
   <ul>
     {exclusiveSponsors.map(partner => (
@@ -20,5 +22,9 @@ import { exclusiveSponsors, smLogo } from '../data/partners';
   .category{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted)}
   strong{font-family:var(--font-display);font-size:clamp(1rem,2vw,1.5rem);color:var(--ink);overflow-wrap:anywhere}
   img{width:min(100%,420px);height:auto;object-fit:contain}
+  .exclusive-sponsors--compact ul{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .exclusive-sponsors--compact li:first-child{grid-column:auto;padding:1.4rem}
+  .exclusive-sponsors--compact img{width:100%}
   @media(max-width:650px){ul{grid-template-columns:repeat(2,minmax(0,1fr))}li{padding:1rem}}
+  @media(max-width:850px){.exclusive-sponsors--compact ul{grid-template-columns:repeat(2,minmax(0,1fr))}.exclusive-sponsors--compact li:first-child{grid-column:1/-1}.exclusive-sponsors--compact img{max-width:320px}}
 </style>

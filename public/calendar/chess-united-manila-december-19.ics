@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chess United//Events//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:chess-united-manila-20261219@chessunited
+DTSTAMP:20261123T000000Z
+LAST-MODIFIED:20261123T000000Z
+SEQUENCE:1
+DTSTART;VALUE=DATE:20261219
+DTEND;VALUE=DATE:20261220
+SUMMARY:Chess United Manila Tournament
+LOCATION:Manila\, Metro Manila - venue to be announced
+DESCRIPTION:Tournament date announced by Chess United. Venue\, time\, divis
+ ions and entry details to follow. Follow the community group for updates.
+URL:https://chessunitedglobal.com/events/#manila-december-19
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

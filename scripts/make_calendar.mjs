@@ -52,6 +52,16 @@ const events = [
     description: 'Date and venue confirmed. Time, divisions, entry fees and prizes will be announced with the new official poster. Registration details coming soon.',
     url: `${SITE}/events/#super-mario-cup`,
   },
+  {
+    file: 'chess-united-manila-december-19.ics',
+    uid: 'chess-united-manila-20261219@chessunited',
+    start: '20261219', end: '20261220', dateOnly: true,
+    updated: true, stamp: '20261123T000000Z',
+    summary: 'Chess United Manila Tournament',
+    location: 'Manila, Metro Manila - venue to be announced',
+    description: 'Tournament date announced by Chess United. Venue, time, divisions and entry details to follow. Follow the community group for updates.',
+    url: `${SITE}/events/#manila-december-19`,
+  },
 ];
 
 const esc = (text) =>
@@ -87,8 +97,8 @@ for (const event of events) {
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
     `UID:${event.uid}`,
-    event.updated ? 'DTSTAMP:20261119T090000Z' : 'DTSTAMP:20261023T000000Z',
-    ...(event.updated ? ['LAST-MODIFIED:20261119T090000Z', 'SEQUENCE:1'] : []),
+    `DTSTAMP:${event.stamp ?? (event.updated ? '20261119T090000Z' : '20261023T000000Z')}`,
+    ...(event.updated ? [`LAST-MODIFIED:${event.stamp ?? '20261119T090000Z'}`, 'SEQUENCE:1'] : []),
     `DTSTART${event.dateOnly ? ';VALUE=DATE' : ''}:${event.start}`,
     `DTEND${event.dateOnly ? ';VALUE=DATE' : ''}:${event.end}`,
     ...(event.recurrence ? [`RRULE:${event.recurrence}`] : []),
