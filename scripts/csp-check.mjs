@@ -68,7 +68,7 @@ const server = createServer(async (req, res) => {
 
 await new Promise((resolve) => server.listen(PORT, '127.0.0.1', resolve));
 
-const routes = ['/', '/events/', '/gallery/', '/shop/', '/about/', '/visit/', '/membership/', '/partners/', '/404.html'];
+const routes = ['/', '/events/', '/gallery/', '/videos/', '/shop/', '/about/', '/visit/', '/membership/', '/partners/', '/404.html'];
 for (const entry of await readdir(path.join(DIST, 'events'), { withFileTypes: true })) {
   if (entry.isDirectory()) routes.push(`/events/${entry.name}/`);
 }

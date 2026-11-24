@@ -82,6 +82,7 @@ export const site = {
     { href: '/events/', label: 'Events' },
     { href: '/membership/', label: 'Membership' },
     { href: '/gallery/', label: 'Gallery' },
+    { href: '/videos/', label: 'Videos' },
     { href: '/shop/', label: 'Merchandise' },
     { href: '/partners/', label: 'Partner clubs' },
     { href: '/about/', label: 'About' },

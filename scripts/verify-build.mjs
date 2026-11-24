@@ -18,6 +18,7 @@ const htmlFiles = [
   ['index.html', '/'],
   ['events/index.html', '/events/'],
   ['gallery/index.html', '/gallery/'],
+  ['videos/index.html', '/videos/'],
   ['shop/index.html', '/shop/'],
   ['about/index.html', '/about/'],
   ['visit/index.html', '/visit/'],

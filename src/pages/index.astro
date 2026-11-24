@@ -202,7 +202,7 @@ const highlightJsonLd = highlightVideo ? [{
           {homeEvents.map((event) => <ArchiveEventCard event={event} />)}
         </div>
         <p data-current-empty hidden>See the event archive for the latest tournaments.</p>
-        <div class="hero-actions"><a class="btn btn--ghost" href="/events/">Present &amp; past events <Icon name="arrow" size={16} /></a></div>
+        <div class="hero-actions"><a class="btn btn--ghost" href="/events/">All events <Icon name="arrow" size={16} /></a></div>
 
         <div class="countdown-row reveal">
           <p class="countdown-label">
@@ -230,6 +230,12 @@ const highlightJsonLd = highlightVideo ? [{
         <MajorSponsors />
       </div>
     </section>
+    <section class="home-archive" aria-labelledby="archive-title">
+      <div class="wrap home-archive-inner">
+        <div><h2 id="archive-title">From the archives.</h2><p>Past tournaments, original posters and published results.</p></div>
+        <a class="btn btn--ghost btn--sm" href="/events/#past-events">Browse archives <Icon name="arrow" size={15} /></a>
+      </div>
+    </section>
   </main>
 
   <Footer />
@@ -237,6 +243,7 @@ const highlightJsonLd = highlightVideo ? [{
 </Base>
 
 <style>
+  .home-archive{padding-block:2rem;border-top:1px solid rgba(10,21,51,.18)}.home-archive-inner{display:flex;justify-content:space-between;align-items:center;gap:1.25rem;flex-wrap:wrap}.home-archive h2{font-family:var(--font-display);font-size:1.15rem;line-height:1.4}.home-archive p{font-size:.85rem;color:var(--muted);line-height:1.6;margin-top:.4rem}.home-archive .btn{min-height:44px;box-shadow:none}
   .home-event-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
   @media(max-width:650px){.home-event-grid{grid-template-columns:1fr}}
   .hero-sm{display:flex;flex-direction:column;gap:.65rem;margin-block:1.5rem;max-width:420px;background:#fff;padding:1rem;align-items:center}
