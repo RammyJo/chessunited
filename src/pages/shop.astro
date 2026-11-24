@@ -4,8 +4,10 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import GcashPayment from '../components/GcashPayment.astro';
+import MerchandiseCollection from '../components/MerchandiseCollection.astro';
 import { site, merch, couriers, formatPeso } from '../data/site';
 import { merchPhotos } from '../data/images';
+import type { UploadedImage } from '../data/uploads';
 
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
@@ -19,9 +21,7 @@ const breadcrumbJsonLd = {
   ],
 };
 
-/* Product photos are declared in src/data/images.ts next to every other image on
-   the site. A product without an entry keeps the card's placeholder tile, so the
-   club can publish photos one at a time and the page never ships a broken image. */
+/* Catalogue photography is matched to the existing item, independently of price. */
 const photoFor = (id: string) => merchPhotos[id] ?? null;
 
 type Product = {
@@ -31,7 +31,7 @@ type Product = {
   note?: string;
   sizes?: string[];
   group: string;
-  photo: string | null;
+  photo: UploadedImage | null;
 };
 
 const groups = merch.map((group) => ({
@@ -83,6 +83,7 @@ const orderTemplate = `
           <span><Icon name="check" size={15} /> Pay by GCash</span>
           <span><Icon name="pin" size={15} /> Nationwide delivery</span>
         </div>
+        <a class="text-link mt-2" href="#collection">View accessories &amp; designs <Icon name="arrow" size={16} /></a>
       </div>
     </header>
 
@@ -116,7 +117,7 @@ const orderTemplate = `
                   data-product-price={item.price}
                   data-product-sizes={item.sizes?.join(',') ?? undefined}
                 >
-                  {item.photo && <div class="product-media"><img src={item.photo} width="600" height="600" alt={`${item.name} — Chess United merchandise`} loading="lazy" decoding="async" /></div>}
+                  {item.photo && <div class="product-media"><img {...item.photo} sizes="(max-width:650px) 85vw, (max-width:980px) 42vw, 300px" loading="lazy" decoding="async" /></div>}
 
                   <h4 class="product-name">{item.name}</h4>
                   {item.note && <p class="product-note">{item.note}</p>}
@@ -172,7 +173,9 @@ const orderTemplate = `
       </div>
     </section>
 
-    <section class="section section--paper" id="order" aria-labelledby="order-title">
+    <MerchandiseCollection />
+
+    <section class="section" id="order" aria-labelledby="order-title">
       <div class="wrap">
         <div class="section-head">
           <div>

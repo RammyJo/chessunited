@@ -1,0 +1,32 @@
+---
+import { merchandiseCollection } from '../data/uploads';
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+---
+<section class="section section--paper" id="collection" aria-labelledby="collection-title">
+  <div class="wrap">
+    <div class="section-head">
+      <div><p class="eyebrow">More from the club</p><h2 id="collection-title">Accessories &amp; designs.</h2></div>
+      <p class="lede">Explore the collection. Ask the club about prices and availability.</p>
+    </div>
+    <div class="collection-grid" data-merchandise-collection>
+      {merchandiseCollection.map(item => <figure>
+        <a href={item.image.src} target="_blank" rel="noopener noreferrer" aria-label={`View photo: ${item.name}`}>
+          <img {...item.image} sizes="(max-width:650px) 43vw, (max-width:980px) 30vw, 280px" loading="lazy" decoding="async" />
+        </a>
+        <figcaption>{item.name}</figcaption>
+      </figure>)}
+    </div>
+    <a class="btn btn--ghost collection-contact" href={site.groupUrl} target="_blank" rel="noopener noreferrer">Ask about the collection <Icon name="external" size={16} /></a>
+  </div>
+</section>
+<style>
+  .collection-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+  figure{margin:0;min-width:0;border:2px solid var(--ink);background:var(--card);display:flex;flex-direction:column}
+  a{display:block}figure a{background:#fff}
+  img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:#fff}
+  figcaption{font-size:.85rem;line-height:1.5;font-weight:800;padding:1rem;overflow-wrap:anywhere}
+  .collection-contact{display:inline-flex;margin-top:1.5rem}
+  @media(max-width:980px){.collection-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:650px){.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}figcaption{padding:.75rem;font-size:.78rem}}
+</style>

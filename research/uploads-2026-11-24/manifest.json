@@ -1,0 +1,566 @@
+{
+  "source": "Chess United.zip, uploaded 2026-11-24",
+  "files": 51,
+  "unique": 44,
+  "images": [
+    {
+      "bytes": 275556,
+      "sha": "91ed08a6a8ef3299b8a588d0c6f9716c40182cc6f9ede2a7bfe3271666f714a1",
+      "index": 0,
+      "size": [
+        1030,
+        2048
+      ],
+      "filename": "848510240_1107369348693583_8293337242713151295_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 44303,
+      "sha": "b72cfee0f55c43df2882a2c82978a60c0fde18c1b6bd9dfbf3e7a7c726d59f8e",
+      "index": 1,
+      "size": [
+        732,
+        732
+      ],
+      "filename": "900630396_1694148118834606_6823074325330818946_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 64154,
+      "sha": "d12c9495be6c2b9297efaf77290ae55ca50cdca2a172b75d9107b561ad3afba5",
+      "index": 2,
+      "size": [
+        938,
+        938
+      ],
+      "filename": "900728496_1109701091838581_5623428698767694121_n.jpg",
+      "key": "signs-wonders-miracles",
+      "kind": "logo",
+      "label": "Signs, Wonders and Miracles",
+      "usage": "published"
+    },
+    {
+      "bytes": 33420,
+      "sha": "c430eb1e12b26b823a2700d6a342b46ca39350ea089a047f111aeb0e59c89cf2",
+      "index": 3,
+      "size": [
+        465,
+        467
+      ],
+      "filename": "901037947_3752072241616843_6451140486857538261_n.jpg",
+      "key": "flip-calendar",
+      "kind": "merch",
+      "label": "Flip calendar",
+      "usage": "published"
+    },
+    {
+      "bytes": 295716,
+      "sha": "94e5e330f4a2bcf4d296a85c9bda6f5164c97536f2904aebd3f8138113777cc7",
+      "index": 4,
+      "size": [
+        2048,
+        2048
+      ],
+      "filename": "901275628_1461966459243304_7664986872857165453_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 47792,
+      "sha": "877c44e11251f94d37f2df06d3ab22f31e10c3e060706120ea614a8eb490b768",
+      "index": 5,
+      "size": [
+        724,
+        696
+      ],
+      "filename": "901366064_1808319947748434_8749270533629907467_n (1).jpg",
+      "key": "manila-science-chess",
+      "kind": "logo",
+      "label": "Manila Science High School Chess Club",
+      "usage": "published"
+    },
+    {
+      "bytes": 52790,
+      "sha": "bb01fa43b26ee9f9ff2d097410794cdf82b7bfa12672049000034077805361d3",
+      "index": 6,
+      "size": [
+        915,
+        658
+      ],
+      "filename": "904933935_1131436922994866_2835283855515056016_n.jpg",
+      "key": "tissue-box",
+      "kind": "merch",
+      "label": "Bamboo tissue box",
+      "usage": "published"
+    },
+    {
+      "bytes": 230128,
+      "sha": "4a751722d013f1df74c8272b0dec0be12bc2169b9eb508b0ea00f2618e080780",
+      "index": 7,
+      "size": [
+        2048,
+        2048
+      ],
+      "filename": "905192436_1628682445026336_9005154256045838318_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 60692,
+      "sha": "58ea8bba7585a6716468601c0e4531454c8143797f4da36b850750947a28197d",
+      "index": 8,
+      "size": [
+        511,
+        722
+      ],
+      "filename": "906625259_1639766724477673_1886456500750653965_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 150553,
+      "sha": "3f1d56f0bda1bf5a395f87e2002c213fe04e9c796ce4c6a3505130487f940b28",
+      "index": 9,
+      "size": [
+        1254,
+        1254
+      ],
+      "filename": "906932026_28884949257873200_6837105607217061777_n.jpg",
+      "key": "universidad-manila-chess",
+      "kind": "logo",
+      "label": "Universidad de Manila Chess Club",
+      "usage": "published"
+    },
+    {
+      "bytes": 79708,
+      "sha": "2d9714b61dcf4efbc6369fd18c3c34720133af91878ebb051b8b72d0abbf3eec",
+      "index": 10,
+      "size": [
+        717,
+        736
+      ],
+      "filename": "907121122_1167275785726426_9126705920307135939_n.jpg",
+      "key": "cebu-chess-hub",
+      "kind": "logo",
+      "label": "Cebu Chess Hub",
+      "usage": "published"
+    },
+    {
+      "bytes": 135280,
+      "sha": "b29a91c388d63a0577930188dd97625e3b1e247c2351ac3324db36acd7b5cc95",
+      "index": 11,
+      "size": [
+        1254,
+        1254
+      ],
+      "filename": "907236056_1925612888801105_2251580683760954781_n.jpg",
+      "key": "bing-chess-club",
+      "kind": "logo",
+      "label": "Bing Chess Club",
+      "usage": "published"
+    },
+    {
+      "bytes": 190444,
+      "sha": "2241ad773cebe672d9ca4aaedb914f8ceff5ef8cf891d655c91526b2e2312f03",
+      "index": 12,
+      "size": [
+        1840,
+        1840
+      ],
+      "filename": "908041043_4564372007039453_4550410736273838334_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 154033,
+      "sha": "fcccab4770ab72fc07017b1ce62f33b88a0b29ee3986cb81c1a5e98e63f704e6",
+      "index": 13,
+      "size": [
+        2047,
+        2048
+      ],
+      "filename": "908136914_2054861855132834_4982314104661244691_n.jpg",
+      "key": "ymca-davao",
+      "kind": "logo",
+      "label": "YMCA Davao",
+      "usage": "published"
+    },
+    {
+      "bytes": 50971,
+      "sha": "8b5e5a4e13769d2c3d49b00ff4abdc4b8019c05468fd180899147129246e6878",
+      "index": 14,
+      "size": [
+        635,
+        451
+      ],
+      "filename": "910049232_2425476224873336_6504864727638653010_n.jpg",
+      "key": "bamboo-tray",
+      "kind": "merch",
+      "label": "Bamboo tray",
+      "usage": "published"
+    },
+    {
+      "bytes": 57588,
+      "sha": "4d5ee138ff1a233dd1314b8416d4d3e287026031123b9fdbc77d48752ead2843",
+      "index": 15,
+      "size": [
+        694,
+        710
+      ],
+      "filename": "910229228_2213759062827650_3219022077123467464_n (1).jpg",
+      "key": "wall-clock",
+      "kind": "merch",
+      "label": "Wall clock face artwork",
+      "usage": "published"
+    },
+    {
+      "bytes": 32064,
+      "sha": "ee024552f61544a6964d01476a7c74fe78e8db6a3a100a1037b59654598d2e63",
+      "index": 16,
+      "size": [
+        447,
+        447
+      ],
+      "filename": "910302513_1582306156939027_2979097435098443092_n (1).jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 189702,
+      "sha": "a80bfb196344ff27ce23ae66c8e738f232b7174fafe08cca05f9ad95b63084e7",
+      "index": 17,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "910843896_1175128571871636_1478865841319945784_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 69910,
+      "sha": "3ff07871b869154bc6bb94d865f40ec150c7c95f926d10794309fd954d63a571",
+      "index": 18,
+      "size": [
+        958,
+        622
+      ],
+      "filename": "911915235_1473133854172020_340654225154898617_n.jpg",
+      "key": "table-clock",
+      "kind": "merch",
+      "label": "Wooden table clock",
+      "usage": "published"
+    },
+    {
+      "bytes": 199496,
+      "sha": "23fd183d5f50ebda0ccc9a60c49668adf95d7898fc7dca4a0b4b22bd510a3bff",
+      "index": 19,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "912564442_1313062110954532_4012869376091338084_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 49278,
+      "sha": "a3305256f68a86a38eba30ed59a197e338cabc5f4645a4018df7521ed29eeff7",
+      "index": 20,
+      "size": [
+        570,
+        570
+      ],
+      "filename": "913633224_2024317482284500_6146877060734732101_n.jpg",
+      "key": "united-queens-chess",
+      "kind": "logo",
+      "label": "United Queens Chess Club",
+      "usage": "published"
+    },
+    {
+      "bytes": 79746,
+      "sha": "df6eff84ce995681b5c6a1cfd2fe861d62a9cfbcf62e39670045e21857bed16a",
+      "index": 21,
+      "size": [
+        960,
+        960
+      ],
+      "filename": "913886451_4690086627889043_5199454190957934451_n.jpg",
+      "key": "charms-food-corner",
+      "kind": "logo",
+      "label": "Charm\u2019s Food Corner",
+      "usage": "published"
+    },
+    {
+      "bytes": 85217,
+      "sha": "7d9ede2ea79043408d2f61392ce95dd2295d2766a47f3fa1f21e142e882c2ef3",
+      "index": 22,
+      "size": [
+        960,
+        960
+      ],
+      "filename": "914327943_1869116080927074_2857622180099936423_n.jpg",
+      "key": "up-chess-club",
+      "kind": "logo",
+      "label": "UP Chess Club",
+      "usage": "published"
+    },
+    {
+      "bytes": 71215,
+      "sha": "1037f761a96f954bc5b3f70f0165d53c2d8b11147ab6bdec0e0eabda83c311b8",
+      "index": 23,
+      "size": [
+        2048,
+        1152
+      ],
+      "filename": "915035655_1127694910236395_1095000588848576662_n.jpg",
+      "key": "anytime-fitness",
+      "kind": "logo",
+      "label": "Anytime Fitness",
+      "usage": "published"
+    },
+    {
+      "bytes": 54588,
+      "sha": "82f318d71c51a64387a21659cc324e9cb5a363f290b365023da7b7bfef9a1b35",
+      "index": 24,
+      "size": [
+        471,
+        746
+      ],
+      "filename": "915691601_1802969874320016_6626126863254044628_n.jpg",
+      "key": "watch",
+      "kind": "merch",
+      "label": "Blue wristwatch",
+      "usage": "published"
+    },
+    {
+      "bytes": 33128,
+      "sha": "805740f11c4569014ca318805273d792a9f109d00cff9db9920e07722d2cf1f8",
+      "index": 25,
+      "size": [
+        720,
+        792
+      ],
+      "filename": "915720820_2153051488659451_1068860245428126640_n.jpg",
+      "key": "love-god-neighbor",
+      "kind": "logo",
+      "label": "Love God and Thy Neighbor Fellowship",
+      "usage": "published"
+    },
+    {
+      "bytes": 198080,
+      "sha": "d958bdee45b9f585a131881b29d798091428dd8d7d0493c5bc40fd1c24b902f2",
+      "index": 26,
+      "size": [
+        2000,
+        1414
+      ],
+      "filename": "916010828_1506885191291827_5714724686673182898_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 194952,
+      "sha": "45caa230333be387e469a83217f09664564bb2b97e082e5c3a5c7f5a08c848d3",
+      "index": 27,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "916695161_4738037993099337_8896989305059547799_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 197167,
+      "sha": "a00da767f6cebbe1d43c37a4bd831055a52773586a3a02030bb6f08c1f99adc3",
+      "index": 28,
+      "size": [
+        1290,
+        1857
+      ],
+      "filename": "916912023_2246842849597526_7824504979908590543_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 199331,
+      "sha": "fb755e81dc26812d3e946782b23d659ff226f20cc0f35a333328d84b75de2a15",
+      "index": 29,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "917330217_1745030797242300_8418951291974545834_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 65914,
+      "sha": "d0d157177449d9ef19a2fccb84a801ebcf4cd88e1ee265e0a950c43b73dbd932",
+      "index": 30,
+      "size": [
+        478,
+        652
+      ],
+      "filename": "917330238_1188949873643297_1404478952247876657_n.jpg",
+      "key": "keychain",
+      "kind": "merch",
+      "label": "Metal keychain",
+      "usage": "published"
+    },
+    {
+      "bytes": 188989,
+      "sha": "286188d9dba1bce45a9a62193da2f961e6bdd48c221858556cba80ba8fa66f99",
+      "index": 31,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "917423917_1510328610911563_5115149104260241649_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 232225,
+      "sha": "748d6b2aeb9b082066ad2ab832d53ac3202e6ffc9cf2b6bb73073f9b3e75ca9f",
+      "index": 32,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "917677448_2064087230856683_3177262894096144053_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 76874,
+      "sha": "9679988ac946d376b0e4bd71ed93a47e2a2a76534f49711f4a1e94b47a3461e8",
+      "index": 33,
+      "size": [
+        2048,
+        1152
+      ],
+      "filename": "917758313_1690327636002454_3459703014511726444_n.jpg",
+      "key": "shell",
+      "kind": "logo",
+      "label": "Shell",
+      "usage": "published"
+    },
+    {
+      "bytes": 189480,
+      "sha": "e044df8853d2f8b3086afd19f09b212309399a1b6acacc9203a13e74749684eb",
+      "index": 34,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "918363802_1159246640131949_8506079096956204945_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 135248,
+      "sha": "b6db523e8b276fad714b6c0a6ad03c27f0336dba842b28f4fed099496e2fae5d",
+      "index": 35,
+      "size": [
+        1254,
+        1254
+      ],
+      "filename": "918363803_1508807961094104_2036837637917249757_n.jpg",
+      "key": "freedom-christ-bangcusay",
+      "kind": "logo",
+      "label": "Freedom in Christ Center Fellowship Bangcusay Inc.",
+      "usage": "published"
+    },
+    {
+      "bytes": 242646,
+      "sha": "7768d21b602c55de82855e28298fff27f370933254ce10e51505de542d86e73c",
+      "index": 36,
+      "size": [
+        1448,
+        2048
+      ],
+      "filename": "918647682_2280454076069557_1589821390294474309_n (1).jpg",
+      "key": "calendar-2027",
+      "kind": "merch",
+      "label": "2027 calendar design",
+      "usage": "published"
+    },
+    {
+      "bytes": 29718,
+      "sha": "3133e039f1bc5615b929edeb8f677ec2d146bac163c3af2444b38a2e73fd4500",
+      "index": 37,
+      "size": [
+        322,
+        454
+      ],
+      "filename": "918849569_1173435918545882_4531612689732433291_n (1).jpg",
+      "key": "wireless-charger",
+      "kind": "merch",
+      "label": "Wireless charger and phone stand",
+      "usage": "published"
+    },
+    {
+      "bytes": 196441,
+      "sha": "ee4ba33a661a64629c7e5d618111de0b5bf78ee3b080b22ac592eb661c672d59",
+      "index": 38,
+      "size": [
+        1800,
+        1800
+      ],
+      "filename": "919853578_1761557568274114_4820310002822723634_n (1).jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 188539,
+      "sha": "6d00e922537f7e23cd28a1709bdf3b1deb2e1deb89ffcf56141d9f7584f93eb6",
+      "index": 39,
+      "size": [
+        2048,
+        1536
+      ],
+      "filename": "920521538_1398091668856092_7395607202324057097_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 141980,
+      "sha": "efaaf4d54851b18e2bd98cb2e76447283527fbd753098e4468362c24e642722d",
+      "index": 40,
+      "size": [
+        1536,
+        2048
+      ],
+      "filename": "921124564_1183141391334419_1912227963724270375_n (1).jpg",
+      "key": "bottles",
+      "kind": "merch",
+      "label": "Bottles and tumblers",
+      "usage": "published"
+    },
+    {
+      "bytes": 55354,
+      "sha": "adee384b15aefc96dbb328bd691f3bba9bc11b17f7ef543de74b2d137cc412ec",
+      "index": 41,
+      "size": [
+        946,
+        534
+      ],
+      "filename": "921407808_2726744314449029_3701467694928791810_n.jpg",
+      "usage": "reference only; no public asset"
+    },
+    {
+      "bytes": 40095,
+      "sha": "7bd0befe1968408d95a9a9617aff4cba839d84d72ac77b3567a351439169c8a8",
+      "index": 42,
+      "size": [
+        500,
+        500
+      ],
+      "filename": "921817836_1411609674377085_7309996056173710518_n.jpg",
+      "key": "metro-davao-youth-chess",
+      "kind": "logo",
+      "label": "Metro Davao Youth Chess Club",
+      "usage": "published"
+    },
+    {
+      "bytes": 192295,
+      "sha": "8b91b093a21c2c430c7d8b3d17c6ad1c77c0acc5903503e3c88e7745fc2fe2c0",
+      "index": 43,
+      "size": [
+        1254,
+        1254
+      ],
+      "filename": "922949938_2640831576387225_6492954553798186413_n.jpg",
+      "key": "nucfp-centre",
+      "kind": "poster",
+      "label": "NUCFP Center opening announcement",
+      "usage": "published"
+    }
+  ]
+}

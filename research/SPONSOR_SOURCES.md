@@ -1,5 +1,31 @@
 # Sponsor logo sources
 
+## Original files received 2026-11-24
+
+`Chess United.zip` supplied the original files: 51 entries, 44 unique byte hashes.
+The reviewed mapping, hashes and publication decisions are in
+`uploads-2026-11-24/manifest.json`; the 25 selected originals are preserved in
+that directory’s `raw/` folder. `scripts/optimize_uploaded_images.py` creates
+responsive WebP derivatives and `src/data/uploaded-images.json`. Logo artwork
+fits inside padded white tiles without cropping or stretching.
+
+The supplied three faith-community logos, eight chess-club logos and Shell,
+Charm’s Food Corner and Anytime Fitness logos now replace the corresponding
+text-only entries. The two Metro Davao variants describe one club; use its MDYCC
+badge once. Existing official SM horizontal lockups remain in use. The supplied
+round SM image and duplicate guidelines do not create another partner card.
+The NUCFP announcement is available within its centre feature.
+
+The table clock, keychain and wall-clock face artwork match existing catalogue
+items and keep the existing prices. Seven other merchandise images form a
+separate collection with availability/price enquiries, without invented SKUs or
+prices. The 2027 calendar is labelled a design, not a club event schedule.
+
+Unidentified shield artwork, the unrelated JCI poster, the personal selfie,
+old Robinsons certificate and table-tennis materials remain references rather
+than public chess-site content. The CPPAP, Trainer Fish and Central La Union
+logos are not in this ZIP; those existing entries remain text-only.
+
 ## November 23 cleanup
 
 The user supplied community, club and merchandise artwork in chat. Readable

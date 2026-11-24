@@ -1,4 +1,5 @@
 import { imageUrl } from '../lib/assets';
+import { uploadedImages, type UploadedImage } from './uploads';
 
 export type Photo = {
   key: string;
@@ -220,11 +221,12 @@ export const posters = {
   top10Kiddies: '/images/posters/top10-kiddies-900.webp',
 };
 
-/* Merchandise product photos, keyed by the product `id` from the `merch` list in
-   site.ts. Save the file as public/images/merch/<id>.webp and add its line here.
-   An id that is not listed gets the card's placeholder tile, so the club can
-   publish product photos one at a time and the page never ships a broken image. */
-export const merchPhotos: Record<string, string> = {};
+/** Only visually matched catalogue items; other photos live in the collection. */
+export const merchPhotos: Record<string, UploadedImage> = {
+  keychain: uploadedImages.keychain,
+  'table-clock': uploadedImages['table-clock'],
+  'wall-clock': uploadedImages['wall-clock'],
+};
 
 export const galleryHome = [photos.table19, photos.hall, photos.medals, photos.flatlay, photos.medalist, photos.hall2];export const galleryAll = [
   photos.table19,

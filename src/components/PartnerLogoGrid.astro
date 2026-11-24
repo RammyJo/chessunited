@@ -1,0 +1,23 @@
+---
+import { partnerArtwork } from '../data/uploads';
+export interface Props { names: string[] }
+const { names }: Props = Astro.props;
+---
+<ul class="partner-logo-grid">
+  {names.map(name => {
+    const artwork = partnerArtwork[name];
+    return <li>
+      {artwork && <img {...artwork} sizes="(max-width:650px) 42vw, 260px" loading="lazy" decoding="async" />}
+      <span>{name}</span>
+    </li>;
+  })}
+</ul>
+<style>
+  .partner-logo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;list-style:none;padding:0;margin-top:1.5rem}
+  li{min-width:0;border:2px solid var(--ink);background:var(--surface);display:flex;flex-direction:column}
+  img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;background:#fff}
+  span{padding:1rem;font-size:.8rem;line-height:1.5;font-weight:800;overflow-wrap:anywhere}
+  li:not(:has(img)){justify-content:center;border-top:5px solid var(--azure)}
+  @media(max-width:850px){.partner-logo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:650px){.partner-logo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}span{padding:.75rem}}
+</style>

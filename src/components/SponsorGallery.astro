@@ -1,9 +1,14 @@
 ---
 import { sponsors } from '../data/images';
+import { additionalSupporters } from '../data/partners';
+import { partnerArtwork } from '../data/uploads';
 // One tile per supporter, with club self-branding and alternate artwork omitted.
 // The original collection remains in data; no supporter relationship is deleted.
 const alternateArtwork = new Set(['chess-united', 'chess-united-wordmark', 'bless-la-union', 'sports-clinic']);
-const collection = sponsors.filter(sponsor => !alternateArtwork.has(sponsor.key));
+const collection = [
+  ...sponsors.filter(sponsor => !alternateArtwork.has(sponsor.key)),
+  ...additionalSupporters.map(name => ({ key: name, name, ...partnerArtwork[name] })),
+];
 const featured = collection.slice(0, 8);
 const remaining = collection.slice(8);
 ---

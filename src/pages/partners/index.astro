@@ -6,6 +6,7 @@ import Icon from '../../components/Icon.astro';
 import ExclusiveSponsors from '../../components/ExclusiveSponsors.astro';
 import CommunityPartners from '../../components/CommunityPartners.astro';
 import NetworkPartner from '../../components/NetworkPartner.astro';
+import PartnerLogoGrid from '../../components/PartnerLogoGrid.astro';
 import { clubConnections, additionalSupporters } from '../../data/partners';
 import { site } from '../../data/site';
 
@@ -278,11 +279,11 @@ const breadcrumbJsonLd = {
 
         <details class="community-connections" id="community-clubs">
           <summary>Chess community connections</summary>
-          <ul>{clubConnections.map(name => <li>{name}</li>)}</ul>
+          <PartnerLogoGrid names={clubConnections} />
         </details>
         <details class="community-connections">
           <summary>More community supporters</summary>
-          <ul>{additionalSupporters.map(name => <li>{name}</li>)}</ul>
+          <PartnerLogoGrid names={additionalSupporters} />
         </details>
         <div class="hero-actions"><a class="btn btn--ghost" href="/about/#partners">All sponsors &amp; supporter logos <Icon name="arrow" size={16} /></a></div>
       </div>
@@ -306,6 +307,5 @@ const breadcrumbJsonLd = {
 </Base>
 
 <style>
- .community-connections{margin-block:1rem}.community-connections summary{cursor:pointer;padding:1rem;border:2px solid var(--ink);font-weight:800;min-height:44px}.community-connections ul{list-style:none;padding:1rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;line-height:1.6;font-size:.85rem}
- @media(max-width:650px){.community-connections ul{grid-template-columns:1fr}}
+ .community-connections{margin-block:1rem}.community-connections summary{cursor:pointer;padding:1rem;border:2px solid var(--ink);font-weight:800;min-height:44px}
 </style>
