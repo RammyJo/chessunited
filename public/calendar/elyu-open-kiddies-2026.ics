@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chess United//Events//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:elyu-open-kiddies-2026@chessunited
+DTSTAMP:20261125T000000Z
+LAST-MODIFIED:20261125T000000Z
+SEQUENCE:1
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+SUMMARY:Elyu Open and Kiddies Chess Championships
+LOCATION:Manna Mall · Second floor\, San Fernando City\, La Union
+DESCRIPTION:Open and Kiddies divisions at Manna Mall\, presented by Central
+  La Union Chess Knights. Contact the organiser for registration and the st
+ art time.
+URL:https://chessunitedglobal.com/events/elyu-open-kiddies-2026/
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

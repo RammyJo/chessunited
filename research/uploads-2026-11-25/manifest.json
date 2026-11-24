@@ -1,0 +1,77 @@
+{
+  "source": "chessunited 2.zip, uploaded 25 November 2026",
+  "images": [
+    {
+      "key": "peoples-city-chess",
+      "kind": "poster",
+      "label": "People\u2019s City Chess Championships, 28\u201329 November 2026",
+      "filename": "923664581_1592637255882137_5293243457949931187_n.jpg",
+      "sha": "58d7f26cf1504ccc9949b7ae90c34132e0d6a88c8e8d8938a4ce5e53656b5156",
+      "bytes": 83610
+    },
+    {
+      "key": "jollibee",
+      "kind": "logo",
+      "label": "Jollibee",
+      "filename": "913838812_1489350029962337_5453165004973273221_n.jpg",
+      "sha": "c1bb58c5d4302ed578c1e18d0034bd6acc266e8f37ce7453b236061b635bea32",
+      "bytes": 74927
+    },
+    {
+      "key": "coach-henry-online",
+      "kind": "poster",
+      "label": "Coach Henry Calacday\u2019s separate online chess classes",
+      "filename": "903644878_1806577103955043_870005597269127798_n.jpg",
+      "sha": "482db05cc5ebb629257eb53cb473032b51aef746d058b8dad77ac28f16a283e0",
+      "bytes": 78865
+    },
+    {
+      "key": "rang-ay-bank",
+      "kind": "logo",
+      "label": "Rang-Ay Bank",
+      "filename": "921012075_2508643963277876_8993955740397361756_n.jpg",
+      "sha": "57a83da3f8f301f9f8d54c511a5c4f116e0f8b7554ac49a8742623d7f7cf20f4",
+      "bytes": 19695
+    },
+    {
+      "key": "grab",
+      "kind": "logo",
+      "label": "Grab",
+      "filename": "923228519_1159866633315932_1421501896537260139_n.jpg",
+      "sha": "056646e1b97b342eff9bfe244dc9cf3ce3431e86d36f2913e286106aa7e67ab3",
+      "bytes": 9088
+    },
+    {
+      "key": "smart",
+      "kind": "logo",
+      "label": "SMART",
+      "filename": "890246171_1418790719968690_3999698237753600746_n.jpg",
+      "sha": "224b449acc1b864150baa8439933621a79770f8c02985d59b72790023a675a08",
+      "bytes": 11556
+    },
+    {
+      "key": "first-la-union-chessmate",
+      "kind": "poster",
+      "label": "First La Union Chessmate Showdown, 6 December 2025",
+      "filename": "927887191_1862231834803006_311943722053576002_n.jpg",
+      "sha": "0c924e9cc231d6d33d3ba9d15e6328bcbc8062472a57b3e2b895812c495fba8a",
+      "bytes": 89395
+    },
+    {
+      "key": "elyu-open-kiddies",
+      "kind": "poster",
+      "label": "Elyu Open and Kiddies Chess Championships, 6 December 2026",
+      "filename": "918088179_1636103981621968_8586943889212085964_n.jpg",
+      "sha": "440f3a49eb3be7512f162cf0fc5b62db9bd47b8db5a95146ce8b62b8da5b5b13",
+      "bytes": 356683
+    },
+    {
+      "key": "agkaysa-cup",
+      "kind": "poster",
+      "label": "Agkaysa Cup Chess Tournament, 30 November 2026",
+      "filename": "921921295_993077896722285_8104768326797456122_n.jpg",
+      "sha": "71b2628f619dd0beed02b280026c351c1ee9b8c9663b97b9ce566ba4ab457f5b",
+      "bytes": 246544
+    }
+  ]
+}

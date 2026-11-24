@@ -1,0 +1,65 @@
+{
+  "peoples-city-chess": {
+    "src": "/images/uploads/peoples-city-chess-58d7f26cf1-960.webp",
+    "srcset": "/images/uploads/peoples-city-chess-58d7f26cf1-600.webp 600w, /images/uploads/peoples-city-chess-58d7f26cf1-960.webp 960w",
+    "width": 960,
+    "height": 960,
+    "alt": "People\u2019s City Chess Championships, 28\u201329 November 2026"
+  },
+  "jollibee": {
+    "src": "/images/uploads/jollibee-c1bb58c5d4-600.webp",
+    "srcset": "/images/uploads/jollibee-c1bb58c5d4-300.webp 300w, /images/uploads/jollibee-c1bb58c5d4-600.webp 600w",
+    "width": 600,
+    "height": 450,
+    "alt": "Jollibee"
+  },
+  "coach-henry-online": {
+    "src": "/images/uploads/coach-henry-online-482db05cc5-436.webp",
+    "srcset": "/images/uploads/coach-henry-online-482db05cc5-436.webp 436w",
+    "width": 436,
+    "height": 472,
+    "alt": "Coach Henry Calacday\u2019s separate online chess classes"
+  },
+  "rang-ay-bank": {
+    "src": "/images/uploads/rang-ay-bank-57a83da3f8-600.webp",
+    "srcset": "/images/uploads/rang-ay-bank-57a83da3f8-300.webp 300w, /images/uploads/rang-ay-bank-57a83da3f8-600.webp 600w",
+    "width": 600,
+    "height": 450,
+    "alt": "Rang-Ay Bank"
+  },
+  "grab": {
+    "src": "/images/uploads/grab-056646e1b9-600.webp",
+    "srcset": "/images/uploads/grab-056646e1b9-300.webp 300w, /images/uploads/grab-056646e1b9-600.webp 600w",
+    "width": 600,
+    "height": 450,
+    "alt": "Grab"
+  },
+  "smart": {
+    "src": "/images/uploads/smart-224b449acc-600.webp",
+    "srcset": "/images/uploads/smart-224b449acc-300.webp 300w, /images/uploads/smart-224b449acc-600.webp 600w",
+    "width": 600,
+    "height": 450,
+    "alt": "SMART"
+  },
+  "first-la-union-chessmate": {
+    "src": "/images/uploads/first-la-union-chessmate-0c924e9cc2-1200.webp",
+    "srcset": "/images/uploads/first-la-union-chessmate-0c924e9cc2-600.webp 600w, /images/uploads/first-la-union-chessmate-0c924e9cc2-1200.webp 1200w",
+    "width": 1200,
+    "height": 600,
+    "alt": "First La Union Chessmate Showdown, 6 December 2025"
+  },
+  "elyu-open-kiddies": {
+    "src": "/images/uploads/elyu-open-kiddies-440f3a49eb-1200.webp",
+    "srcset": "/images/uploads/elyu-open-kiddies-440f3a49eb-600.webp 600w, /images/uploads/elyu-open-kiddies-440f3a49eb-1200.webp 1200w",
+    "width": 1200,
+    "height": 896,
+    "alt": "Elyu Open and Kiddies Chess Championships, 6 December 2026"
+  },
+  "agkaysa-cup": {
+    "src": "/images/uploads/agkaysa-cup-71b2628f61-1024.webp",
+    "srcset": "/images/uploads/agkaysa-cup-71b2628f61-600.webp 600w, /images/uploads/agkaysa-cup-71b2628f61-1024.webp 1024w",
+    "width": 1024,
+    "height": 1536,
+    "alt": "Agkaysa Cup Chess Tournament, 30 November 2026"
+  }
+}

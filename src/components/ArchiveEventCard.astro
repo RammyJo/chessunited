@@ -1,0 +1,22 @@
+---
+import { eventPath, type ArchivedEvent } from '../data/event-archive';
+import Icon from './Icon.astro';
+interface Props { event: ArchivedEvent; archive?: boolean }
+const { event, archive = false }: Props = Astro.props;
+---
+<article class="archive-card" id={archive ? event.legacySlug ?? event.slug : undefined} data-archive-event={archive ? event.slug : undefined} data-current-event={archive ? undefined : true} data-event-date={event.date} data-event-end={event.endDate}>
+  <div class="archive-card-body">
+    <p class="eyebrow">{event.scope} · {event.kind}</p>
+    <time datetime={event.date}>{event.dateLabel}</time>
+    <h3><a href={eventPath(event)}>{event.shortName}</a></h3>
+    <p class="archive-venue"><Icon name="pin" size={15} /> <span>{event.venue}{!event.venuePending && <><br />{event.locality}{event.locality !== event.region ? `, ${event.region}` : ''}</>}</span></p>
+    <a class="text-link" href={eventPath(event)}>Event details <Icon name="arrow" size={15} /></a>
+    {archive && event.clubEvent?.results && <a id="tournament-1-0-results" class="text-link" href={`${eventPath(event)}#results`}>Results <Icon name="arrow" size={15} /></a>}
+  </div>
+</article>
+<style>
+  .archive-card{border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);background:var(--card);min-width:0;scroll-margin-top:100px}
+  .archive-card-body{display:flex;flex-direction:column;align-items:start;gap:1rem;padding:clamp(1.15rem,2.5vw,1.75rem);height:100%}
+  time{font-weight:800;font-size:.9rem;color:var(--red-ink)}h3{font-family:var(--font-display);font-size:clamp(1.1rem,2vw,1.45rem);line-height:1.2;overflow-wrap:normal}
+  .eyebrow{font-size:.6rem}.archive-venue{display:flex;align-items:start;gap:.5rem;font-size:.85rem;line-height:1.6;color:var(--muted)}svg{flex-shrink:0}.text-link{margin-top:auto}
+</style>

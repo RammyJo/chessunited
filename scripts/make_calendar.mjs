@@ -9,6 +9,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { SITE_URL } from './site-url.mjs';
+import { regionalEvents } from '../src/data/regional-events.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const OUT = path.join(ROOT, 'public', 'calendar');
@@ -47,10 +48,11 @@ const events = [
     end: '20261213',
     dateOnly: true,
     updated: true,
-    summary: 'Chess United Tournament at SM City La Union',
+    summary: 'Chess United Tournament 3.0',
     location: 'SM City La Union, San Fernando City, La Union',
     description: 'Date and venue confirmed. Time, divisions, entry fees and prizes will be announced with the new official poster. Registration details coming soon.',
-    url: `${SITE}/events/#super-mario-cup`,
+    stamp: '20261125T000000Z', sequence: 2,
+    url: `${SITE}/events/tournament-3-0/`,
   },
   {
     file: 'chess-united-manila-december-19.ics',
@@ -63,6 +65,20 @@ const events = [
     url: `${SITE}/events/#manila-december-19`,
   },
 ];
+
+// Keep poster-sourced local events in the calendar generator after they expire.
+const nextDay = date => {
+  const value = new Date(`${date}T00:00:00Z`);
+  value.setUTCDate(value.getUTCDate() + 1);
+  return value.toISOString().slice(0, 10).replaceAll('-', '');
+};
+events.push(...regionalEvents.filter(event => event.date >= '2026-11-25').map(event => ({
+  file: `${event.slug}.ics`, uid: `${event.slug}@chessunited`,
+  start: event.date.replaceAll('-', ''), end: nextDay(event.endDate), dateOnly: true,
+  updated: true, stamp: '20261125T000000Z', summary: event.name,
+  location: `${event.venue}, ${event.locality}, ${event.region}`,
+  description: event.description, url: `${SITE}/events/${event.slug}/`,
+})));
 
 const esc = (text) =>
   text
@@ -98,7 +114,7 @@ for (const event of events) {
     'BEGIN:VEVENT',
     `UID:${event.uid}`,
     `DTSTAMP:${event.stamp ?? (event.updated ? '20261119T090000Z' : '20261023T000000Z')}`,
-    ...(event.updated ? [`LAST-MODIFIED:${event.stamp ?? '20261119T090000Z'}`, 'SEQUENCE:1'] : []),
+    ...(event.updated ? [`LAST-MODIFIED:${event.stamp ?? '20261119T090000Z'}`, `SEQUENCE:${event.sequence ?? 1}`] : []),
     `DTSTART${event.dateOnly ? ';VALUE=DATE' : ''}:${event.start}`,
     `DTEND${event.dateOnly ? ';VALUE=DATE' : ''}:${event.end}`,
     ...(event.recurrence ? [`RRULE:${event.recurrence}`] : []),

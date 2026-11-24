@@ -1,0 +1,20 @@
+---
+import type { Event } from '../data/site';
+interface Props { event: Event }
+const { event }: Props = Astro.props;
+---
+{event.results && <section class="section section--paper" id="results" aria-labelledby="results-title">
+  <div class="wrap">
+    <div class="section-head"><div><p class="eyebrow">Published standings</p><h2 id="results-title">Tournament results</h2></div></div>
+    <div class="results-grid">
+      {event.results.map(board => <article class="result-board">
+        <header class="result-head"><h3>{board.division}</h3><span>{board.ages}</span></header>
+        <ol class="result-list">{board.places.map(place => <li class:list={{'is-podium':place.rank<=3}}>
+          <span class="rank">{place.rank}</span><span class="who">{place.name}</span>
+          {place.rank === 1 && <span class="tag-line">Champion</span>}
+        </li>)}</ol>
+        <figure class="result-poster"><img src={board.poster} width={board.posterWidth} height={board.posterHeight} alt={`Published ${board.division} results for ${event.name}`} loading="lazy" decoding="async" /><figcaption>Original results · {event.name}</figcaption></figure>
+      </article>)}
+    </div>
+  </div>
+</section>}

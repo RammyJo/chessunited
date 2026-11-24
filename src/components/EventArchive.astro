@@ -1,0 +1,25 @@
+---
+import { presentEvents, pastEvents } from '../data/event-archive';
+import ArchiveEventCard from './ArchiveEventCard.astro';
+---
+<div data-event-archive>
+  <section class="section" id="present-events" aria-labelledby="present-events-title">
+    <div class="wrap">
+      <div class="section-head"><div><p class="eyebrow">On the calendar</p><h2 id="present-events-title">Present Events</h2></div><p class="lede">Tournaments and coaching in Elyu, plus Chess United’s away dates.</p></div>
+      <div class="archive-grid" data-archive-list="present">{presentEvents.map(event => <ArchiveEventCard event={event} archive />)}</div>
+      <p class="note-box" data-archive-empty="present" hidden={presentEvents.length > 0}>No present events are listed. Weekly Saturday chess continues below.</p>
+    </div>
+  </section>
+  <section class="section section--paper" id="past-events" aria-labelledby="past-events-title">
+    <div class="wrap">
+      <div class="section-head"><div><p class="eyebrow">The permanent archive</p><h2 id="past-events-title">Past Events</h2></div><p class="lede">Posters, dates and published results stay here after tournament day.</p></div>
+      <div class="archive-grid" data-archive-list="past">{pastEvents.map(event => <ArchiveEventCard event={event} archive />)}</div>
+      <p class="note-box" data-archive-empty="past" hidden={pastEvents.length > 0}>Past events will remain here as the calendar grows.</p>
+    </div>
+  </section>
+</div>
+<style>
+  .archive-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
+  @media(max-width:980px){.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:650px){.archive-grid{grid-template-columns:1fr}}
+</style>

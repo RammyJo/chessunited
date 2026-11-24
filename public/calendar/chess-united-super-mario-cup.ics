@@ -5,17 +5,17 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 UID:ortega-super-mario-cup-2026@chessunited
-DTSTAMP:20261119T090000Z
-LAST-MODIFIED:20261119T090000Z
-SEQUENCE:1
+DTSTAMP:20261125T000000Z
+LAST-MODIFIED:20261125T000000Z
+SEQUENCE:2
 DTSTART;VALUE=DATE:20261212
 DTEND;VALUE=DATE:20261213
-SUMMARY:Chess United Tournament at SM City La Union
+SUMMARY:Chess United Tournament 3.0
 LOCATION:SM City La Union\, San Fernando City\, La Union
 DESCRIPTION:Date and venue confirmed. Time\, divisions\, entry fees and pri
  zes will be announced with the new official poster. Registration details c
  oming soon.
-URL:https://chessunitedglobal.com/events/#super-mario-cup
+URL:https://chessunitedglobal.com/events/tournament-3-0/
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT

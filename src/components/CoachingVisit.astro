@@ -1,0 +1,13 @@
+---
+import { coachingVisit, eventPath } from '../data/event-archive';
+import { eventPhase } from '../lib/event-dates.mjs';
+import Icon from './Icon.astro';
+---
+{eventPhase(coachingVisit) === 'present' && <aside class="coach-visit" data-current-event data-event-end={coachingVisit.endDate}>
+  <div><p class="eyebrow">Youth coaching · 28–29 November 2026</p><h3>Coach Henry is coming to La Union.</h3><p>Visiting from Rizal to coach Chess United kids and teens. Session time and venue to be announced.</p></div>
+  <a class="btn btn--ghost" href={eventPath(coachingVisit)}>Visit updates <Icon name="arrow" size={16} /></a>
+</aside>}
+<style>
+  .coach-visit{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;padding:clamp(1.25rem,3vw,2rem);border:2px solid var(--ink);border-left:7px solid var(--azure);background:#fff;margin-bottom:2rem}
+  .coach-visit div{flex:1 1 400px}h3{font-family:var(--font-display);font-size:clamp(1.2rem,2.4vw,1.8rem);line-height:1.25;margin-block:.65rem}p{font-size:.9rem;line-height:1.7}
+</style>

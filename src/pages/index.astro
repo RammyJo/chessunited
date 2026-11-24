@@ -4,7 +4,11 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import ExclusiveSponsors from '../components/ExclusiveSponsors.astro';
-import EventCard from '../components/EventCard.astro';
+import ArchiveEventCard from '../components/ArchiveEventCard.astro';
+import CoachingVisit from '../components/CoachingVisit.astro';
+import MajorSponsors from '../components/MajorSponsors.astro';
+import { homeEvents } from '../data/event-archive';
+import { scriptUrl } from '../lib/assets';
 import AddToCalendar from '../components/AddToCalendar.astro';
 import MerchPromos from '../components/MerchPromos.astro';
 import HighlightVideo from '../components/HighlightVideo.astro';
@@ -189,13 +193,16 @@ const highlightJsonLd = highlightVideo ? [{
             <h2 id="next-title">Next up.</h2>
           </div>
           <p class="lede">
-            Two December tournaments. Follow the club for venue and registration announcements.
+            Tournaments across Elyu, with every event kept in the permanent archive.
           </p>
         </div>
 
-        <div class="event-grid">
-          {upcomingEvents.map((event) => <EventCard event={event} />)}
+        <CoachingVisit />
+        <div class="home-event-grid" data-current-list>
+          {homeEvents.map((event) => <ArchiveEventCard event={event} />)}
         </div>
+        <p data-current-empty hidden>See the event archive for the latest tournaments.</p>
+        <div class="hero-actions"><a class="btn btn--ghost" href="/events/">Present &amp; past events <Icon name="arrow" size={16} /></a></div>
 
         <div class="countdown-row reveal">
           <p class="countdown-label">
@@ -220,14 +227,18 @@ const highlightJsonLd = highlightVideo ? [{
           <a class="btn btn--ghost" href="/about/#partners">All partners &amp; sponsors <Icon name="arrow" size={16} /></a>
         </div>
         <ExclusiveSponsors compact />
+        <MajorSponsors />
       </div>
     </section>
   </main>
 
   <Footer />
+  <script is:inline type="module" src={scriptUrl('event-archive.js')}></script>
 </Base>
 
 <style>
+  .home-event-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
+  @media(max-width:650px){.home-event-grid{grid-template-columns:1fr}}
   .hero-sm{display:flex;flex-direction:column;gap:.65rem;margin-block:1.5rem;max-width:420px;background:#fff;padding:1rem;align-items:center}
   .hero-sm span{font-size:.65rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .hero-sm img{width:100%;height:auto;object-fit:contain}

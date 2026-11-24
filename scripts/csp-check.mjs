@@ -3,7 +3,7 @@
  * This catches inline-script hashes, data: images, font loading, etc. before deploy.
  */
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import puppeteer from 'puppeteer-core';
 
@@ -69,6 +69,9 @@ const server = createServer(async (req, res) => {
 await new Promise((resolve) => server.listen(PORT, '127.0.0.1', resolve));
 
 const routes = ['/', '/events/', '/gallery/', '/shop/', '/about/', '/visit/', '/membership/', '/partners/', '/404.html'];
+for (const entry of await readdir(path.join(DIST, 'events'), { withFileTypes: true })) {
+  if (entry.isDirectory()) routes.push(`/events/${entry.name}/`);
+}
 const errors = [];
 const browser = await puppeteer.launch({
   executablePath: CHROME,
@@ -106,4 +109,4 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-console.log('\nPASS - no CSP violations across 8 pages');
+console.log(`\nPASS - no CSP violations across ${routes.length} pages`);

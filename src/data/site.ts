@@ -192,8 +192,8 @@ export const events: Event[] = [
   {
     // Keep the old slug so shared links and existing registration records survive.
     slug: 'super-mario-cup',
-    name: 'Chess United Tournament at SM City La Union',
-    shortName: 'December tournament',
+    name: 'Chess United Tournament 3.0',
+    shortName: 'Tournament 3.0',
     kicker: 'Date & venue confirmed',
     date: '2026-12-12',
     dateLabel: 'Saturday, 12 December 2026',

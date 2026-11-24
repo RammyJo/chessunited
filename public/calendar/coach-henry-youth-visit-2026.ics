@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chess United//Events//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:coach-henry-youth-visit-2026@chessunited
+DTSTAMP:20261125T000000Z
+LAST-MODIFIED:20261125T000000Z
+SEQUENCE:1
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261130
+SUMMARY:Youth coaching with Coach Henry Calacday
+LOCATION:La Union · Session venue to be announced\, La Union\, La Union
+DESCRIPTION:Coach Henry Calacday is visiting from Rizal to coach Chess Unit
+ ed kids and teens this weekend. The club will announce the session time an
+ d venue.
+URL:https://chessunitedglobal.com/events/coach-henry-youth-visit-2026/
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

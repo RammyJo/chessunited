@@ -1,4 +1,7 @@
-/** Confirmed category exclusivity, supplied by the club on 19 November 2026.
+import newArtwork from './november-25-images.json';
+import { uploadedImages } from './uploads';
+
+/** Confirmed category exclusivity, updated by the club on 25 November 2026.
  * Keep one organisation per category. Only use official supplied logo artwork.
  */
 export const exclusiveSponsors = [
@@ -7,7 +10,18 @@ export const exclusiveSponsors = [
   { category: 'Telecom', name: 'SMART' },
   { category: 'Fast food', name: 'Jollibee' },
   { category: 'Food delivery', name: 'Grab' },
+  { category: 'Fuel', name: 'Shell' },
+  { category: 'Fitness', name: 'Anytime Fitness' },
 ];
+
+export const exclusiveArtwork = {
+  'Rang-Ay Bank': newArtwork['rang-ay-bank'],
+  'SMART': newArtwork.smart,
+  'Jollibee': newArtwork.jollibee,
+  'Grab': newArtwork.grab,
+  'Shell': uploadedImages.shell,
+  'Anytime Fitness': uploadedImages['anytime-fitness'],
+};
 
 export const smLogo = {
   src: '/images/partners/sm-city-la-union-blue-1200.webp',
@@ -39,4 +53,4 @@ export const clubConnections = [
   'UP Chess Club',
 ];
 
-export const additionalSupporters = ['Shell', 'Charm’s Food Corner', 'Anytime Fitness'];
+export const additionalSupporters = ['Charm’s Food Corner'];

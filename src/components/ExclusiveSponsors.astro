@@ -1,30 +1,30 @@
 ---
-import { exclusiveSponsors, smLogo } from '../data/partners';
+import { exclusiveSponsors, exclusiveArtwork, smLogo } from '../data/partners';
 interface Props { compact?: boolean; }
 const { compact = false } = Astro.props;
 ---
 <div class:list={['exclusive-sponsors', { 'exclusive-sponsors--compact': compact }]} data-exclusive-sponsors>
-  <p class="eyebrow">Our exclusive category partners</p>
+  <p class="eyebrow">Exclusive level · Category partners</p>
   <ul>
     {exclusiveSponsors.map(partner => (
       <li>
         <span class="category">{partner.category}</span>
-        {partner.category === 'Mall' ? <img {...smLogo} sizes="(max-width:650px) 80vw, 320px" alt="SM City La Union" loading="lazy" decoding="async" /> : <strong>{partner.name}</strong>}
+        {partner.category === 'Mall' ? <img {...smLogo} sizes="(max-width:650px) 80vw, 420px" alt="SM City La Union" loading="lazy" decoding="async" /> : <>
+          <img {...exclusiveArtwork[partner.name as keyof typeof exclusiveArtwork]} sizes="(max-width:650px) 40vw, 300px" loading="lazy" decoding="async" />
+          <strong>{partner.name}</strong>
+        </>}
       </li>
     ))}
   </ul>
 </div>
 <style>
   .exclusive-sponsors{margin-block:2rem}
-  ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;padding:0;list-style:none}
+  ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;padding:0;list-style:none}
   li{display:flex;flex-direction:column;justify-content:center;gap:1rem;padding:1.4rem;border:2px solid var(--ink);background:#fff;min-width:0}
   li:first-child{grid-column:1/-1;align-items:center;padding-block:2rem}
   .category{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted)}
   strong{font-family:var(--font-display);font-size:clamp(1rem,2vw,1.5rem);color:var(--ink);overflow-wrap:anywhere}
-  img{width:min(100%,420px);height:auto;object-fit:contain}
-  .exclusive-sponsors--compact ul{grid-template-columns:repeat(5,minmax(0,1fr))}
-  .exclusive-sponsors--compact li:first-child{grid-column:auto;padding:1.4rem}
-  .exclusive-sponsors--compact img{width:100%}
+  img{width:min(100%,420px);height:auto;object-fit:contain}li:not(:first-child) img{aspect-ratio:4/3;width:100%}
   @media(max-width:650px){ul{grid-template-columns:repeat(2,minmax(0,1fr))}li{padding:1rem}}
   @media(max-width:850px){.exclusive-sponsors--compact ul{grid-template-columns:repeat(2,minmax(0,1fr))}.exclusive-sponsors--compact li:first-child{grid-column:1/-1}.exclusive-sponsors--compact img{max-width:320px}}
 </style>

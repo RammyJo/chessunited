@@ -61,7 +61,7 @@ export const TOURNAMENTS = {
     divisions: { 'Open Division': 350, 'Kiddies Division': 300 },
   },
   'super-mario-cup': {
-    name: 'Chess United Tournament at SM City La Union',
+    name: 'Chess United Tournament 3.0',
     registrationPending: true,
     registrationClosesAt: '2026-12-13T00:00:00+08:00',
     divisions: { 'Open Division': 500, 'Kiddies Division': 400 },

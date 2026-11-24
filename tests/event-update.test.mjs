@@ -4,11 +4,15 @@ import { readFile } from 'node:fs/promises';
 import { upcomingEvents, saturdayEvent, googleCalendarUrl } from '../src/data/site.ts';
 import { TOURNAMENTS } from '../functions/api/_catalog.js';
 import { onRequestPost } from '../functions/api/registrations.js';
+import { manilaToday, eventPhase } from '../public/scripts/event-dates.js';
+import { regionalEvents } from '../src/data/regional-events.mjs';
 
 const event = upcomingEvents.find(event => event.slug === 'super-mario-cup');
 
 test('rescheduled event publishes the confirmed date and venue without old fees or times', () => {
   assert.equal(event.date, '2026-12-12');
+  assert.equal(event.name, 'Chess United Tournament 3.0');
+  assert.equal(TOURNAMENTS[event.slug].name, event.name);
   assert.equal(event.venue, 'SM City La Union');
   assert.equal(event.detailsPending, true);
   assert.deepEqual(event.divisions, []);
@@ -26,8 +30,24 @@ test('calendar links reserve the correct day without inventing a start time', as
   const ics = (await readFile(new URL('../public/calendar/chess-united-super-mario-cup.ics', import.meta.url), 'utf8')).replace(/\r?\n /g, '');
   assert.match(ics, /DTSTART;VALUE=DATE:20261212/);
   assert.match(ics, /DTEND;VALUE=DATE:20261213/);
-  assert.match(ics, /SEQUENCE:1/);
+  assert.match(ics, /SEQUENCE:2/);
   assert.doesNotMatch(ics, /50000|50,000|20261205/);
+});
+
+test('archive keeps multi-day events present through their last Manila day', () => {
+  const championship = regionalEvents.find(event => event.slug === 'peoples-city-chess-2026');
+  assert.equal(manilaToday(new Date('2026-11-29T15:59:59Z')), '2026-11-29');
+  assert.equal(eventPhase(championship, manilaToday(new Date('2026-11-29T15:59:59Z'))), 'present');
+  assert.equal(eventPhase(championship, manilaToday(new Date('2026-11-29T16:00:00Z'))), 'past');
+  assert.equal(regionalEvents.find(event => event.slug === 'first-la-union-chessmate-2025').date, '2025-12-06');
+  assert.equal(regionalEvents.length, 5, 'Expiration does not delete source records');
+});
+
+test('poster-sourced calendars include both championship days without inventing hours', async () => {
+  const ics = await readFile(new URL('../public/calendar/peoples-city-chess-2026.ics', import.meta.url), 'utf8');
+  assert.match(ics, /DTSTART;VALUE=DATE:20261128/);
+  assert.match(ics, /DTEND;VALUE=DATE:20261130/);
+  assert.doesNotMatch(ics, /DTSTART;TZID|T100000|T090000/);
 });
 
 test('stale registration clients cannot create or charge an entry while fees are pending', async () => {

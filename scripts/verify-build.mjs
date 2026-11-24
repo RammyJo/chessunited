@@ -6,6 +6,8 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { SITE_URL as SITE } from './site-url.mjs';
+import { events as clubEvents } from '../src/data/site.ts';
+import { regionalEvents } from '../src/data/regional-events.mjs';
 
 const DIST = path.resolve('dist');
 const errors = [];
@@ -23,6 +25,9 @@ const htmlFiles = [
   ['partners/index.html', '/partners/'],
   ['404.html', '/404.html'],
 ];
+
+const archiveSlugs = [...clubEvents.map(event => event.slug === 'super-mario-cup' ? 'tournament-3-0' : event.slug), ...regionalEvents.map(event => event.slug)];
+htmlFiles.push(...archiveSlugs.map(slug => [`events/${slug}/index.html`, `/events/${slug}/`]));
 
 let inlineHashes = new Set();
 for (const [file, route] of htmlFiles) {
@@ -158,8 +163,9 @@ if (locs.some((loc) => loc.includes('/404'))) errors.push('sitemap: contains 404
 if (locs.some((loc) => loc.includes('/admin'))) errors.push('sitemap: contains /admin');
 if (locs.some((loc) => loc.includes('/shop/order'))) errors.push('sitemap: contains private order status');
 if (new Set(locs).size !== locs.length) errors.push('sitemap: has duplicate URLs');
-// The public site is capped at eight pages: home plus these seven sections.
-if (locs.length !== 8) errors.push(`sitemap: expected 8 URLs, found ${locs.length}`);
+const expectedRoutes = htmlFiles.filter(([, route]) => route !== '/404.html').map(([, route]) => `${SITE}${route}`);
+for (const url of expectedRoutes) if (!locs.includes(url)) errors.push(`sitemap: missing ${url}`);
+if (locs.length !== expectedRoutes.length) errors.push(`sitemap: expected ${expectedRoutes.length} public URLs, found ${locs.length}`);
 
 const manifest = JSON.parse(await read('manifest.webmanifest'));
 if (!manifest.name || !manifest.short_name || manifest.start_url !== '/') {

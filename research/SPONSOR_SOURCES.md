@@ -1,5 +1,14 @@
 # Sponsor logo sources
 
+## Four missing logos received 2026-11-25
+
+Jollibee, Rang-Ay Bank, SMART and Grab originals arrived in `chessunited 2.zip`.
+Source hashes are in `uploads-2026-11-25/manifest.json`; responsive derivatives
+and captions are mapped in `src/data/november-25-images.json`. They appear in
+the Exclusive Level category cards on the homepage, About and Partners.
+Shell and Anytime Fitness moved to that level as the sole Fuel and Fitness
+partners. See `EVENT_ARCHIVE.md` for the event and sponsor changes in this update.
+
 ## Original files received 2026-11-24
 
 `Chess United.zip` supplied the original files: 51 entries, 44 unique byte hashes.
