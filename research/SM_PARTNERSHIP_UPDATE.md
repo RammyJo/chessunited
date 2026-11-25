@@ -4,7 +4,7 @@
 
 The owner then explicitly requested: "return the sponsors, just remove the
 robinsons one." The previous sponsor logo collection and historical partner
-list are restored, including CSI La Union Mall, Manna Mall and Chingo Spot.
+list are restored, including CSI Mall La Union, Manna Mall and Chingo Spot.
 The non-Robinsons gallery selections removed in the broad category cleanup are
 also restored. Robinsons remains excluded from sponsor listings. Current SM
 venue branding, the December 12 event and the restored highlights stay intact.

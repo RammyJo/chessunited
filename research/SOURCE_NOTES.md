@@ -170,7 +170,7 @@ Both posters are headed "CHESS UNITED TOURNAMENT 1.0" and "TOP 10".
 
 ## Tournament 1.0 Partners & Sponsors (poster tiers)
 - KING: Province of La Union (1850), City of San Fernando La Union, SM, Robinsons Place
-  La Union, CSI La Union Mall, Manna Mall, Rovers, Let There Be Matcha
+  La Union, CSI Mall La Union, Manna Mall, Rovers, Let There Be Matcha
 - QUEEN: Hon. Mario Eduardo C. Ortega, MDA; Hon. Hermenegildo "Dong" A. Gualberto;
   Aloha Cares; Rotary; Lions International; Philippine Eagles
 - KNIGHT: Freedom Church, Influencers United, Healthy Globe, Daddy Blogger, Rickyshetty
