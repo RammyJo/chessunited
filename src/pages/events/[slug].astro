@@ -13,6 +13,7 @@ export function getStaticPaths() { return eventArchive.map(event => ({params:{sl
 interface Props { event: ArchivedEvent }
 const { event }: Props = Astro.props;
 const past = eventPhase(event) === 'past';
+const featuredImage = event.poster ?? event.profileImage;
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 const schema = {
@@ -20,13 +21,13 @@ const schema = {
   name:event.name, description:event.description, url:abs(eventPath(event)), startDate:event.date,
   endDate:event.endDate, eventStatus:'https://schema.org/EventScheduled',
   eventAttendanceMode:'https://schema.org/OfflineEventAttendanceMode',
-  image:abs(event.poster?.src ?? '/images/og.jpg'),
+  image:abs(featuredImage?.src ?? '/images/og.jpg'),
   organizer:event.organizer?{'@type':'Organization',name:event.organizer}:undefined,
   location:{'@type':event.venuePending?'AdministrativeArea':'Place',name:event.venuePending?event.region:event.venue,
     address:{'@type':'PostalAddress',addressLocality:event.locality,addressRegion:event.region,addressCountry:'PH'}},
 };
 ---
-<Base title={event.name} description={`${event.name} · ${event.dateLabel} · ${event.venue}. Event details and original artwork.`.slice(0,160)} image={event.poster ? abs(event.poster.src) : undefined} imageWidth={event.poster?.width} imageHeight={event.poster?.height} imageAlt={event.poster?.alt} jsonLd={schema}>
+<Base title={event.name} description={`${event.name} · ${event.dateLabel} · ${event.venue}. Event details and original artwork.`.slice(0,160)} image={featuredImage ? abs(featuredImage.src) : undefined} imageWidth={featuredImage?.width} imageHeight={featuredImage?.height} imageAlt={featuredImage?.alt} jsonLd={schema}>
   <Header />
   <main id="main" data-event-detail data-event-end={event.endDate}>
     <header class="page-hero"><div class="wrap">
@@ -61,7 +62,7 @@ const schema = {
         </details>}
         {event.profilePoster && <details class="original-details"><summary>Coach Henry’s online classes</summary><p class="event-note">This is his online class schedule. The La Union visit’s session details will be announced by Chess United.</p><a href={event.profilePoster.src} target="_blank" rel="noopener noreferrer"><img {...event.profilePoster} sizes="(max-width:650px) 85vw, 436px" loading="lazy" decoding="async" /></a></details>}
       </div>
-      {event.poster ? <figure class="poster-card"><a href={event.poster.src} target="_blank" rel="noopener noreferrer" aria-label={`View the full poster for ${event.name}`}><img {...event.poster} sizes="(max-width:980px) 90vw, 480px" loading="lazy" decoding="async" /></a><figcaption>Original event poster · {event.dateLabel}</figcaption></figure> : event.slug==='tournament-3-0' ? <SMVenue tournament /> : <aside class="announcement"><p class="eyebrow">Chess United</p><h2>{event.shortName}</h2><p>{event.dateLabel}</p><p>{event.venuePending?'Session venue and time to be announced.':'Official tournament poster coming soon.'}</p></aside>}
+      {featuredImage ? <figure class="poster-card"><a href={featuredImage.src} target="_blank" rel="noopener noreferrer" aria-label={event.profileImage ? "View Coach Henry’s champion artwork" : `View the full poster for ${event.name}`}><img {...featuredImage} sizes="(max-width:980px) 90vw, 480px" loading="lazy" decoding="async" /></a><figcaption>{event.profileImage ? "Coach Henry Calacday · 2026 Grand Tournament Champion artwork" : `Original event poster · ${event.dateLabel}`}</figcaption></figure> : event.slug==='tournament-3-0' ? <SMVenue tournament /> : <aside class="announcement"><p class="eyebrow">Chess United</p><h2>{event.shortName}</h2><p>{event.dateLabel}</p><p>{event.venuePending?'Session venue and time to be announced.':'Official tournament poster coming soon.'}</p></aside>}
     </div></section>
     {event.clubEvent?.results && <TournamentResults event={event.clubEvent} />}
   </main>

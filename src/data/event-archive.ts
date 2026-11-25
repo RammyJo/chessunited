@@ -1,6 +1,7 @@
 import { events, type Event } from './site';
 import { regionalEvents } from './regional-events.mjs';
 import artwork from './november-25-images.json';
+import november26Artwork from './november-26-images.json';
 import { eventPhase, manilaToday } from '../lib/event-dates.mjs';
 
 type Artwork = { src: string; srcset?: string; width: number; height: number; alt: string };
@@ -10,7 +11,7 @@ export type ArchivedEvent = {
   venue: string; locality: string; region: string; description: string;
   organizer?: string; venuePending?: boolean; format?: string; categories?: string;
   registrationUrl?: string; contacts?: { name: string; phone: string }[];
-  prizes?: string; poster?: Artwork; profilePoster?: Artwork; clubEvent?: Event;
+  prizes?: string; poster?: Artwork; profileImage?: Artwork; profilePoster?: Artwork; clubEvent?: Event;
   ics?: string;
 };
 
@@ -31,6 +32,7 @@ export const eventArchive: ArchivedEvent[] = [
   ...clubEvents,
   ...regionalEvents.map(record => ({
     ...record,
+    profileImage: record.slug === 'coach-henry-youth-visit-2026' ? november26Artwork['coach-henry-champion'] : undefined,
     poster: 'posterKey' in record && record.posterKey ? artwork[record.posterKey as keyof typeof artwork] : undefined,
     profilePoster: 'profilePosterKey' in record && record.profilePosterKey ? artwork[record.profilePosterKey as keyof typeof artwork] : undefined,
     ics: record.date >= '2026-11-25' ? `/calendar/${record.slug}.ics` : undefined,

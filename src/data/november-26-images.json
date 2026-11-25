@@ -5,5 +5,12 @@
     "width": 600,
     "height": 450,
     "alt": "ELYUSCRAPER"
+  },
+  "coach-henry-champion": {
+    "src": "/images/uploads/coach-henry-champion-25f225a865-1500.webp",
+    "srcset": "/images/uploads/coach-henry-champion-25f225a865-900.webp 900w, /images/uploads/coach-henry-champion-25f225a865-1500.webp 1500w",
+    "width": 1500,
+    "height": 844,
+    "alt": "Coach Henry Calacday with his medal and trophy, pictured in the supplied 2026 Grand Tournament Champion artwork"
   }
 }
