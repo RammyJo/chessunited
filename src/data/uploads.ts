@@ -1,10 +1,12 @@
 import images from './uploaded-images.json';
+import november26Images from './november-26-images.json';
 
 export const uploadedImages = images;
 export type UploadedImage = (typeof images)[keyof typeof images];
 
 /** Exact supplied artwork; other named partners retain their text-only cards. */
 export const partnerArtwork: Record<string, UploadedImage> = {
+  'ELYUSCRAPER': november26Images.elyuscraper,
   'Signs, Wonders and Miracles': images['signs-wonders-miracles'],
   'Love God and Thy Neighbor Fellowship': images['love-god-neighbor'],
   'Freedom in Christ Center Fellowship Bangcusay Inc.': images['freedom-christ-bangcusay'],

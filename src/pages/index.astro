@@ -7,6 +7,7 @@ import ExclusiveSponsors from '../components/ExclusiveSponsors.astro';
 import ArchiveEventCard from '../components/ArchiveEventCard.astro';
 import CoachingVisit from '../components/CoachingVisit.astro';
 import MajorSponsors from '../components/MajorSponsors.astro';
+import PartnerLogoGrid from '../components/PartnerLogoGrid.astro';
 import { homeEvents } from '../data/event-archive';
 import { scriptUrl } from '../lib/assets';
 import AddToCalendar from '../components/AddToCalendar.astro';
@@ -228,6 +229,8 @@ const highlightJsonLd = highlightVideo ? [{
         </div>
         <ExclusiveSponsors compact />
         <MajorSponsors />
+        <h3 class="community-supporters-title">Community supporters</h3>
+        <PartnerLogoGrid names={['ELYUSCRAPER']} />
       </div>
     </section>
     <section class="home-archive" aria-labelledby="archive-title">
@@ -243,6 +246,7 @@ const highlightJsonLd = highlightVideo ? [{
 </Base>
 
 <style>
+  .community-supporters-title{font-family:var(--font-display);font-size:1.2rem;margin-top:2rem}
   .home-archive{padding-block:2rem;border-top:1px solid rgba(10,21,51,.18)}.home-archive-inner{display:flex;justify-content:space-between;align-items:center;gap:1.25rem;flex-wrap:wrap}.home-archive h2{font-family:var(--font-display);font-size:1.15rem;line-height:1.4}.home-archive p{font-size:.85rem;color:var(--muted);line-height:1.6;margin-top:.4rem}.home-archive .btn{min-height:44px;box-shadow:none}
   .home-event-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
   @media(max-width:650px){.home-event-grid{grid-template-columns:1fr}}

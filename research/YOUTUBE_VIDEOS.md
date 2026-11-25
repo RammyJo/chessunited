@@ -12,13 +12,13 @@ Titles and IDs are recorded in `src/data/videos.ts`.
 | Chess Tournament — Highlights Video | https://www.youtube.com/watch?v=pLbrd2FsJhQ |
 | Chess United — Awards Ceremony | https://www.youtube.com/watch?v=hiXYM_ezono |
 
-`/videos/` uses a single responsive YouTube privacy-enhanced embed. It loads only
-after Play or a selection; selecting another video removes the previous iframe
-to stop its audio. The player permits fullscreen, inline mobile playback and
-YouTube controls. Its strict-origin-when-cross-origin referrer policy supplies
-the parent origin required by YouTube embeds. Direct YouTube links remain
-available, including all five in the no-JavaScript view. Video fragments select
-a title without autoplaying on initial navigation.
+Updated 26 November: `/videos/` displays all five independent YouTube
+privacy-enhanced iframe players in a responsive grid (two columns on desktop,
+one on mobile). Each has native controls, fullscreen, inline playback, lazy
+loading and no autoplay. All players are present in the HTML without JavaScript.
+The strict-origin-when-cross-origin referrer policy supplies the parent origin
+required by YouTube embeds. Direct YouTube links and stable video fragment IDs
+remain available. The former single-player selection script is removed.
 
 The parent CSP adds only `https://www.youtube-nocookie.com` to frame-src. It does
 not allow third-party video scripts in the parent page or wildcard origins.

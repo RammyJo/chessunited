@@ -4,8 +4,6 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 import { youtubeVideos, youtubeWatchUrl } from '../data/videos';
-import { scriptUrl } from '../lib/assets';
-const first = youtubeVideos[0];
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const schema = {
   '@context':'https://schema.org', '@type':'CollectionPage', name:'Chess United videos', url:new URL('/videos/',origin).href,
@@ -17,54 +15,39 @@ const schema = {
   <main id="main">
     <header class="page-hero"><div class="wrap">
       <p class="eyebrow">Chess United on YouTube</p><h1>From the club.</h1>
-      <p class="lede">The games, the people and the moments in between. Choose a video and watch it here.</p>
+      <p class="lede">The games, the people and the moments in between. Watch all five videos here, with a player for each one.</p>
     </div></header>
-    <section class="section" aria-labelledby="watch-title">
-      <div class="wrap watch-grid" data-youtube-library>
-        <div class="watch-panel" id="watch-player">
-          <div class="youtube-stage" data-youtube-stage>
-            <button class="youtube-launch" type="button" data-youtube-launch aria-label={`Play ${first.title}`} hidden>
-              <span class="player-brand"><img src="/images/logo.webp" width="560" height="560" alt="" />Chess United</span>
-              <span class="player-play" aria-hidden="true"><Icon name="youtube" size={56} /></span>
-              <span class="player-prompt">Play video</span>
-            </button>
-            <noscript><a class="no-script-watch" href={youtubeWatchUrl(first.id)} target="_blank" rel="noopener noreferrer">Watch on YouTube <Icon name="external" size={20} /></a></noscript>
+    <section class="section" aria-label="Chess United video collection">
+      <div class="wrap video-grid">
+        {youtubeVideos.map(video => <article class="video-card" id={video.slug} aria-labelledby={`${video.slug}-title`}>
+          <div class="video-frame">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0&playsinline=1`}
+              title={video.title}
+              width="640" height="360" loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
           </div>
-          <div class="watch-caption" aria-live="polite" aria-atomic="true">
-            <p class="eyebrow" data-youtube-category>{first.category}</p>
-            <h2 id="watch-title" data-youtube-title>{first.title}</h2>
+          <div class="video-caption">
+            <p class="eyebrow">{video.category}</p>
+            <h2 id={`${video.slug}-title`}>{video.title}</h2>
+            <a class="text-link" href={youtubeWatchUrl(video.id)} target="_blank" rel="noopener noreferrer">Watch on YouTube <Icon name="external" size={15} /></a>
           </div>
-          <a class="text-link" data-youtube-external href={youtubeWatchUrl(first.id)} target="_blank" rel="noopener noreferrer">Open on YouTube <Icon name="external" size={15} /></a>
-        </div>
-        <aside class="video-list" aria-labelledby="video-list-title">
-          <h2 id="video-list-title">Choose a video</h2>
-          <ol>
-            {youtubeVideos.map((video,index)=><li id={video.slug}>
-              <button type="button" class="video-select" data-youtube-select data-video-id={video.id} data-video-slug={video.slug} data-video-title={video.title} data-video-category={video.category} aria-pressed={index===0?'true':'false'} aria-label={`Play ${video.title}`} hidden>
-                <span class="video-number" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
-                <span><span class="video-category">{video.category}</span><strong>{video.title}</strong></span>
-                <Icon name="youtube" size={20} />
-              </button>
-              <noscript><a class="video-direct" href={youtubeWatchUrl(video.id)} target="_blank" rel="noopener noreferrer">{video.title} <Icon name="external" size={15} /></a></noscript>
-            </li>)}
-          </ol>
-        </aside>
+        </article>)}
       </div>
     </section>
   </main>
   <Footer />
-  <script is:inline src={scriptUrl('youtube-videos.js')} defer></script>
 </Base>
 <style>
-  .watch-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:clamp(1.5rem,3vw,3rem);align-items:start}
-  .watch-panel{min-width:0;scroll-margin-top:100px}.youtube-stage{position:relative;width:100%;aspect-ratio:16/9;background:var(--ink);border:2px solid var(--ink);box-shadow:var(--shadow-sm);overflow:hidden}
-  .youtube-launch{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(.5rem,2vw,1.25rem);color:#fff;background-color:var(--ink);background-image:repeating-conic-gradient(rgba(75,188,237,.06) 0 25%,transparent 0 50%);background-size:80px 80px;border:0;cursor:pointer;padding:1rem}
-  .player-brand{display:flex;align-items:center;gap:.7rem;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800}.player-brand img{width:42px;height:42px;object-fit:contain;background:#fff;border-radius:4px;padding:3px}.player-play{display:grid;place-items:center;background:var(--red);border:2px solid #fff;border-radius:50%;width:84px;height:84px;transition:transform .15s ease}.youtube-launch:hover .player-play{transform:scale(1.05)}.player-prompt{font-size:.8rem;font-weight:800}
-  .youtube-stage :global(iframe){position:absolute;inset:0;width:100%;height:100%;border:0}.no-script-watch{display:flex;align-items:center;justify-content:center;gap:.75rem;min-height:180px;color:#fff;font-weight:800}
-  .watch-caption{margin:1.5rem 0 1rem}.watch-caption h2{font-family:var(--font-display);font-size:clamp(1.3rem,2.6vw,2rem);line-height:1.25;margin-top:.65rem}.video-list{min-width:0}.video-list h2{font-family:var(--font-display);font-size:1.1rem;margin-bottom:1rem}
-  ol{display:grid;gap:.7rem;list-style:none;margin:0;padding:0}li{scroll-margin-top:100px;min-width:0}.video-select{display:grid;grid-template-columns:28px minmax(0,1fr) 20px;gap:.75rem;align-items:center;width:100%;text-align:left;padding:1rem;border:2px solid var(--ink);color:var(--ink);background:var(--card);cursor:pointer;min-height:80px}
-  .video-select[aria-pressed='true']{border-left:6px solid var(--red);padding-left:calc(1rem - 4px);background:#fff;box-shadow:3px 3px 0 var(--ink)}.video-number{font-weight:800;font-size:.75rem;color:var(--muted)}.video-category{display:block;font-size:.6rem;font-weight:800;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem}strong{font-size:.85rem;line-height:1.5;display:block}.video-direct{display:flex;align-items:center;gap:.75rem;border:2px solid var(--ink);padding:1rem;line-height:1.6}
-  button:focus-visible{outline:3px solid var(--azure-ink);outline-offset:4px}
-  @media(max-width:980px){.watch-grid{grid-template-columns:1fr}.video-list{margin-top:1rem}.player-play{width:68px;height:68px}}
-  @media(prefers-reduced-motion:reduce){.player-play{transition:none}}
+  .video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.5rem,3vw,2.5rem);align-items:start}
+  .video-card{min-width:0;scroll-margin-top:100px;border:2px solid var(--ink);background:var(--card);box-shadow:var(--shadow-sm)}
+  .video-frame{position:relative;width:100%;aspect-ratio:16/9;min-height:200px;background:var(--ink)}
+  iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+  .video-caption{padding:clamp(1rem,2vw,1.5rem)}
+  h2{font-family:var(--font-display);font-size:clamp(1.1rem,2vw,1.4rem);line-height:1.4;margin:.75rem 0 1.25rem}
+  .text-link{font-size:.85rem;min-height:44px;display:inline-flex;align-items:center;gap:.5rem}
+  @media(max-width:760px){.video-grid{grid-template-columns:1fr}}
 </style>

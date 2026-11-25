@@ -53,4 +53,4 @@ export const clubConnections = [
   'UP Chess Club',
 ];
 
-export const additionalSupporters = ['Charm’s Food Corner'];
+export const additionalSupporters = ['Charm’s Food Corner', 'ELYUSCRAPER'];
