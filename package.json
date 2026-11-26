@@ -22,6 +22,7 @@
     "test:events": "node --test tests/event-update.test.mjs",
     "test:scheduler": "node tests/scheduler-runtime.mjs",
     "qa:checkout": "node scripts/checkout-qa.mjs",
+    "test:analytics": "node --test tests/analytics.test.mjs && node tests/analytics-runtime.mjs",
     "test:security": "node tests/security-runtime.mjs",
     "qa:security": "node scripts/security-browser-qa.mjs"
   },

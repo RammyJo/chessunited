@@ -1,11 +1,17 @@
 /** Adversarial regression checks in the actual Workers/D1 runtime. Local fixtures only. */
 import {Miniflare,convertV4MiniflareOptions} from 'miniflare';
-import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';import {join} from 'node:path';import {execFileSync} from 'node:child_process';import assert from 'node:assert/strict';
 import {runRequestedSecurityCheck} from '../functions/api/_security-check.js';
 import {digest,requestBudget,boundedRequest} from '../functions/api/_security.js';
 const temp=mkdtempSync(join(tmpdir(),'chess-security-'));
 execFileSync(process.execPath,['node_modules/wrangler/bin/wrangler.js','pages','functions','build','functions','--outdir',temp,'--compatibility-date','2026-10-01','--compatibility-flags','no_nodejs_compat','no_nodejs_compat_v2'],{stdio:'pipe'});
+// Duplicate-entry security tests need an open registration window. Change only
+// the temporary fixture bundle, keeping the production event date untouched.
+const fixturePath=join(temp,'index.js');
+const fixtureSource=readFileSync(fixturePath,'utf8');
+assert.ok(fixtureSource.includes('2026-11-07T18:00:00+08:00'));
+writeFileSync(fixturePath,fixtureSource.replace('2026-11-07T18:00:00+08:00','2999-11-07T18:00:00+08:00'));
 const mf=new Miniflare(convertV4MiniflareOptions({modules:true,modulesRoot:temp,scriptPath:join(temp,'index.js'),compatibilityDate:'2026-10-01',compatibilityFlags:['no_nodejs_compat','no_nodejs_compat_v2'],d1Databases:['DB'],bindings:{ADMIN_TOKEN:'security-fixture-token-only'},serviceBindings:{ASSETS:()=>new Response('fixture')}}));
 let passed=0;const pass=message=>{console.log('PASS: '+message);passed++;};
 try{

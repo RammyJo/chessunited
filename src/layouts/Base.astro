@@ -83,6 +83,7 @@ const safeJson = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003
     {Astro.url.pathname.replace(/\/+$/, '') === '/shop' && <script is:inline src={scriptUrl('cart.js')} defer></script>}
 
     <script is:inline src={scriptUrl('payments.js')} defer></script>
+    <script is:inline type="module" src={scriptUrl('page-opens.js')}></script>
 
     {jsonLdBlocks.map((block) => (
       <script type="application/ld+json" set:html={safeJson(block)} />

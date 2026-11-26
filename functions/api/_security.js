@@ -38,6 +38,7 @@ export function requestBudget(request) {
  if(path.startsWith('/api/admin/'))return {scope:'officer',limit:300,period:600000};
  if(path.startsWith('/api/members/') && request.method==='GET')return {scope:'card',limit:60,period:60000};
  if(request.method==='GET'||request.method==='HEAD')return {scope:'read',limit:300,period:60000};
+ if(path==='/api/analytics' && request.method==='POST')return {scope:'views',limit:600,period:60000};
  if(path==='/api/shipping/quote')return {scope:'quote',limit:120,period:600000};
  return {scope:'submit',limit:120,period:600000};
 }
