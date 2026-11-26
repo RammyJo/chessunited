@@ -7,7 +7,7 @@ if(root){
  let data=null,preset='all',groups=[],period='day',page=0,busy=false,selectedDays=[];
  const number=n=>n.toLocaleString('en-PH');
  const text=(selector,value)=>$(selector).textContent=value;
- const countLabel=group=>(group.historical>0?'≈ ':'')+number(group.opens);
+ const countLabel=group=>(group.from<=data.coverage.historyThrough?'≈ ':'')+number(group.opens);
  const message=(value,error=false)=>{const el=$('[data-report-status]');el.textContent=value;el.toggleAttribute('data-error',error);};
  function rangeForPreset(){const c=data.coverage,today=c.today;let from=c.historyFrom;if(preset==='today')from=today;else if(preset==='7'||preset==='30')from=shiftDate(today,1-Number(preset));else if(preset==='month')from=today.slice(0,7)+'-01';else if(preset==='year')from=today.slice(0,4)+'-01-01';if(from<c.historyFrom)from=c.historyFrom;fromInput.value=from;toInput.value=today;}
  function complete(group){if(group.to===data.coverage.today || (group.from<=data.coverage.liveFrom && group.to>=data.coverage.liveFrom))return false;if(period==='day')return true;const start=group.key;let end;if(period==='week')end=shiftDate(start,6);else if(period==='month'){const date=toDate(start);date.setUTCMonth(date.getUTCMonth()+1);end=shiftDate(dateKey(date),-1);}else end=start.slice(0,4)+'-12-31';return group.from===start&&group.to===end;}
@@ -19,7 +19,7 @@ if(root){
    const opens=document.createElement('td');opens.textContent=countLabel(group);row.append(opens);
    const index=groups.indexOf(group),previous=groups[index-1];const delta=previous&&complete(group)&&complete(previous)?changePercent(group.opens,previous.opens):null;
    const change=document.createElement('td');change.textContent=delta===null?'—':`${delta>0?'+':''}${delta.toFixed(1)}%`;row.append(change);
-   const source=document.createElement('td');source.className='source-label';source.textContent=(group.historical>0?(group.recorded>0?'Combined':'Estimate'):(group.to<=data.coverage.historyThrough?'Estimate':'Recorded'))+(complete(group)?'':' · partial');row.append(source);body.append(row);
+   const source=document.createElement('td');source.className='source-label';source.textContent=(group.from<=data.coverage.historyThrough?(group.to>=data.coverage.liveFrom?'Combined':'Estimate'):'Recorded')+(complete(group)?'':' · partial');row.append(source);body.append(row);
   }
   text('[data-page-label]',groups.length?`${start+1}–${Math.min(start+20,groups.length)} of ${groups.length} periods`:'No periods');$('[data-page-prev]').disabled=page===0;$('[data-page-next]').disabled=start+20>=groups.length;
  }
@@ -28,7 +28,7 @@ if(root){
   const from=fromInput.value,to=toInput.value;
   if(!validDate(from)||!validDate(to)||from>to||from<data.coverage.historyFrom||to>data.coverage.today){message('Choose dates within the available history, with From before To.',true);return;}
   period=periodInput.value;selectedDays=fillDays(data.daily.filter(d=>d.date>=from&&d.date<=to),from,to);groups=groupDays(selectedDays,period);page=Math.min(page,Math.max(0,Math.ceil(groups.length/20)-1));
-  const total=selectedDays.reduce((sum,d)=>sum+d.opens,0),historical=selectedDays.reduce((sum,d)=>sum+d.historical,0),peak=groups.reduce((a,b)=>b.opens>a.opens?b:a,groups[0]);
+  const total=selectedDays.reduce((sum,d)=>sum+d.opens,0),historical=from<=data.coverage.historyThrough,peak=groups.reduce((a,b)=>b.opens>a.opens?b:a,groups[0]);
   text('[data-total]',(historical?'≈ ':'')+number(total));text('[data-total-note]',historical?'Includes Cloudflare historical estimates':'Recorded public page opens');text('[data-average]',(total/selectedDays.length).toFixed(1));text('[data-peak-label]','Busiest '+units[period]);text('[data-peak]',peak?countLabel(peak):'0');text('[data-peak-note]',peak?periodLabel(peak,period):'No opens');text('[data-range-label]',`${formatDate(from)} – ${formatDate(to)}`);text('[data-chart-title]',names[period]+' opens');text('[data-breakdown-title]',names[period]+' breakdown');text('[data-period-count]',`${groups.length} ${units[period]}${groups.length===1?'':'s'}`);text('[data-table-total]',(historical?'≈ ':'')+number(total));
   const insight=$('[data-november-insight]'),nov25=selectedDays.find(d=>d.date==='2026-11-25'),nov24=selectedDays.find(d=>d.date==='2026-11-24');insight.hidden=!(nov25&&nov24&&nov25.opens>nov24.opens);
   if(!insight.hidden){const increase=changePercent(nov25.opens,nov24.opens);text('[data-november-copy]',`${number(nov25.opens)} estimated opens, up ${increase.toFixed(1)}% from ${number(nov24.opens)} on 24 November. This increase comes from the website’s Cloudflare history.`);}
