@@ -17,7 +17,7 @@ export const regionalEvents = [
     date: '2026-11-28', endDate: '2026-11-29', dateLabel: 'Weekend of 28–29 November 2026',
     venue: 'La Union · Session venue to be announced', locality: 'La Union', region: 'La Union',
     organizer: 'Chess United', venuePending: true,
-    description: 'Coach Henry Calacday is visiting from Rizal to coach Chess United kids and teens this weekend. The club will announce the session time and venue.',
+    description: 'This weekend, Coach Henry Calacday travels from Rizal to coach Chess United kids and teens in La Union. His bus trip is sponsored by a chess mom from Aringay. Session time and venue will be announced.',
     profilePosterKey: 'coach-henry-online',
     format: 'Coaching for Chess United kids, teens and youth. Session time and any fees to be announced.',
   },

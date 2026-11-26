@@ -1,17 +1,37 @@
 ---
 import { coachingVisit, eventPath } from '../data/event-archive';
 import { eventPhase } from '../lib/event-dates.mjs';
+import { site } from '../data/site';
 import Icon from './Icon.astro';
+const active = eventPhase(coachingVisit) === 'present';
+const Heading = active ? 'h1' : 'h2';
 ---
-{eventPhase(coachingVisit) === 'present' && <aside class="coach-visit" data-current-event data-event-end={coachingVisit.endDate}>
-  {coachingVisit.profileImage && <a class="coach-image" href={eventPath(coachingVisit)} aria-label="See Coach Henry’s visit details"><img {...coachingVisit.profileImage} sizes="(max-width:760px) 90vw, 600px" loading="lazy" decoding="async" /></a>}
-  <div class="coach-copy"><p class="eyebrow">Youth coaching · 28–29 November 2026</p><h3>Coach Henry is coming to La Union.</h3><p>Visiting from Rizal to coach Chess United kids and teens. Session time and venue to be announced.</p>
-  <a class="btn btn--ghost" href={eventPath(coachingVisit)}>Visit updates <Icon name="arrow" size={16} /></a></div>
-</aside>}
+<section class="coach-feature" id="coach-henry" aria-labelledby="coach-feature-title" data-priority-promotion data-current-event data-event-end={coachingVisit.endDate} hidden={!active}>
+  <div class="wrap">
+    <div class="feature-topline"><p>Special youth coaching visit</p><span><Icon name="calendar" size={16} /> This weekend · 28–29 November 2026</span></div>
+    <div class="coach-feature-grid">
+      {coachingVisit.profileImage && <figure class="coach-photo"><a href={eventPath(coachingVisit)} aria-label="See Coach Henry’s visit details"><img {...coachingVisit.profileImage} sizes="(max-width:980px) 92vw, 55vw" loading={active ? 'eager' : 'lazy'} fetchpriority={active ? 'high' : 'auto'} decoding="async" /></a><figcaption>Coach Henry Calacday · Chess player &amp; coach</figcaption></figure>}
+      <div class="coach-copy">
+        <p class="coach-kicker">Coming to La Union from Rizal</p>
+        <Heading id="coach-feature-title" data-promotion-title>Learn with <span>Coach Henry.</span></Heading>
+        <p class="coach-intro">A special weekend for Chess United kids and teens with Coach Henry Calacday, a well-known Filipino chess player and coach.</p>
+        <p class="coach-details">28–29 November · La Union<br /><span>Session time and venue to be announced.</span></p>
+        <div class="coach-actions"><a class="btn coach-primary" href={site.groupUrl} target="_blank" rel="noopener noreferrer">Get visit updates <Icon name="external" size={16} /></a><a class="coach-details-link" href={eventPath(coachingVisit)}>Visit details <Icon name="arrow" size={16} /></a></div>
+        <p class="coach-thanks">With thanks to a chess mom from Aringay for sponsoring Coach Henry’s bus trip.</p>
+      </div>
+    </div>
+  </div>
+</section>
 <style>
-  .coach-visit{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:clamp(1.25rem,3vw,2rem);padding:clamp(1.25rem,3vw,2rem);border:2px solid var(--ink);border-left:7px solid var(--azure);background:#fff;margin-bottom:2rem}
-  .coach-image{display:block;min-width:0}.coach-image img{display:block;width:100%;height:auto}
-  .coach-copy{min-width:0}.coach-copy .btn{margin-top:1.25rem}
-  h3{font-family:var(--font-display);font-size:clamp(1.2rem,2.4vw,1.8rem);line-height:1.25;margin-block:.65rem}p{font-size:.9rem;line-height:1.7}
-  @media(max-width:760px){.coach-visit{grid-template-columns:1fr}}
+  .coach-feature{padding-block:clamp(1.5rem,4vw,3rem);background:var(--ink);color:#fff;border-bottom:7px solid var(--azure)}
+  .feature-topline{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:clamp(1.5rem,3vw,2.5rem);font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.feature-topline p{border-left:4px solid var(--gold);padding-left:.8rem}.feature-topline>span{display:flex;align-items:center;gap:.6rem;color:var(--azure);line-height:1.6}
+  .coach-feature-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:clamp(1.5rem,4vw,3.5rem)}
+  .coach-photo{min-width:0;margin:0}.coach-photo a{display:block;border:3px solid #fff;box-shadow:7px 7px 0 #176083;background:#fff}.coach-photo img{display:block;width:100%;height:auto}.coach-photo figcaption{font-size:.7rem;line-height:1.6;color:#c2dce9;margin-top:1.1rem}
+  .coach-copy{min-width:0}.coach-kicker{font-size:.65rem;font-weight:800;line-height:1.7;text-transform:uppercase;letter-spacing:.08em;color:#c2dce9}
+  .coach-copy :is(h1,h2){font-family:var(--font-display);font-size:clamp(2.3rem,4.6vw,4.2rem);line-height:1.05;letter-spacing:-.045em;margin-block:.8rem 1.2rem;text-transform:uppercase}.coach-copy :is(h1,h2) span{display:block;color:var(--azure)}
+  .coach-intro{font-size:clamp(.95rem,1.4vw,1.05rem);line-height:1.75;color:#e4eff5;max-width:43ch}.coach-details{font-size:.85rem;line-height:1.8;font-weight:800;margin-top:1rem}.coach-details span{font-size:.8rem;font-weight:500;color:#c2dce9}
+  .coach-actions{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-top:1.25rem}.coach-primary{background:var(--azure);border-color:var(--azure);color:var(--ink);box-shadow:4px 4px 0 #176083}.coach-primary:hover{background:#fff;border-color:#fff;color:var(--ink)}.coach-details-link{display:inline-flex;align-items:center;gap:.6rem;color:#fff;min-height:44px;font-size:.8rem;font-weight:800;text-decoration:underline;text-underline-offset:5px}
+  .coach-thanks{margin-top:1.5rem;border-top:1px solid #3d4e6c;padding-top:1rem;font-size:.75rem;line-height:1.7;color:#c2dce9;max-width:50ch}
+  @media(max-width:980px){.coach-feature-grid{grid-template-columns:1fr}.coach-copy :is(h1,h2){font-size:clamp(2.1rem,7.6vw,3.5rem)}.coach-photo{max-width:800px}.coach-photo figcaption{margin-top:.8rem}.feature-topline{gap:.6rem;margin-bottom:1.3rem}.coach-feature-grid{gap:1.4rem}.coach-copy{max-width:700px}}
+  @media(max-width:480px){.feature-topline{font-size:.6rem}.coach-intro{font-size:.9rem;line-height:1.65}.coach-photo figcaption{font-size:.6rem}.coach-copy :is(h1,h2){margin-block:.6rem .9rem}.coach-kicker{font-size:.6rem}.coach-actions{gap:1rem}.coach-actions .btn{padding-inline:1rem}.coach-thanks{font-size:.7rem;margin-top:1rem}}
 </style>

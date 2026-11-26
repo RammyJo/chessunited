@@ -13,6 +13,23 @@ function refreshArchive() {
     }
   }
   for (const card of document.querySelectorAll('[data-current-event]')) card.hidden = card.dataset.eventEnd < today;
+  // Restore the regular homepage hero after a dated priority promotion ends.
+  for (const promotion of document.querySelectorAll('[data-priority-promotion]')) {
+    const fallback = document.querySelector('[data-promotion-fallback]');
+    if (!fallback) continue;
+    const past = promotion.dataset.eventEnd < today;
+    promotion.hidden = past;
+    fallback.hidden = !past;
+    for (const [container, tag] of [[promotion, past ? 'h2' : 'h1'], [fallback, past ? 'h1' : 'h2']]) {
+      const title = container.querySelector('[data-promotion-title]');
+      if (title && title.tagName.toLowerCase() !== tag) {
+        const replacement = document.createElement(tag);
+        for (const attribute of title.attributes) replacement.setAttribute(attribute.name, attribute.value);
+        replacement.append(...title.childNodes);
+        title.replaceWith(replacement);
+      }
+    }
+  }
   for (const list of document.querySelectorAll('[data-current-list]')) {
     const empty = list.parentElement.querySelector('[data-current-empty]');
     if (empty) empty.hidden = !!list.querySelector('[data-current-event]:not([hidden])');

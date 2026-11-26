@@ -8,7 +8,8 @@ import ArchiveEventCard from '../components/ArchiveEventCard.astro';
 import CoachingVisit from '../components/CoachingVisit.astro';
 import MajorSponsors from '../components/MajorSponsors.astro';
 import PartnerLogoGrid from '../components/PartnerLogoGrid.astro';
-import { homeEvents } from '../data/event-archive';
+import { homeEvents, coachingVisit } from '../data/event-archive';
+import { eventPhase } from '../lib/event-dates.mjs';
 import { scriptUrl } from '../lib/assets';
 import AddToCalendar from '../components/AddToCalendar.astro';
 import MerchPromos from '../components/MerchPromos.astro';
@@ -19,6 +20,9 @@ import NetworkPartner from '../components/NetworkPartner.astro';
 import { heroImage } from '../data/images';
 import { smLogo } from '../data/partners';
 
+const coachActive = eventPhase(coachingVisit) === 'present';
+const GenericHeroHeading = coachActive ? 'h2' : 'h1';
+const priorityImage = coachActive && coachingVisit.profileImage ? coachingVisit.profileImage : heroImage;
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const abs = (path: string) => new URL(path, origin).href;
 
@@ -101,31 +105,36 @@ const highlightJsonLd = highlightVideo ? [{
 ---
 
 <Base
-  title="Chess United — chess for everyone in San Fernando, La Union"
-  description={site.description}
-  jsonLd={[clubJsonLd, websiteJsonLd, saturdayJsonLd(origin.href), ...eventJsonLd, ...highlightJsonLd]}
+  title={coachActive ? 'Coach Henry in La Union · 28–29 November — Chess United' : 'Chess United — chess for everyone in San Fernando, La Union'}
+  description={coachActive ? 'Coach Henry Calacday visits La Union on 28–29 November to coach Chess United kids and teens. Get the latest session updates.' : site.description}
+  image={coachActive ? coachingVisit.profileImage?.src : undefined}
+  imageWidth={coachActive ? coachingVisit.profileImage?.width : undefined}
+  imageHeight={coachActive ? coachingVisit.profileImage?.height : undefined}
+  imageAlt={coachActive ? coachingVisit.profileImage?.alt : undefined}
+  jsonLd={[clubJsonLd, websiteJsonLd, saturdayJsonLd(origin.href), ...eventJsonLd, ...highlightJsonLd, ...(coachActive ? [{ '@context':'https://schema.org', '@type':'EducationEvent', name:coachingVisit.name, description:coachingVisit.description, startDate:coachingVisit.date, endDate:coachingVisit.endDate, url:abs('/events/coach-henry-youth-visit-2026/'), image:abs(coachingVisit.profileImage!.src), location:{'@type':'AdministrativeArea',name:'La Union'}, organizer:{'@type':'Organization',name:site.name} }] : [])]}
 >
   <link
     slot="head"
     rel="preload"
     as="image"
-    imagesrcset={heroImage.srcset}
-    imagesizes="(max-width: 980px) 92vw, 46vw"
+    imagesrcset={priorityImage.srcset}
+    imagesizes={coachActive ? "(max-width:980px) 92vw, 55vw" : "(max-width:980px) 92vw, 46vw"}
   />
 
   <Header />
 
   <main id="main">
-    <section class="hero">
+    <CoachingVisit />
+    <section class="hero" data-promotion-fallback hidden={coachActive}>
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">San Fernando City · La Union</p>
           <div class="chess-signature"><img src="/images/knight-mark.svg" width="52" height="52" alt="" /><span>Your next move<br /><strong>starts here.</strong></span></div>
-          <h1 class="hero-title display-xl">
+          <GenericHeroHeading class="hero-title display-xl" data-promotion-title>
             <span class="line">Chess</span>
             <span class="line">for</span>
             <span class="line"><span class="mark">everyone.</span></span>
-          </h1>
+          </GenericHeroHeading>
           <p class="hero-lede">
             A community chess club for kids, teens and adults in San Fernando. Pull up a chair
             on Saturday, or test your game on tournament day.
@@ -160,7 +169,8 @@ const highlightJsonLd = highlightVideo ? [{
                 width={heroImage.width}
                 height={heroImage.height}
                 alt={heroImage.alt}
-                fetchpriority="high"
+                loading={coachActive ? "lazy" : "eager"}
+                fetchpriority={coachActive ? "auto" : "high"}
                 decoding="async"
               />
             </picture>
@@ -184,8 +194,6 @@ const highlightJsonLd = highlightVideo ? [{
       </div>
     </section>
 
-    {highlightVideo && <HighlightVideo {...highlightVideo} />}
-
     <section class="section" aria-labelledby="next-title">
       <div class="wrap">
         <div class="section-head">
@@ -198,7 +206,6 @@ const highlightJsonLd = highlightVideo ? [{
           </p>
         </div>
 
-        <CoachingVisit />
         <div class="home-event-grid" data-current-list>
           {homeEvents.map((event) => <ArchiveEventCard event={event} />)}
         </div>
@@ -214,6 +221,8 @@ const highlightJsonLd = highlightVideo ? [{
         </div>
       </div>
     </section>
+
+    {highlightVideo && <HighlightVideo {...highlightVideo} />}
 
     <section class="section section--paper" aria-label="Strategic partnership">
       <div class="wrap"><NetworkPartner /></div>
