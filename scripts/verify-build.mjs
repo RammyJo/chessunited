@@ -162,6 +162,7 @@ for (const route of [
 }
 if (locs.some((loc) => loc.includes('/404'))) errors.push('sitemap: contains 404');
 if (locs.some((loc) => loc.includes('/admin'))) errors.push('sitemap: contains /admin');
+if (locs.some((loc) => loc.includes('/analytics'))) errors.push('sitemap: contains unlisted analytics report');
 if (locs.some((loc) => loc.includes('/shop/order'))) errors.push('sitemap: contains private order status');
 if (new Set(locs).size !== locs.length) errors.push('sitemap: has duplicate URLs');
 const expectedRoutes = htmlFiles.filter(([, route]) => route !== '/404.html').map(([, route]) => `${SITE}${route}`);

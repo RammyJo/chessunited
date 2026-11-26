@@ -75,6 +75,14 @@ const headers = `# Cloudflare Pages headers
   Content-Security-Policy: ${csp}
   Cache-Control: public, max-age=0, must-revalidate
 
+/analytics
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: private, no-store
+
+/analytics/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: private, no-store
+
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
