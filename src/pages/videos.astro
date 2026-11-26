@@ -2,52 +2,52 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import Icon from '../components/Icon.astro';
-import { youtubeVideos, youtubeWatchUrl } from '../data/videos';
+import { hostedVideos } from '../data/videos';
 const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
 const schema = {
   '@context':'https://schema.org', '@type':'CollectionPage', name:'Chess United videos', url:new URL('/videos/',origin).href,
-  mainEntity:{'@type':'ItemList',itemListElement:youtubeVideos.map((video,index)=>({'@type':'ListItem',position:index+1,name:video.title,url:youtubeWatchUrl(video.id)}))},
+  mainEntity:{'@type':'ItemList',itemListElement:hostedVideos.map((video,index)=>({'@type':'ListItem',position:index+1,name:video.title,url:new URL(`/videos/#${video.slug}`,origin).href}))},
 };
 ---
-<Base title="Videos — Chess United" description="Watch Chess United on YouTube: tournament highlights, the awards ceremony, Batang Pinoy qualifiers, the tricycle campaign and Bean Leaf." jsonLd={schema}>
+<Base title="Videos — Chess United" description="Watch Chess United videos: tournament highlights, the awards ceremony, Batang Pinoy qualifiers, the tricycle campaign and Bean Leaf." jsonLd={schema}>
   <Header />
   <main id="main">
     <header class="page-hero"><div class="wrap">
-      <p class="eyebrow">Chess United on YouTube</p><h1>From the club.</h1>
+      <p class="eyebrow">Chess United in motion</p><h1>From the club.</h1>
       <p class="lede">The games, the people and the moments in between. Watch all five videos here, with a player for each one.</p>
     </div></header>
     <section class="section" aria-label="Chess United video collection">
-      <div class="wrap video-grid">
-        {youtubeVideos.map(video => <article class="video-card" id={video.slug} aria-labelledby={`${video.slug}-title`}>
+      <div class="wrap video-grid" data-video-library>
+        {hostedVideos.map(video => <article class="video-card" id={video.slug} aria-labelledby={`${video.slug}-title`}>
           <div class="video-frame">
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0&playsinline=1`}
-              title={video.title}
-              width="640" height="360" loading="lazy"
-              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
-            ></iframe>
+            <video controls playsinline preload="none" poster={video.poster} width={video.width} height={video.height} aria-label={video.title} aria-describedby={`${video.slug}-status`} data-video-kind={video.kind} data-stream-src={video.src}>
+              <source src={video.src} type={video.kind === 'hls' ? 'application/vnd.apple.mpegurl' : 'video/mp4'} />
+              Your browser does not support this video player.
+            </video>
+            {video.kind === 'hls' && <button class="stream-launch" type="button" data-stream-play aria-label={`Play ${video.title}`} hidden><svg width="20" height="22" viewBox="0 0 20 22" aria-hidden="true"><path fill="currentColor" d="M2 1 19 11 2 21Z" /></svg><span>Play video</span></button>}
           </div>
           <div class="video-caption">
             <p class="eyebrow">{video.category}</p>
             <h2 id={`${video.slug}-title`}>{video.title}</h2>
-            <a class="text-link" href={youtubeWatchUrl(video.id)} target="_blank" rel="noopener noreferrer">Watch on YouTube <Icon name="external" size={15} /></a>
+            <p class="video-duration">{video.durationLabel}</p>
+            <p class="video-status" id={`${video.slug}-status`} data-video-status role="status" aria-live="polite" hidden></p>
+            {video.kind === 'hls' && <noscript><p class="video-status">If the video does not play in your browser, enable JavaScript or open this page in Safari.</p></noscript>}
           </div>
         </article>)}
       </div>
     </section>
   </main>
   <Footer />
+  <script>import '../scripts/library-videos';</script>
 </Base>
 <style>
   .video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.5rem,3vw,2.5rem);align-items:start}
   .video-card{min-width:0;scroll-margin-top:100px;border:2px solid var(--ink);background:var(--card);box-shadow:var(--shadow-sm)}
   .video-frame{position:relative;width:100%;aspect-ratio:16/9;min-height:200px;background:var(--ink)}
-  iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+  video{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;object-fit:contain}
+  .stream-launch{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;gap:.75rem;min-height:56px;padding:.9rem 1.2rem;border:2px solid #fff;box-shadow:3px 3px 0 var(--ink);color:#fff;background:var(--red-ink);font:inherit;font-size:.8rem;font-weight:800;cursor:pointer;white-space:nowrap}.stream-launch[hidden]{display:none}.stream-launch:focus-visible{outline:3px solid var(--gold);outline-offset:5px}.stream-launch:disabled{opacity:.75;cursor:wait}
   .video-caption{padding:clamp(1rem,2vw,1.5rem)}
   h2{font-family:var(--font-display);font-size:clamp(1.1rem,2vw,1.4rem);line-height:1.4;margin:.75rem 0 1.25rem}
-  .text-link{font-size:.85rem;min-height:44px;display:inline-flex;align-items:center;gap:.5rem}
+  .video-duration{font-size:.8rem;font-weight:800;color:var(--muted)}.video-status{font-size:.8rem;line-height:1.7;margin-top:.8rem}.video-status[hidden]{display:none}
   @media(max-width:760px){.video-grid{grid-template-columns:1fr}}
 </style>

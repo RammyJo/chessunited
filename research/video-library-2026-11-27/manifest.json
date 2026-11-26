@@ -1,0 +1,1367 @@
+[
+  {
+    "id": "16Rt1XI1Jt7pG2tU7Hh3By0uq4_JuNX9y",
+    "name": "BEAN-LEAF-SnapYT.App.mp4",
+    "bytes": 6247195,
+    "sha256": "b5c702a809d24e29fcc98a0dd8e3d1d541e8b2fa6e17c55776b8cc36f4fe7127",
+    "probe": {
+      "duration": 115.774694,
+      "width": 640,
+      "height": 360,
+      "codec": "h264",
+      "fps": "30000/1001",
+      "audio": "aac",
+      "audio_bitrate": "96025"
+    },
+    "slug": "bean-leaf",
+    "title": "Bean Leaf — Chess United",
+    "category": "Coffee sponsor",
+    "kind": "mp4",
+    "src": "/videos/library/bean-leaf-b5c702a809d2/video.mp4",
+    "poster": "/images/video-library/bean-leaf-b5c702a809d2-640.webp",
+    "posterSrcset": "/images/video-library/bean-leaf-b5c702a809d2-320.webp 320w, /images/video-library/bean-leaf-b5c702a809d2-640.webp 640w",
+    "duration": 115.774694,
+    "durationLabel": "1:55",
+    "width": 640,
+    "height": 360,
+    "outputs": [
+      {
+        "path": "public/videos/library/bean-leaf-b5c702a809d2/video.mp4",
+        "bytes": 6309298,
+        "sha256": "19ec7a334ce1a642ace9f5abb35e9a2f7bf7a59304b5345d2201abb891c0bc69"
+      }
+    ]
+  },
+  {
+    "id": "18e3dxCH6RoVD226TeSFTo8JBQpcEGQQG",
+    "name": "CHESS-UNITED-SnapYT.App.mp4",
+    "bytes": 5269861,
+    "sha256": "c7e09507b49000e654315c256a7e3e8940a8c66ac969874ca58459d6f7136236",
+    "probe": {
+      "duration": 96.130612,
+      "width": 640,
+      "height": 360,
+      "codec": "h264",
+      "fps": "30/1",
+      "audio": "aac",
+      "audio_bitrate": "96035"
+    },
+    "slug": "tricycle-campaign",
+    "title": "Chess United — Tricycle Campaign",
+    "category": "In the community",
+    "kind": "mp4",
+    "src": "/videos/library/tricycle-campaign-c7e09507b490/video.mp4",
+    "poster": "/images/video-library/tricycle-campaign-c7e09507b490-640.webp",
+    "posterSrcset": "/images/video-library/tricycle-campaign-c7e09507b490-320.webp 320w, /images/video-library/tricycle-campaign-c7e09507b490-640.webp 640w",
+    "duration": 96.130612,
+    "durationLabel": "1:36",
+    "width": 640,
+    "height": 360,
+    "outputs": [
+      {
+        "path": "public/videos/library/tricycle-campaign-c7e09507b490/video.mp4",
+        "bytes": 5321400,
+        "sha256": "a8a1aeb7966991fb9588b9a1e8b988d509edcfba71a713d205ad2a37c54053b9"
+      }
+    ]
+  },
+  {
+    "id": "1HytZzGRwfBkZO97sNi_3fkDjv9ByKoVI",
+    "name": "NATIONAL-CHESS-QUALIFIER-SnapYT.App.mp4",
+    "bytes": 74485981,
+    "sha256": "8db9f5cb06557c3d6167de3c4ba211c3f88e29704193e542d50886e7fe8b84f9",
+    "probe": {
+      "duration": 1200.796735,
+      "width": 640,
+      "height": 360,
+      "codec": "h264",
+      "fps": "30/1",
+      "audio": "aac",
+      "audio_bitrate": "48002"
+    },
+    "slug": "batang-pinoy-2026",
+    "title": "National Chess Qualifier — Batang Pinoy 2026",
+    "category": "Competition",
+    "kind": "hls",
+    "src": "/videos/library/batang-pinoy-2026-8db9f5cb0655/index.m3u8",
+    "poster": "/images/video-library/batang-pinoy-2026-8db9f5cb0655-640.webp",
+    "posterSrcset": "/images/video-library/batang-pinoy-2026-8db9f5cb0655-320.webp 320w, /images/video-library/batang-pinoy-2026-8db9f5cb0655-640.webp 640w",
+    "duration": 1200.796735,
+    "durationLabel": "20:00",
+    "width": 640,
+    "height": 360,
+    "outputs": [
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/index.m3u8",
+        "bytes": 4314,
+        "sha256": "4d5e88c5cc7b8fb474a2eb8e9e7243ce026b9d61c099e151331c4d3389530f41"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/init.mp4",
+        "bytes": 1410,
+        "sha256": "db6160d6a453c17be523ef09e86ab704b633fbea00a63defd2a92574fca2c3c6"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-000.m4s",
+        "bytes": 801189,
+        "sha256": "0ef31028d6ad1f22b899dab9c329b3e62710f784231e2b12420deab306e80573"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-001.m4s",
+        "bytes": 763355,
+        "sha256": "a1ff5531e6ab92f28a49043fb2c7c99c95b5febf5649595559bd4e3826d4756f"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-002.m4s",
+        "bytes": 780352,
+        "sha256": "a1c5b2dd8dc89a9891d202ce5edecb4d4800ad60b0fc80527e7c8f6b2f2c1cdd"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-003.m4s",
+        "bytes": 806084,
+        "sha256": "cfe061f3c207158b3f276a82a44e171eba87f72244b5157032f4382d96ce23b3"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-004.m4s",
+        "bytes": 401678,
+        "sha256": "487d29da24f324dcffac82da95e89686118bb5d040ff6214a29a1627ce445cb3"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-005.m4s",
+        "bytes": 819554,
+        "sha256": "501dd55038d8ea69bf85bb55375213a549690d3648c2fd3403bf71af2a14db50"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-006.m4s",
+        "bytes": 810458,
+        "sha256": "51191b926367d9f97aad0f30eff02fc97d10847db1e19b9ccce1552c61c14896"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-007.m4s",
+        "bytes": 775432,
+        "sha256": "7aa39e5fb46072aaebbfc91004d1501479e1155ecc8e00b29fcc74f51ee1df09"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-008.m4s",
+        "bytes": 799046,
+        "sha256": "dcf3210571bc7e8313ec4dd9de19a870ebf5bf1937113f74cb7e3da0c222a415"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-009.m4s",
+        "bytes": 394107,
+        "sha256": "2080c8896045eefeafb69c0e1ec7fae04cb10b2728338281e68a5a131bf22c00"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-010.m4s",
+        "bytes": 805459,
+        "sha256": "71750cb3b0e64469ea9b8f39b2c7b381bd6f8f6a05cfccf10afc2e99552e8965"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-011.m4s",
+        "bytes": 788335,
+        "sha256": "b64d2d0f7c7342a2be4b079ac3ce8dd9544ab03a37c2aab4c303532d85f1d618"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-012.m4s",
+        "bytes": 775007,
+        "sha256": "ca68ca627a3c518f9331c00cd54a572623004ff90090b79a77c1bc1355712b4e"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-013.m4s",
+        "bytes": 408184,
+        "sha256": "2a443802b8fe7ed4a0329715e5a36a80864c0b87ae27e8479d5313429f5715fc"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-014.m4s",
+        "bytes": 793820,
+        "sha256": "d574650992bc4ca8b8e979428645a068e0ff5bbe7be08aa9bc36a50928ab8878"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-015.m4s",
+        "bytes": 815694,
+        "sha256": "bb690eb00615d3c66b116f0dbcd2b62d462cd7c8ed0a24465e40b54fa2fe7d81"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-016.m4s",
+        "bytes": 768385,
+        "sha256": "9acf77526dfa1e3bcdaede53b5231d5c4551a341a4199e728da41ff891b16ca8"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-017.m4s",
+        "bytes": 790396,
+        "sha256": "b2b488870fc1a53b5680f927e48f6d01e6ad7e3fd105fec75f161f23eca6927c"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-018.m4s",
+        "bytes": 405301,
+        "sha256": "365ad3f4ece037df0e8824149ee56dd0880cc976e87167a931ed93644f91b941"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-019.m4s",
+        "bytes": 586227,
+        "sha256": "0fcbd085fa9b2ddc498b0b09c32cdfba34c28594f65e88461b5c2409ccfe90c1"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-020.m4s",
+        "bytes": 716910,
+        "sha256": "07162e66f47769a45b8a0f06a1207beae46df49778c15985da23581c66a055e8"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-021.m4s",
+        "bytes": 813133,
+        "sha256": "fe553078f6c498f3125294222e5175d9877fbe352cbded6baaeccdcb2f2baee1"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-022.m4s",
+        "bytes": 793816,
+        "sha256": "ef1490cae747bea9daf291e7aab9fd89dad09cbedbbb310cca96d0c00b755014"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-023.m4s",
+        "bytes": 396579,
+        "sha256": "886ee873d5678d9ef452e0372b6f4991309c48a90917d1e8edb7d15d9c2e02b2"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-024.m4s",
+        "bytes": 800859,
+        "sha256": "04c3d911a072f2c50dc4396d7dcc4a8b85f3d186f6f284c5d6226709f8f55e25"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-025.m4s",
+        "bytes": 691323,
+        "sha256": "af238db2270590e34f63838203d4cf8f2617df4cbf5116620684d65ce166e696"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-026.m4s",
+        "bytes": 631968,
+        "sha256": "ff4e56f5fad4cd02c9fac1707f7c6e408a16ea292e0471da449a8c5705a02d7b"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-027.m4s",
+        "bytes": 349123,
+        "sha256": "3d4204724cfe9b5f44cb4dd83b1f43f24760854c53886aa6a4969d56aee20a55"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-028.m4s",
+        "bytes": 759949,
+        "sha256": "c34eac91a3203c77df2d0236129674a069b0d273d3a5ad2e6a43af4f8227be8e"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-029.m4s",
+        "bytes": 776304,
+        "sha256": "f4827fa338aad5fb98b5b345af51505048ca5024f438b950c46e6f044296aa0c"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-030.m4s",
+        "bytes": 778776,
+        "sha256": "9260a7d6d9171b2689c4a7cb273fbbb48e93d361e9b686af186a169abcf0f304"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-031.m4s",
+        "bytes": 793955,
+        "sha256": "1de9217217dddd1eaaed47e45b57c9e51cf8269cc39cc07a5f26f215e3e94512"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-032.m4s",
+        "bytes": 385344,
+        "sha256": "2fcfd20922e85605fe8e3b57b442d2896de54da9a49f7e18544c543a30aa8653"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-033.m4s",
+        "bytes": 715627,
+        "sha256": "f04890a6fc6a588feb389c21bb8859d043536858fb90782b471cd2c7b4b31e5d"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-034.m4s",
+        "bytes": 715894,
+        "sha256": "434980daed032917de746b8526c22f3a2e5a4c95110cfda54785463d5486ccf2"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-035.m4s",
+        "bytes": 677137,
+        "sha256": "2fb31792f41d588fe240278072872e9e5c17583b2ca3bf9c6911735bb270ad65"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-036.m4s",
+        "bytes": 385154,
+        "sha256": "192ddf9ff4279b8ee5390a4c329da53035d79aa65b68b97cc2d679497b73afdb"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-037.m4s",
+        "bytes": 798872,
+        "sha256": "9a09fbff8682c1df1e8b34162b9f099f1a42f31c5103569d533026c498c2731e"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-038.m4s",
+        "bytes": 823688,
+        "sha256": "b2c894f0c551acf9ae27250709c9f09e1885dffa3b086484d907279f66e90779"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-039.m4s",
+        "bytes": 790394,
+        "sha256": "84ea97cfce44918b25fcfae824781215460fbf99c0e2b9265851068282534b41"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-040.m4s",
+        "bytes": 745108,
+        "sha256": "d886d40688b16eb3b0140e1e51440af9dc1717bfaa596e7327b3fac4c370c90d"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-041.m4s",
+        "bytes": 398026,
+        "sha256": "131e833935c3e0e45fedfbd0044736c7a374158c196f509c65c80ff590dc51d2"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-042.m4s",
+        "bytes": 799498,
+        "sha256": "8600868073ba0af1b1ce672eaa68dd021d9821f883b7117896546bcee9d576a7"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-043.m4s",
+        "bytes": 622274,
+        "sha256": "1872881507c95e1594e1fbbf03175aa84fa2bb81aab6785a58b3479e9b279b38"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-044.m4s",
+        "bytes": 806554,
+        "sha256": "b7191fe53fa992c959ea6bc08ddf0b34122b58b0b2f7067c504484130e7947b3"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-045.m4s",
+        "bytes": 747399,
+        "sha256": "cba0b1c9009f0f5f8a105f2d8142055115acf8944469ad1064330b969023b53f"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-046.m4s",
+        "bytes": 250050,
+        "sha256": "675b73e7a2b150ff8fa0d0a02e1ef5f524fb81d5800a5a2b64d7858223ca0171"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-047.m4s",
+        "bytes": 367074,
+        "sha256": "0bd47b7a512ca454318140b7d1d949ef5520bc380a47dd0c67c2567c93970890"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-048.m4s",
+        "bytes": 481986,
+        "sha256": "8fd30b352d9e7cb12e1fbd99f380db39597e6ad34c95e5237693de4db34088bd"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-049.m4s",
+        "bytes": 383095,
+        "sha256": "93d7d397ffa524c918d80fb12bbc75595f43254f0d9e440b09e60a4d791e1e61"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-050.m4s",
+        "bytes": 187628,
+        "sha256": "af9c17d2cf185b56fc71322c63b1a7a3e8de4dd65e8d79c84c7f5ed0eedc5484"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-051.m4s",
+        "bytes": 410836,
+        "sha256": "0c44756d177993813cb9a0899851667af9b3286cb3bfb5cb98d4215ab88a1ce4"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-052.m4s",
+        "bytes": 731150,
+        "sha256": "e6536f7be9097e616d03c9e6ea16fe3c61bdfa8ad47057410e6215b0b2d036b5"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-053.m4s",
+        "bytes": 732950,
+        "sha256": "317b11dfee5af4cb695bca40fcc2afc0ffe54a0502ef4ad7177ad38293b60da5"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-054.m4s",
+        "bytes": 613951,
+        "sha256": "b2694af4f14bb46ac1b6f5133d16e4f3a2568e317a0d7a26aa2820b39dc959e2"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-055.m4s",
+        "bytes": 332736,
+        "sha256": "f9492fb9a99a8e195e98f8aaf4980378436e0171e651493184b5f9947c1a4397"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-056.m4s",
+        "bytes": 581721,
+        "sha256": "5cf80ca5887b60cc7412b561ea4b2fde065432db0f28c606b0d2e5f6c4bd4b0b"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-057.m4s",
+        "bytes": 784135,
+        "sha256": "59a78043a483218c35224c4c64110bcbb43876ec3990674a743348cfb34f07b9"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-058.m4s",
+        "bytes": 779583,
+        "sha256": "8425898f4445a3ae2a8b9a2c0041683a440be43ab431b84a8ddbfd18db0d699a"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-059.m4s",
+        "bytes": 812871,
+        "sha256": "c37526357772384ed6d7b553ac0a6128bc639062bc3333b58b0f4c7005e59bfc"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-060.m4s",
+        "bytes": 407541,
+        "sha256": "7eb18878cbf013fd9ee70fa652e9a77ec69e40a8bf30833f2b0849d9b2d202e5"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-061.m4s",
+        "bytes": 812135,
+        "sha256": "a4b30191409fcd6a3c4030e82c4728aba21112b7071da808ac0f3e066228020e"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-062.m4s",
+        "bytes": 801045,
+        "sha256": "e8d7a2bce6b7e463ae73e1ce5bff3e3d3600c8f3df108b9a8d9ddda22094f84a"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-063.m4s",
+        "bytes": 800958,
+        "sha256": "37570bb2eee02a20bfb65eaaba6818a014537eb38d5439a4af0490ff443d8aea"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-064.m4s",
+        "bytes": 364251,
+        "sha256": "357144661adc2b1e828e8b36d036781ea03a89d1c88047490b41b66710a784d6"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-065.m4s",
+        "bytes": 756859,
+        "sha256": "dd8be045c8ecd3b6b7dbadfd79c23293e2d5bb5e53817356ef893e67c9e73008"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-066.m4s",
+        "bytes": 683029,
+        "sha256": "c45617ed7d64d318e46f28ab073940ebb6104104091da4116dded9e9f7e81a1c"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-067.m4s",
+        "bytes": 794182,
+        "sha256": "d1109056315afdf8b41f686dbf854bfc037b580244167c9d46f12d3024e2fb83"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-068.m4s",
+        "bytes": 715812,
+        "sha256": "d4a89ec71bb81c45a8256f8b573f00f80d60ce259a9ac673523fcdbdb74f073b"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-069.m4s",
+        "bytes": 296687,
+        "sha256": "6502743357e102af857c7a34598c8b07d8775b128ed710395d95dbfc5ea3c460"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-070.m4s",
+        "bytes": 690507,
+        "sha256": "4ba7f21fbf12389e2986d81e997520ca4e65619692913dab1f936d94bc4c16e2"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-071.m4s",
+        "bytes": 779741,
+        "sha256": "1da14c62df0505b85c663d4dc7fda119aa0b68c760bd57e1dd6804397beeae85"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-072.m4s",
+        "bytes": 557366,
+        "sha256": "66eaad9e3fbb99d342eafef1757b1209cffeb3cb9759a95c57547b909f6f3f19"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-073.m4s",
+        "bytes": 634969,
+        "sha256": "a8839d5a6f2333231a67802730eb043600b70cfcdcbc5e7a0d226f8e7bd312d6"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-074.m4s",
+        "bytes": 339737,
+        "sha256": "c9ea690e216d2908fdebbe60b7d032e9aa881335c684770cf16c0371435b8d84"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-075.m4s",
+        "bytes": 565162,
+        "sha256": "575c26d37b7f8317b3cd6884572463e7af0b816c31249c182d7cf3973765eecb"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-076.m4s",
+        "bytes": 550462,
+        "sha256": "ce12eac071ee7a589b7756ef45283be60395679f6912e20273b67e9ac997e4ac"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-077.m4s",
+        "bytes": 561044,
+        "sha256": "ed10c6374d2bea383b715e98518a7b0c97821b8b9ab99505a4b5f6ffad4a8505"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-078.m4s",
+        "bytes": 250144,
+        "sha256": "8cda92162c8c206c279dd2500f20a03850c94e2aaf0da198a7b5bb00bea6cb38"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-079.m4s",
+        "bytes": 594549,
+        "sha256": "1c4fa1e8d15d24932fda1c55fa9aac7b50a4fae7de00cce8545ca166df27c11a"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-080.m4s",
+        "bytes": 543236,
+        "sha256": "030eb1c910f79cf0b72fb7abdc29abbcc7a0ac50ad611ec590e848b6d2c828ba"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-081.m4s",
+        "bytes": 650900,
+        "sha256": "2017c5af4a1536689a6a8e1c1646deda3aeb710ee200397e3464d68e36bee586"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-082.m4s",
+        "bytes": 624140,
+        "sha256": "cdeaa495d04453cf7f7b375dc9e3594312f43689def7347c939915d629f69a36"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-083.m4s",
+        "bytes": 286944,
+        "sha256": "d324fa2aaa4c10441cf1d4f32fbc209bfbc1a94b04fda805a4fd58eac3378944"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-084.m4s",
+        "bytes": 676946,
+        "sha256": "315d0b18452fdabebea1ab094db5fd688efe8c6e4c3c9d60a4f0efd3560e50a6"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-085.m4s",
+        "bytes": 789472,
+        "sha256": "0c022d8743aeb295e8c841c81952669c0085e833702ded2b41641424323d9ebf"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-086.m4s",
+        "bytes": 798248,
+        "sha256": "2c0825d4d7fc4342ee70b7272810fc255a83e46673dca1f4317e926276abc876"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-087.m4s",
+        "bytes": 794478,
+        "sha256": "f9c0c0529531432436e7b14dbf83e9828cd378d8148fac16b581dfddd4d025e0"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-088.m4s",
+        "bytes": 329996,
+        "sha256": "9706828a880db5a81411ba6ef90db73e94225f1feec449a69af77ec784187c11"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-089.m4s",
+        "bytes": 635862,
+        "sha256": "7c9b9ea1a6a3df3ab427277b21b3cc9906f198e73f78e4ed721b2a3623f3ef23"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-090.m4s",
+        "bytes": 586134,
+        "sha256": "614fd81b1b29c998ffc7b80bd6c6a85a080f6cd8ffe508ddf21c8d8ff0fc8bd8"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-091.m4s",
+        "bytes": 645265,
+        "sha256": "50fab447c01d81a72b6f404fe5fa7258dbf304939d52f0b9834796fee9867b7a"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-092.m4s",
+        "bytes": 288029,
+        "sha256": "58d82cdadc6b456b16801db1d62131c9febe5238a53899277f51f9698df76cf4"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-093.m4s",
+        "bytes": 649224,
+        "sha256": "5cf3a9281ceb97faa0687fb24cb7cdd40078699bb334d9856f820f4aa7640028"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-094.m4s",
+        "bytes": 634863,
+        "sha256": "0fef7d5383949870e2d60eb5a360556ee370126a79caf74cda2ba6e205917df4"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-095.m4s",
+        "bytes": 734178,
+        "sha256": "1e4e6824e17ff6b2baf2f9268d4a3b4200bcfd2e8c245fc88f545bc43efa97ba"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-096.m4s",
+        "bytes": 594680,
+        "sha256": "549884fe782b7038590a09c8029e232f682b3ab1e9de3f71c16c8dc90918e327"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-097.m4s",
+        "bytes": 343865,
+        "sha256": "81ec223eab666ae8e1d30edcb23a2e76a17322e73c4aaf586aa2a7b7a8c3077e"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-098.m4s",
+        "bytes": 621774,
+        "sha256": "0044237a1e98b0da7b14540dd7d363d5229db8b29d21a76f21db2947b8680822"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-099.m4s",
+        "bytes": 555551,
+        "sha256": "e17f7147a08bbb886e64471902f810b45eacc2463bd84777548acfe6cdb23fda"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-100.m4s",
+        "bytes": 500384,
+        "sha256": "e1f52954dd2611d8bca7e72ba7e037eb279e244d1b931face3164344bc4b1e61"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-101.m4s",
+        "bytes": 325297,
+        "sha256": "c75ee72037d6b2a0615d6fb0dbb40a4e5c4544e88578c6256b74398cc2398364"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-102.m4s",
+        "bytes": 751563,
+        "sha256": "6a94b7e62e0dc3b91b9eb09c06f8ceda274e6683e6fe12b85703eb40646d2b01"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-103.m4s",
+        "bytes": 628851,
+        "sha256": "2d8ebb395faa9e65f3f467e2b88b6e8b4578b818351d12907dc6b1637948a196"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-104.m4s",
+        "bytes": 743719,
+        "sha256": "97e628059d93e39febf8b9c5f13db051c55d3f9affd86a18fbac1b28f51d2a34"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-105.m4s",
+        "bytes": 825939,
+        "sha256": "f4cf55b69b8d1529c3d1439bf64e7c555d1ef882eb14e20f87ba2f3331f8ca3a"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-106.m4s",
+        "bytes": 364385,
+        "sha256": "b1347c2608111558bbac86987a8271fc445273a86a92d380357fc0e2de293a37"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-107.m4s",
+        "bytes": 682174,
+        "sha256": "76a04e71da86c65089a74f567700579e6c8c2b598381d881970123cfa3a28d20"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-108.m4s",
+        "bytes": 546864,
+        "sha256": "afe77ee4f01106c16b9f7bf8600061a18ba0b52c2beca82710a87bcacd3c40d4"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-109.m4s",
+        "bytes": 713465,
+        "sha256": "78fc4d990b57599bec5b8d79f63a31bce8b37ce8a2d99a9240e98ea40b803767"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-110.m4s",
+        "bytes": 785974,
+        "sha256": "c668510cb2bc1383ada0044721d83ee701b1f5384f7714972a8decdb1bf14668"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-111.m4s",
+        "bytes": 270556,
+        "sha256": "e4497b9e5a38c34570a2585b5bc696134b663bf78aa6cb0557c10e63a0b198b5"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-112.m4s",
+        "bytes": 797426,
+        "sha256": "901839605b8b9239aa7dc807021e8864c3fd8cf5796068362411e44fcfcef7ef"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-113.m4s",
+        "bytes": 589968,
+        "sha256": "4e67e92b432a26773d3d6085f646112dffe25361b0e539f9306af7044df7bda3"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-114.m4s",
+        "bytes": 609311,
+        "sha256": "7516c94877337dc9766eb7da76531d146325308bbbd1b644422fa4bbb8f6a80f"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-115.m4s",
+        "bytes": 350955,
+        "sha256": "7e730d2ca03ce1de2e9cd86466efb0fe45e7fcb7d50504e29e3a18a18930a168"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-116.m4s",
+        "bytes": 659652,
+        "sha256": "db4b7ccfe5d0591a8b73047ae000a7d3bb2a18adf77fd3a42d2024e1f5a3de0f"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-117.m4s",
+        "bytes": 558125,
+        "sha256": "0c5777c8fcef5634898db02d58acdefe34cf2a79acab56ed9be90a5564b8488b"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-118.m4s",
+        "bytes": 559548,
+        "sha256": "d71e8a95f0a9b72ede2b223256c676c4c42f8b26cc7263f3ef9f6db4ce71b725"
+      },
+      {
+        "path": "public/videos/library/batang-pinoy-2026-8db9f5cb0655/segment-119.m4s",
+        "bytes": 377202,
+        "sha256": "ea0887a8203744386176b02051c7bbb79148c8546af1be021928e82f4c4d0797"
+      }
+    ]
+  },
+  {
+    "id": "1Zo7Nxp6eTr0QyC22PI1U5EnGcDwhyQYA",
+    "name": "CHESS-TOURNAMENT-Highlights-SnapYT.App.mp4",
+    "bytes": 3552267,
+    "sha256": "a83bf4ff2e0f51580a52bf98753de8387f171f6f9beb762b52ea392ab690f567",
+    "probe": {
+      "duration": 60.627302,
+      "width": 640,
+      "height": 360,
+      "codec": "h264",
+      "fps": "30/1",
+      "audio": "aac",
+      "audio_bitrate": "96032"
+    },
+    "slug": "tournament-highlights",
+    "title": "Chess Tournament — Highlights Video",
+    "category": "Tournament highlights",
+    "kind": "mp4",
+    "src": "/videos/library/tournament-highlights-a83bf4ff2e0f/video.mp4",
+    "poster": "/images/video-library/tournament-highlights-a83bf4ff2e0f-640.webp",
+    "posterSrcset": "/images/video-library/tournament-highlights-a83bf4ff2e0f-320.webp 320w, /images/video-library/tournament-highlights-a83bf4ff2e0f-640.webp 640w",
+    "duration": 60.627302,
+    "durationLabel": "1:00",
+    "width": 640,
+    "height": 360,
+    "outputs": [
+      {
+        "path": "public/videos/library/tournament-highlights-a83bf4ff2e0f/video.mp4",
+        "bytes": 3584814,
+        "sha256": "0560de84ab5a454140c94b5f6d72c588e9981331013aff7ad6ac87a2f9e0ac52"
+      }
+    ]
+  },
+  {
+    "id": "1jy3NDGeo1WnetDGak7WT_aMJCifkerdC",
+    "name": "videoplayback.mp4",
+    "bytes": 90077781,
+    "sha256": "a89dd3c174ed198ed59010c57639d2b0bb626565f4eee9ee70db75112749c41d",
+    "probe": {
+      "duration": 1179.759456,
+      "width": 640,
+      "height": 360,
+      "codec": "h264",
+      "fps": "30/1",
+      "audio": "aac",
+      "audio_bitrate": "48002"
+    },
+    "slug": "awards-ceremony",
+    "title": "Chess United — Awards Ceremony",
+    "category": "Celebrating the players",
+    "kind": "hls",
+    "src": "/videos/library/awards-ceremony-a89dd3c174ed/index.m3u8",
+    "poster": "/images/video-library/awards-ceremony-a89dd3c174ed-640.webp",
+    "posterSrcset": "/images/video-library/awards-ceremony-a89dd3c174ed-320.webp 320w, /images/video-library/awards-ceremony-a89dd3c174ed-640.webp 640w",
+    "duration": 1179.759456,
+    "durationLabel": "19:39",
+    "width": 640,
+    "height": 360,
+    "outputs": [
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/index.m3u8",
+        "bytes": 4244,
+        "sha256": "59772951a9efa968f31545335edba16769dbcd16f09fae52a998025978252c23"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/init.mp4",
+        "bytes": 1410,
+        "sha256": "8aaf067df4aadd2000a3989309dc9c96d3eeb15cc7a60f84adf7108c26ac3f47"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-000.m4s",
+        "bytes": 889054,
+        "sha256": "6dc3b286df843d54d70d8d92ccfb76e5a701e42d1828df208f36deafc93a98e1"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-001.m4s",
+        "bytes": 852135,
+        "sha256": "4e73cbea8ed5ea386680545534a76df002d59cfd4ed12870956cafc54147a986"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-002.m4s",
+        "bytes": 943294,
+        "sha256": "f598f05c53388bce56451fbf46b4903cd7e9751e22e7352f2ddff63cfd2912b2"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-003.m4s",
+        "bytes": 840758,
+        "sha256": "ad03bb6a706a4c43eed5b39aac6b12aa227552159e39b089037a6bd5d6d6353b"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-004.m4s",
+        "bytes": 480594,
+        "sha256": "d1ccad73affa68b25e2c545b9f4343e077ecd230a0fed28f1b0ec62cb61ed6f8"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-005.m4s",
+        "bytes": 850336,
+        "sha256": "ae7b9bb9554e281df05d4c968723e97234e61f6b4e44ba87a497e54fcc98d59f"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-006.m4s",
+        "bytes": 736910,
+        "sha256": "418ef69e0cc1909c93d3e835d724281a31791eb1e667a71ac4851f3c39a2a927"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-007.m4s",
+        "bytes": 790787,
+        "sha256": "e665d38f660125a4e14edb1738bf6f6797e4fb3e90f0de9ec59793145da035e9"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-008.m4s",
+        "bytes": 748411,
+        "sha256": "9c1a27a159787980b0bcd2af6776cad119dfb8262492d0b8b9b3df520ba98d19"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-009.m4s",
+        "bytes": 426759,
+        "sha256": "acc1e19e82b697b795b3551ce811d351735381561c304f771c618c16f9a54027"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-010.m4s",
+        "bytes": 806893,
+        "sha256": "401f8cc97357c8e81de30284034c3707411af95560fd9e19b5d4dfe1efd18b1c"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-011.m4s",
+        "bytes": 886606,
+        "sha256": "c85f6679091b84639d4c47158076287f87a5f9e37e2c67dfe4dd0dab4d43e741"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-012.m4s",
+        "bytes": 825464,
+        "sha256": "0c15ebcfaf596f6ea7c83cc48f5a8529336e7dea60a14c82c280b31b500e1a7a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-013.m4s",
+        "bytes": 358399,
+        "sha256": "e03dbf6dc2b79915be66c691af92ccd09528e56b6409202c8b189adf530f912c"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-014.m4s",
+        "bytes": 854211,
+        "sha256": "2739cd36ef5f29a9d8c44765f26cfd72197f0566c95ab954ba4c79b3336ce815"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-015.m4s",
+        "bytes": 873019,
+        "sha256": "152add08e686f54c95af7c0cde902f7f0e0c0e75394ad021b01d8c0ff55208a3"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-016.m4s",
+        "bytes": 746426,
+        "sha256": "54d101e972d34c6f2127475e8586540767371497ae00704350c32bd54812764a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-017.m4s",
+        "bytes": 764194,
+        "sha256": "853f88bf0818af181117c558da18b880b6c835eba6257de172b4ec6de942d198"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-018.m4s",
+        "bytes": 410700,
+        "sha256": "5275e93716b661310758694330ea18d01c71c2efcd260a744f300dac0140b4b1"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-019.m4s",
+        "bytes": 866346,
+        "sha256": "8197d8443a6350c054e3916a169ee3bbbfe87aee99eeddba366c14fb9df4c900"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-020.m4s",
+        "bytes": 810792,
+        "sha256": "80b97fe9ef626d45a38294c1910cf3a7c9b4165e1b00d2be13a2c3a5043a230f"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-021.m4s",
+        "bytes": 693365,
+        "sha256": "c8c166a0ac5673e0644d40a31b48fb8b5bd7693edb0ada0954186de51e6ad928"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-022.m4s",
+        "bytes": 876179,
+        "sha256": "57fe9e87c4087fc13d48d5e09733f6bf2478db0410881248eabd25c3fecf2c2d"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-023.m4s",
+        "bytes": 501868,
+        "sha256": "afeb5827b7ae3589363b36a6549612983ec369fbbcc3af82c5d1813ffd38022a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-024.m4s",
+        "bytes": 921757,
+        "sha256": "91806ec68ad2a784d0c67ffb089721bd51d43bf215098bf863d83fa750b0aec1"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-025.m4s",
+        "bytes": 741751,
+        "sha256": "6366a7d5f0c4dff26d512e07b2aeacc31354de0e8f57e98354f0e6c2e7eaf96f"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-026.m4s",
+        "bytes": 860244,
+        "sha256": "b5d403da596e51ab78371966528666463e91721e8e5bfaa22e054b7914dd4f4e"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-027.m4s",
+        "bytes": 453771,
+        "sha256": "95e193e7c6a7cf86f76d7e04247b1aac283fadccc1719195309f890cc3a44286"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-028.m4s",
+        "bytes": 665030,
+        "sha256": "5ee932c0cb5cf76f7a2ca147bae09a68b7bab982dd422bc6b7cea71dec430bd4"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-029.m4s",
+        "bytes": 710429,
+        "sha256": "82a138314d2c45f0b086a77396a64ac7fbb28ae1f7f579df2d3e0e36ed8b1714"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-030.m4s",
+        "bytes": 809634,
+        "sha256": "47cdd2a7db61770e99194280433edbad28b9c3bb2529bb2b6768180d2c7c9f6b"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-031.m4s",
+        "bytes": 840953,
+        "sha256": "770b964a21270635853bcaa49b43699a5541d758794da30529a0d8e97ee7d6b4"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-032.m4s",
+        "bytes": 346999,
+        "sha256": "eed1b2bbb2d4b7ee171dd8d726110b52525637ffec77756ed9767eac7c887b39"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-033.m4s",
+        "bytes": 830814,
+        "sha256": "86d124847af270fab691838187c69c93011c429983fd9d6c98e29cfdc1bbf46a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-034.m4s",
+        "bytes": 744209,
+        "sha256": "88c42effa26cf7efc4cbad4ea8209e937d629e13e48a13abc4ec58bc0c2cc178"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-035.m4s",
+        "bytes": 807878,
+        "sha256": "4cd12f99b67fb63e2fbf53bd5e07b382c1da84fe6201f089fe4dc129c62a1585"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-036.m4s",
+        "bytes": 936038,
+        "sha256": "370c2a2417320dbeec142bb62e9a863185b0d18434498a0f4f9a141df556ebe5"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-037.m4s",
+        "bytes": 435491,
+        "sha256": "4e41f84d307b41119a45732e0788aebfe70b918904eb26226e9e8d74c8bcb8f5"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-038.m4s",
+        "bytes": 720716,
+        "sha256": "efa275f1b8ec2bb974afa7584ac7356aa50ada7303d6a69e0d662cb5d0796e52"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-039.m4s",
+        "bytes": 671677,
+        "sha256": "15278ba93e0d8f1b676b87feada3e67fe357ccaa4fb632426a6ae675e6e86805"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-040.m4s",
+        "bytes": 859170,
+        "sha256": "10f858a9e8c7fa82429e924015d6c3662268092de6bb5f0610195fa8d176cd37"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-041.m4s",
+        "bytes": 430293,
+        "sha256": "231c55264eaf9cc547ba71c1ec6d01f022b0da1b6631e3f8ecfdda288ced0a07"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-042.m4s",
+        "bytes": 961688,
+        "sha256": "cfb2af6cf6098bf5c9185cbe219033e08b0d575836ef571b46401fcb7f11677f"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-043.m4s",
+        "bytes": 875598,
+        "sha256": "cdafc156bef3add565a2f2a86b328ae219df2c004cd5bc0c941b4f4d456fda42"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-044.m4s",
+        "bytes": 923134,
+        "sha256": "c8d3c033c732824305283f724ef976a484e3dedbde92256bee43077dba08b634"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-045.m4s",
+        "bytes": 883078,
+        "sha256": "200fac4bdc1be9f634469299ec99c32758c9d52aa9316d91bc3f3de505817b8e"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-046.m4s",
+        "bytes": 450226,
+        "sha256": "4113379b3a57dc4dbe69cd3c9094263ef7ca2510f6dfb55998c7cbf1aaf2843d"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-047.m4s",
+        "bytes": 900840,
+        "sha256": "dada847031aa8e6b13211846abf4bc4edc5951fa73103986c7f43b91db64b0a5"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-048.m4s",
+        "bytes": 905913,
+        "sha256": "16eb47494992a71704d6d74dc7125800b5660675d03453e033082c678d7dc92a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-049.m4s",
+        "bytes": 817637,
+        "sha256": "c50974d33eead155cf2a1a15c9730cdd4c63def4acb29a0caca9005fbf68e6c9"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-050.m4s",
+        "bytes": 880888,
+        "sha256": "30a1fc23ddec6bfba61878c38366432b94d7ad7dcb85c07ed94d594fa4b3f5df"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-051.m4s",
+        "bytes": 419768,
+        "sha256": "50e5118bca6178ea91c79d408fa7352481370daa093f13f81d3e140744b29d26"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-052.m4s",
+        "bytes": 790151,
+        "sha256": "14c21929a3b0390d1cf6146af4ff257e7c4259a4d0517f9c7e2d6c18a248ef9a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-053.m4s",
+        "bytes": 811130,
+        "sha256": "6fcfaec18d03b04eb86e0c1c42a6e0f0b5f8444c70e7d3bab22f4155fe119232"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-054.m4s",
+        "bytes": 900079,
+        "sha256": "9b9577051dd790d49f9e06276267f33508a47de9ba3a06878c8d45d86b304ad6"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-055.m4s",
+        "bytes": 417399,
+        "sha256": "1592e5d50bd7fd51d1dc01af31ca49827f07311c3ce60600616cf91ced44c686"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-056.m4s",
+        "bytes": 818052,
+        "sha256": "9c6460fe3dfa2451990f7532d30559c215be5c692639250ceb2ec6cd8e82f754"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-057.m4s",
+        "bytes": 736826,
+        "sha256": "fc1d4f76d782f3f94ce177550c4122f96df59a73b17ba29bd2a7b05e2a0660a3"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-058.m4s",
+        "bytes": 775811,
+        "sha256": "a4f4b55404a7b67e031e795c7b372840eebbb45ace53ebe17a257baaa04a1c0d"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-059.m4s",
+        "bytes": 708204,
+        "sha256": "920b76194dc63ea4a58a12dfe541136e2373a0a9475ee46648c4a2203267d0ba"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-060.m4s",
+        "bytes": 438756,
+        "sha256": "9c7963611cd305f9d057a411007c11279cd3c9f71ce73c2bd9e98a1fc2e4427b"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-061.m4s",
+        "bytes": 874129,
+        "sha256": "2050bbcf29ae5996c60f68da0b3735d2a2e188909b864ace4f782ab843632474"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-062.m4s",
+        "bytes": 907880,
+        "sha256": "a347e6f43fb8565e153e76853ca91ec9ac83b02d38b6339a2563b74d53489c75"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-063.m4s",
+        "bytes": 914809,
+        "sha256": "3d9c65b4dbdca9793e44f36d7d444d0774b26fe97323bb3fab1468b44929b6d6"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-064.m4s",
+        "bytes": 877321,
+        "sha256": "368aa0a646a8acf86c366817a7854d69cedbcdcd6486146edcd9afdc6fe0ad4d"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-065.m4s",
+        "bytes": 472201,
+        "sha256": "86a5f316a7a6b93c27350be0d74bea105fa397f62b14df3289511540083f70cf"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-066.m4s",
+        "bytes": 930826,
+        "sha256": "2f11aedf34b328c9bf00d09219a4df96b67660a68b27a60b1ef12a8aeb89479a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-067.m4s",
+        "bytes": 938878,
+        "sha256": "619a24a8bea4aa956a1906f9dd7fc70f6f16709e3258ea6107ed8aca59810a46"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-068.m4s",
+        "bytes": 799103,
+        "sha256": "912a9202e671ac0fe491dc8b491ae6490393182bd856f3bdec3c318e1675dd57"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-069.m4s",
+        "bytes": 478345,
+        "sha256": "b68357ef60f66bbc0a704cdb5277ff9a9f59f4ca9e4fcc5926b24c995b07ed5d"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-070.m4s",
+        "bytes": 944400,
+        "sha256": "7a680038c0825bdc7e7c1c26485f5766cc8d977eea6b792cb15b9c86ac0adab9"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-071.m4s",
+        "bytes": 878032,
+        "sha256": "65541b4eaea4a50750b58f9d511ea6cf0965463853ae689efad81f35eab82729"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-072.m4s",
+        "bytes": 918718,
+        "sha256": "17058b3c438065248532f272824cbf65c1d7e0a36ab35cb0f7600b8a702394fb"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-073.m4s",
+        "bytes": 812960,
+        "sha256": "7d8dae7df2c3fd1fad3682e1b92c7dccfe95ee413a42c9ac05304234ef9c4882"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-074.m4s",
+        "bytes": 397079,
+        "sha256": "e009b4fe1b18e4d270f14940e05a8402414ec50a6ce165f81c7fc83e9f059c58"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-075.m4s",
+        "bytes": 841028,
+        "sha256": "7fed75eab286e45f9c4d305b83413aec6810ba96e1c834f08826ad3ae9b995ea"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-076.m4s",
+        "bytes": 827031,
+        "sha256": "cce3463ee92cb6c94c55c1acbcf6daca59f2eae6d516c4343932ed96e7aa0faa"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-077.m4s",
+        "bytes": 936392,
+        "sha256": "4bb2277285afdc184a6883a581d7ffbe3530e95d7c9e6c80540bf604946516bd"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-078.m4s",
+        "bytes": 949765,
+        "sha256": "b3229788e3f43894122fbdcfdc3d3324d2cbbee0a8c91f915a98becbf9df8e89"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-079.m4s",
+        "bytes": 472642,
+        "sha256": "1f8f523bafca4aad68b8474b84d1f6e6bf02d07c27899ba43ddaa1da04f83633"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-080.m4s",
+        "bytes": 948147,
+        "sha256": "3202eed6cab42273e5035e790ac136894cc6990f933ea2e1708cdb15851687a0"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-081.m4s",
+        "bytes": 959556,
+        "sha256": "3ab81e1454f464893a631a812efc2dd2250e123ee10cabfd4066a6e75016403e"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-082.m4s",
+        "bytes": 958345,
+        "sha256": "8bde80780c253bc3134451599739bab92ff4ded77ee9a9dc6fa85e7f14ff51a5"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-083.m4s",
+        "bytes": 467820,
+        "sha256": "b1776e2adb60af081ce77dbba1a939fa447211cf99e76a371536e5338f125c56"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-084.m4s",
+        "bytes": 914835,
+        "sha256": "d6da64b9e7c76d768778787b0e4dca2c7202375391bb481d28ce37ec625c438d"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-085.m4s",
+        "bytes": 956218,
+        "sha256": "81f70cb9a418685b5c1df5f835b97811c3b74985f0d46973a4efa67391e96c11"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-086.m4s",
+        "bytes": 937719,
+        "sha256": "f8c03c131cc9bd6d39e4abf6e9b89c89942bfd145205d6806f4bcedf56d02afe"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-087.m4s",
+        "bytes": 941948,
+        "sha256": "503445f47e1a4dc026b07f9fb13583c5bef1baa283a018e0fb0d9916007f2c17"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-088.m4s",
+        "bytes": 438082,
+        "sha256": "abca46e67aac218beb88d383be8eb4b60000d7728355b73c5ed329c2dab9bccd"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-089.m4s",
+        "bytes": 671476,
+        "sha256": "1a735196d0aa92c5bf14e985d8423872864468bee8e2cc4387cd11a4e3546d8d"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-090.m4s",
+        "bytes": 839446,
+        "sha256": "1e7d29bf31f5dcee4a136346f79af17863ff4ad96ebaaa664fdbdc92d287983f"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-091.m4s",
+        "bytes": 853314,
+        "sha256": "4179b94974ff8acc798b8a0cb465eeab6c24854408f64e3e7e0837b333e45d44"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-092.m4s",
+        "bytes": 491969,
+        "sha256": "d5ed3d7c6fdce8aeb64a57f7ed7e1cacba67ef20bff01e9a02c8a73749505796"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-093.m4s",
+        "bytes": 931373,
+        "sha256": "37038d41f32595d1637d2a40615ffe8c15fe788babf403be7423028ff4b0ad31"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-094.m4s",
+        "bytes": 948165,
+        "sha256": "efa65153a50d895cd93030f5d663869e6c537d33b9fcaa4ef6157e808a89ea89"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-095.m4s",
+        "bytes": 848801,
+        "sha256": "d3261dceb0b7d6885e4e1ee449d52db0e0fc7b5028deab61145d926abfc6b5b7"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-096.m4s",
+        "bytes": 934546,
+        "sha256": "830afe5f413d9291e962aea746af717869141ba7052f14f6c218d700afaa3a97"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-097.m4s",
+        "bytes": 481903,
+        "sha256": "43030835185c548c75c36ea6a9d05014e192a29302945004866de24a254feb0b"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-098.m4s",
+        "bytes": 951211,
+        "sha256": "188bee59ab09dfc07c672ff3a8122145abc92d281a2f6e902601123a5a88dfc6"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-099.m4s",
+        "bytes": 973464,
+        "sha256": "919f1f8697e659bd6e35cf7f549cb33354653d021a6f28861d34bf8e86a77a0e"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-100.m4s",
+        "bytes": 940897,
+        "sha256": "26dfdcb2176e1609a8df033ac96a206f4caaf15fe2de2eaf4ff85f914226ffeb"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-101.m4s",
+        "bytes": 912208,
+        "sha256": "63db64d1a60f376d7c3719662caece264137097eeb4a7b3454bd9ffd370a9f4b"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-102.m4s",
+        "bytes": 482355,
+        "sha256": "af2c62c8abd56e203103ed986125bf33da43726553aabdb1c1d29673a1b387b8"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-103.m4s",
+        "bytes": 923997,
+        "sha256": "0d112138c24b679259b42afa128a6f1d75e2baa0022a268d75b2aa8c5a227859"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-104.m4s",
+        "bytes": 794546,
+        "sha256": "cc60acb741645a613d7a01ecb94b9f416b1ab2a30f16708b8197670691876f1a"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-105.m4s",
+        "bytes": 907410,
+        "sha256": "ccc83b7ddd7c9463e7bd6160d3649dbc0d3ef75522e1b0d5ed56dcd1a792ec25"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-106.m4s",
+        "bytes": 479308,
+        "sha256": "41a721be2467dbd3fe53559bb5050380916a659a5b181e8d40a1278563947ec1"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-107.m4s",
+        "bytes": 941865,
+        "sha256": "62e22818a934e79dcbc96ea26d5089b91ec4f137e88778e4621aa3f31e58373c"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-108.m4s",
+        "bytes": 962485,
+        "sha256": "138f5ce14d3884bf0b4b0673dabc68b8f97bc060cb385826b93924a0cc68ff89"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-109.m4s",
+        "bytes": 894472,
+        "sha256": "d52bfb5cc40406cc99da6b973c69dd3fa8201bfcc969a81a7ad0d9fbc2f15b6f"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-110.m4s",
+        "bytes": 745587,
+        "sha256": "db53ec901a3cd6c9435a6a8cb6a4224300e17c07cfba4f19ee3944090089efb9"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-111.m4s",
+        "bytes": 367824,
+        "sha256": "cca5981f0afaf53210167f7cd7342f5b55dd18fd4aaf8a4fac754413403a665e"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-112.m4s",
+        "bytes": 763489,
+        "sha256": "e3b4165a3523640e7a3f3504867a8f2a76edeecffdf2d034bddcc9f834f7f8e5"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-113.m4s",
+        "bytes": 757705,
+        "sha256": "342d4147d312137487fa41000ea4051c43e4f74fcf7c1d5f2d924bb93ccef530"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-114.m4s",
+        "bytes": 813451,
+        "sha256": "6106bebae64bc09f7df70db8566714e39e3b6ce4aecca770456b086fcc840c38"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-115.m4s",
+        "bytes": 789571,
+        "sha256": "d555727e530ad7ccba247c1a38a0bf8530429a31b7e14d5898822d1fdd219d77"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-116.m4s",
+        "bytes": 406726,
+        "sha256": "23601425c6f88ed1d9bba48232e75502a0329d4a0a93f1919efe6fee75e129bd"
+      },
+      {
+        "path": "public/videos/library/awards-ceremony-a89dd3c174ed/segment-117.m4s",
+        "bytes": 697535,
+        "sha256": "1d992e89eeb540ef7a7765898af2e67c996e10bb521c8d3638b672e46e9020a5"
+      }
+    ]
+  }
+]

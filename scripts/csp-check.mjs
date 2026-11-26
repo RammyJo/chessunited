@@ -29,6 +29,8 @@ const mime = {
   '.ico': 'image/x-icon',
   '.json': 'application/json; charset=utf-8',
   '.mp4': 'video/mp4',
+  '.m3u8': 'application/vnd.apple.mpegurl',
+  '.m4s': 'video/mp4',
 };
 
 const headers = await readFile(path.join(DIST, '_headers'), 'utf8');

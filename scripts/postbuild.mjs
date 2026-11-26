@@ -40,7 +40,7 @@ for (const file of htmlFiles) {
 
 // The Cloudflare host injects its cookieless Web Analytics beacon into HTML
 // responses; allow that one first-party host so the edge does not log a CSP
-// violation on every page view. YouTube runs inside its own embedded frame.
+// violation on every page view. Video streaming uses only same-origin files and MediaSource blob URLs.
 const INSIGHTS = 'https://static.cloudflareinsights.com';
 const scriptSrc = ["'self'", ...hashes, INSIGHTS].join(' ');
 
@@ -52,8 +52,8 @@ const csp = [
   "form-action 'self'",
   "img-src 'self' data:",
   "font-src 'self'",
-  "media-src 'self'",
-  "frame-src https://maps.google.com https://www.google.com https://www.youtube-nocookie.com",
+  "media-src 'self' blob:",
+  "frame-src https://maps.google.com https://www.google.com",
   "style-src 'self' 'unsafe-inline'",
   `script-src ${scriptSrc}`,
   "connect-src 'self' https://cloudflareinsights.com",

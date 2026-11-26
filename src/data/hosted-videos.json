@@ -1,0 +1,67 @@
+[
+  {
+    "slug": "bean-leaf",
+    "title": "Bean Leaf — Chess United",
+    "category": "Coffee sponsor",
+    "kind": "mp4",
+    "src": "/videos/library/bean-leaf-b5c702a809d2/video.mp4",
+    "poster": "/images/video-library/bean-leaf-b5c702a809d2-640.webp",
+    "posterSrcset": "/images/video-library/bean-leaf-b5c702a809d2-320.webp 320w, /images/video-library/bean-leaf-b5c702a809d2-640.webp 640w",
+    "duration": 115.774694,
+    "durationLabel": "1:55",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "slug": "tricycle-campaign",
+    "title": "Chess United — Tricycle Campaign",
+    "category": "In the community",
+    "kind": "mp4",
+    "src": "/videos/library/tricycle-campaign-c7e09507b490/video.mp4",
+    "poster": "/images/video-library/tricycle-campaign-c7e09507b490-640.webp",
+    "posterSrcset": "/images/video-library/tricycle-campaign-c7e09507b490-320.webp 320w, /images/video-library/tricycle-campaign-c7e09507b490-640.webp 640w",
+    "duration": 96.130612,
+    "durationLabel": "1:36",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "slug": "batang-pinoy-2026",
+    "title": "National Chess Qualifier — Batang Pinoy 2026",
+    "category": "Competition",
+    "kind": "hls",
+    "src": "/videos/library/batang-pinoy-2026-8db9f5cb0655/index.m3u8",
+    "poster": "/images/video-library/batang-pinoy-2026-8db9f5cb0655-640.webp",
+    "posterSrcset": "/images/video-library/batang-pinoy-2026-8db9f5cb0655-320.webp 320w, /images/video-library/batang-pinoy-2026-8db9f5cb0655-640.webp 640w",
+    "duration": 1200.796735,
+    "durationLabel": "20:00",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "slug": "tournament-highlights",
+    "title": "Chess Tournament — Highlights Video",
+    "category": "Tournament highlights",
+    "kind": "mp4",
+    "src": "/videos/library/tournament-highlights-a83bf4ff2e0f/video.mp4",
+    "poster": "/images/video-library/tournament-highlights-a83bf4ff2e0f-640.webp",
+    "posterSrcset": "/images/video-library/tournament-highlights-a83bf4ff2e0f-320.webp 320w, /images/video-library/tournament-highlights-a83bf4ff2e0f-640.webp 640w",
+    "duration": 60.627302,
+    "durationLabel": "1:00",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "slug": "awards-ceremony",
+    "title": "Chess United — Awards Ceremony",
+    "category": "Celebrating the players",
+    "kind": "hls",
+    "src": "/videos/library/awards-ceremony-a89dd3c174ed/index.m3u8",
+    "poster": "/images/video-library/awards-ceremony-a89dd3c174ed-640.webp",
+    "posterSrcset": "/images/video-library/awards-ceremony-a89dd3c174ed-320.webp 320w, /images/video-library/awards-ceremony-a89dd3c174ed-640.webp 640w",
+    "duration": 1179.759456,
+    "durationLabel": "19:39",
+    "width": 640,
+    "height": 360
+  }
+]
