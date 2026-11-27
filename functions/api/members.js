@@ -1,3 +1,4 @@
+import {clubSetup} from './_club-registration.js';
 import { scheduleSheetsSync } from './_sheets.js';
 import {json,fail,readJson,clean,isEmail,isPhone,isGcashRef,makeMemberNo,hasDb,noDb,randomToken} from './_utils.js';
 import { MEMBER_PRINT_FEE } from './_catalog.js';
@@ -5,6 +6,7 @@ import {digest} from './_security.js';
 import {prepareSubmission,submissionStatement,savedSubmission,SubmissionError} from './_submissions.js';
 export async function onRequestPost(context) {
  const {request,env}=context;if(!hasDb(env))return noDb();const body=await readJson(request);if(!body)return fail('Send a JSON body.');
+ if((await clubSetup(env))?.enabled)return fail('The registration form has changed. Reload the Membership page to register with your current details.',409);
  const firstName=clean(body.firstName,60),lastName=clean(body.lastName,60),email=clean(body.email,160).toLowerCase(),phone=clean(body.phone,24),city=clean(body.city,80),province=clean(body.province,80);
  const division=body.division||'open',printedId=body.printedId===true?1:0,gcashRef=clean(body.gcashRef,20).replace(/[\s-]/g,'');
  const birthYear=body.birthYear?Number(body.birthYear):null,fields={};

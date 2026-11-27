@@ -16,7 +16,7 @@ export async function onRequestGet(context) {
   if (!(await isAdmin(request, env))) return requireAdmin(env);
 
   try {
-    const [members, registrations, orders, clubs, events] = await Promise.all([
+    const [members, registrations, orders, clubs, events, clubRegistrations] = await Promise.all([
       env.DB.prepare(
         `SELECT id, member_no, first_name, last_name, email, phone, city, province, division,
                 printed_id, gcash_ref, payment_status, status, created_at
@@ -52,6 +52,7 @@ export async function onRequestGet(context) {
           ORDER BY id DESC
           LIMIT 200`,
       ).all(),
+      env.DB.prepare('SELECT full_name,age,date_of_birth,barangay,city,province,chess_club,chess_level,ranking_source,chess_ranking,tournaments_played,guest_count,guest_names,pending FROM club_registrations ORDER BY id DESC LIMIT 200').all(),
     ]);
 
     const registrationsOut = (registrations.results ?? []).map((row) => ({
@@ -73,6 +74,7 @@ export async function onRequestGet(context) {
     return json({
       ok: true,
       counts: {
+        clubRegistrations: clubRegistrations.results?.length ?? 0,
         members: members.results?.length ?? 0,
         membersPrintRequests: (members.results ?? []).filter((row) => row.printed_id).length,
         registrations: registrations.results?.length ?? 0,
@@ -82,6 +84,7 @@ export async function onRequestGet(context) {
         clubs: clubs.results?.length ?? 0,
         clubsPending: (clubs.results ?? []).filter((row) => row.status === 'pending').length,
       },
+      clubRegistrations: clubRegistrations.results ?? [],
       members: members.results ?? [],
       registrations: registrationsOut,
       orders: ordersOut,

@@ -1,0 +1,103 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Icon from '../../components/Icon.astro';
+import {site,membership,formatPeso} from '../../data/site';
+---
+<Base title="Existing member card — Chess United" description="Open your existing private Chess United member card using the link saved when it was issued. New club registrations do not issue a number." noindex canonical={false}>
+<Header /><main id="main">
+    <section class="section section--paper" id="card" aria-labelledby="card-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Member lookup</p>
+            <h1 id="card-title">Find your card.</h1>
+          </div>
+          <p class="lede">
+            Cards issued before the registration update still work through their private links. Bookmark your link to open your card again.
+            Your member number identifies you at the tables; the private link protects your name. Open it on your phone to show at the table, or print it;
+            the card is laid out to print cleanly on A4 or card stock.
+          </p>
+        </div>
+
+        <div class="mt-3" data-member-card>
+          <noscript>
+            <p class="note-box">
+              JavaScript is switched off, so the card cannot be looked up on this page. Ask in the
+              club group and an officer will confirm your membership number.
+            </p>
+          </noscript>
+
+          <div class="club-empty" data-card-loading hidden>Looking up your card…</div>
+
+          <div class="club-empty" data-card-empty>
+            <strong>Open your private card link.</strong> Use the link saved after registration, or ask a club officer for a replacement.
+          </div>
+
+          <div class="club-empty" data-card-error hidden>
+            <strong data-card-error-message>That membership number was not found.</strong>
+            Check the digits, or ask in the club group. If you have not registered yet,
+            <a href="/membership/#register">the form takes a minute</a>.
+          </div>
+
+          <div data-card-body hidden>
+            <article class="member-card">
+              <div class="member-card-head">
+                <img src="/images/logo.webp" width="560" height="560" alt="" />
+                <div>
+                  <span>Chess United</span>
+                  <span>San Fernando · La Union</span>
+                </div>
+              </div>
+
+              <div class="member-card-body">
+                <dl>
+                  <div>
+                    <dt>Member</dt>
+                    <dd data-card-name>—</dd>
+                  </div>
+                  <div>
+                    <dt>Division</dt>
+                    <dd data-card-division>—</dd>
+                  </div>
+                  <div>
+                    <dt>Member since</dt>
+                    <dd data-card-since>—</dd>
+                  </div>
+                  <div>
+                    <dt>Status</dt>
+                    <dd><span class="member-card-status" data-card-status>—</span></dd>
+                  </div>
+                </dl>
+
+                <p class="member-card-number" data-card-number>—</p>
+              </div>
+
+              <div class="member-card-foot">
+                <span>chessunitedglobal.com</span>
+                <span data-card-print-note hidden>{formatPeso(membership.printFee)} printed ID</span>
+              </div>
+            </article>
+
+            <div class="card-actions">
+              <button class="btn" type="button" data-print-card>
+                <Icon name="download" size={16} /> Print this card
+              </button>
+              <a class="btn btn--ghost" href={site.groupUrl} target="_blank" rel="noopener">
+                Ask the club <Icon name="external" size={15} />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-box mt-3">
+          <strong>Want it in your hand?</strong> The official printed ID and the club lanyard are
+          {formatPeso(membership.printFee)} together. Pay by GCash with the reference number, and
+          collect it at a Saturday session — the club matches every reference by hand before
+          printing.
+        </div>
+      </div>
+    </section>
+
+</main><Footer /></Base>

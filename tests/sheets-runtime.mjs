@@ -1,6 +1,6 @@
 /** Real Workers/D1 runtime smoke test. Uses only a local, temporary database. */
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
-import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -8,6 +8,10 @@ import assert from 'node:assert/strict';
 import { priceItems } from '../functions/api/_catalog.js';
 const temp = mkdtempSync(join(tmpdir(), 'chess-sheets-test-'));
 execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'pages','functions','build','functions','--outdir',temp,'--compatibility-date','2026-10-01','--compatibility-flags','no_nodejs_compat','no_nodejs_compat_v2'], {stdio:'pipe'});
+// Keep this fixture registration open without changing any production event.
+const fixturePath=join(temp,'index.js'),fixtureCode=readFileSync(fixturePath,'utf8');
+assert.ok(fixtureCode.includes('2026-11-07T18:00:00+08:00'));
+writeFileSync(fixturePath,fixtureCode.replace('2026-11-07T18:00:00+08:00','2999-11-07T18:00:00+08:00'));
 const mf = new Miniflare(convertV4MiniflareOptions({modules:true,modulesRoot:temp,scriptPath:join(temp,'index.js'),compatibilityDate:'2026-10-01',compatibilityFlags:['no_nodejs_compat','no_nodejs_compat_v2'],d1Databases:['DB'],bindings:{ADMIN_TOKEN:'local-test-only'},serviceBindings:{ASSETS:()=>new Response('test')}}));
 try {
  const db = await mf.getD1Database('DB');let sql='';

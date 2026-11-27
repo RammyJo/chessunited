@@ -91,7 +91,7 @@ export const site = {
 };
 
 /* ---------------------------------------------------------------------------
-   Membership — any player can register online and get a digital club card.
+   Club registration — player details and guests, acknowledged without a number.
    A printed card with the club lanyard is the club's ₱200 option.
    --------------------------------------------------------------------------- */
 export const membership = {

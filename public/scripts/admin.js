@@ -259,9 +259,14 @@
     });
   };
 
+  const renderClubRegistrations = (body,rows) => {
+    if(!body)return;body.replaceChildren();if(!rows.length){body.appendChild(emptyRow(body.closest('table'),'No club registrations yet.'));return;}
+    for(const row of rows){const tr=el('tr');tr.append(td(row.full_name),td(row.age+' · '+row.date_of_birth),td(row.barangay),td(row.city+', '+row.province),td(row.chess_club+' · '+row.chess_level),td(row.ranking_source==='Unrated'?'Unrated':row.ranking_source+': '+row.chess_ranking),td(row.tournaments_played),td(row.guest_count+' · '+(row.guest_names||'Coming alone')),td(row.pending?'Queued':'Saved'));body.appendChild(tr);}
+  };
   const renderStats = (counts) => {
     const pairs = [
-      ['members', 'Members'],
+      ['clubRegistrations', 'Club registrations'],
+      ['members', 'Existing cards'],
       ['membersPrintRequests', 'Printed IDs requested'],
       ['registrations', 'Tournament entries'],
       ['registrationsPending', 'Entries to verify'],
@@ -288,6 +293,7 @@
       ...(payload.members||[]).map(row=>['member:'+row.id,{number:row.member_no,name:[row.first_name,row.last_name].join(' '),amount:row.printed_id?200:0,reference:row.gcash_ref}]),
     ]);
     renderStats(payload.counts || {});
+    renderClubRegistrations($('[data-queue-body="club-registrations"]'),payload.clubRegistrations||[]);
     renderMembers($('[data-queue-body="members"]'), payload.members || []);
     renderRegistrations($('[data-queue-body="registrations"]'), payload.registrations || []);
     renderOrders($('[data-queue-body="orders"]'), payload.orders || []);
@@ -318,7 +324,7 @@
           break;
         }
         if (check && status.result?.verified) {
-          sheetsStatus.textContent = 'Connected. Orders, Registrations and Memberships tabs are ready. Select Sync now to copy any waiting records.';
+          sheetsStatus.textContent = 'Connected. Club registrations, tournament entries, orders and existing memberships are ready. Select Sync now to copy any waiting records.';
           break;
         }
         checked += status.result?.checked || 0;

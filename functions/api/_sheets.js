@@ -1,3 +1,5 @@
+import {clubSetup,LEGACY_TOURNAMENT_TAB} from './_club-registration.js';
+import {runClubSheetWork,verifyClubHeaders} from './_club-sheets.js';
 import { paidLabel, paymentStatusForMark } from './_payment-status.js';
 /** Server-only Google Sheets mirror. D1 is authoritative; never append blindly. */
 const DEFAULT_SHEET = '1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoCLbI';
@@ -50,9 +52,11 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
   const base = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}`;
   const request = (path, method = 'GET', body) => call(base + path, { method, headers: { Authorization: `Bearer ${auth.access_token}`, 'Content-Type': 'application/json' }, ...(body ? { body: JSON.stringify(body) } : {}) }, 'google_sheets');
   const rangePath = range => `/values/${encodeURIComponent(range)}`;
+  const setup=await clubSetup(env);
+  const specs={...SHEET_COLUMNS,registration:{...SHEET_COLUMNS.registration,title:setup?.enabled?LEGACY_TOURNAMENT_TAB:SHEET_COLUMNS.registration.title}};
   const prepared = new Set();
   const prepare = async (kind, row = 2, verifyWrite = false) => {
-    const spec = SHEET_COLUMNS[kind];
+    const spec = specs[kind];
     if (!prepared.has(kind)) {
       let meta = await request('?fields=sheets.properties');
       let tab = meta.sheets?.find(s => s.properties.title === spec.title)?.properties;
@@ -81,7 +85,10 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
     }
   };
   return {
+    request,
     async verify() {
+      if(setup?.enabled && !setup.reset_completed)throw new SyncError('registration_setup_pending');
+      if(setup?.enabled)await verifyClubHeaders({request});
       await prepare('order', 2, true);
       await prepare('registration', 2, true);
       await prepare('member', 2, true);
@@ -91,14 +98,14 @@ export async function createSheetsClient(env, fetcher = fetch, deadline = Date.n
       for (const kind of kinds) await prepare(kind);
       if (!jobs.length) return [];
       const ranges = jobs.map(job => {
-        const spec = SHEET_COLUMNS[job.kind];
+        const spec = specs[job.kind];
         return `'${spec.title}'!A${job.record_id + 1}:${String.fromCharCode(64 + spec.fields.length)}${job.record_id + 1}`;
       });
       const result = await request('/values:batchGet?' + new URLSearchParams(ranges.map(range => ['ranges', range])));
       return jobs.map((job, index) => ({ ...job, cells: result.valueRanges?.[index]?.values?.[0] || [] }));
     },
     async write(kind, record, paidSnapshot = null) {
-      const spec = SHEET_COLUMNS[kind];
+      const spec = specs[kind];
       if (!spec || !Number.isSafeInteger(record.id) || record.id < 1) throw new SyncError('invalid_record');
       const row = record.id + 1;
       await prepare(kind, row);
@@ -133,7 +140,10 @@ export async function syncStatus(env) {
     MAX(synced_at) AS lastSynced FROM sheets_sync`).first();
   const failure = await env.DB.prepare('SELECT last_error FROM sheets_sync WHERE pending = 1 AND last_error IS NOT NULL ORDER BY attempts DESC LIMIT 1').first();
   const schedule = await env.DB.prepare('SELECT last_tick_at AS lastTick, finished_at AS lastRun, last_error AS lastError FROM sheets_schedule WHERE id=1').first();
-  return { configured: config.configured, issue: config.issue || null, ...stats, lastError: failure?.last_error || null,
+  const club=await clubSetup(env);
+  const clubStats=club?await env.DB.prepare('SELECT COUNT(*) AS total,COALESCE(SUM(pending),0) AS pending FROM club_registrations').first():{total:0,pending:0};
+  stats.total+=clubStats.total;stats.pending+=clubStats.pending;
+  return { configured: config.configured, issue: config.issue || null, ...stats, clubRegistration:{enabled:!!club?.enabled,ready:!!club?.reset_completed,pending:clubStats.pending}, lastError: failure?.last_error || club?.last_error || null,
     schedule: { ...schedule, healthy: !!schedule?.lastTick && !!schedule?.lastRun && Date.now()-schedule.lastTick<15*60*1000 && Date.now()-schedule.lastRun<15*60*1000 && !schedule.lastError } };
 }
 
@@ -175,12 +185,17 @@ export async function drainSheets(env, { fetcher = fetch, deadline = Date.now() 
   let checked = 0;
   try {
     const candidates = (await env.DB.prepare('SELECT kind,record_id,version,paid_snapshot FROM sheets_sync ORDER BY payment_checked_at, kind, record_id LIMIT 40').all()).results || [];
-    if (!candidates.length) return { processed, checked };
+    const setup=await clubSetup(env);
+    if (!candidates.length && !setup?.enabled) return { processed, checked };
     const client = await createSheetsClient(env, fetcher, deadline);
-    await pullPaymentMarks(env, client, candidates);
-    checked = candidates.length;
-    const jobs = (await env.DB.prepare('SELECT * FROM sheets_sync WHERE pending = 1 ORDER BY attempts, record_id, kind LIMIT 3').all()).results || [];
-    if (!jobs.length) return { processed, checked };
+    const clubWork=await runClubSheetWork(env,client,deadline);
+    processed+=clubWork.processed;
+    const legacyBlocked=clubWork.blocked && !(await clubSetup(env))?.reset_completed;
+    const readable=legacyBlocked?candidates.filter(job=>job.kind!=='registration'):candidates;
+    await pullPaymentMarks(env, client, readable);
+    checked = readable.length;
+    const jobs = (await env.DB.prepare(legacyBlocked?"SELECT * FROM sheets_sync WHERE pending=1 AND kind!='registration' ORDER BY attempts,record_id,kind LIMIT 3":'SELECT * FROM sheets_sync WHERE pending=1 ORDER BY attempts,record_id,kind LIMIT 3').all()).results || [];
+    if (!jobs.length) return { processed, checked,...(clubWork.issue?{issue:clubWork.issue}:{}) };
     for (const job of jobs) {
       if (Date.now() > deadline - 1000) break;
       try {
@@ -199,7 +214,7 @@ export async function drainSheets(env, { fetcher = fetch, deadline = Date.now() 
         return { processed, issue: code };
       }
     }
-    return { processed, checked };
+    return { processed, checked,...(clubWork.issue?{issue:clubWork.issue}:{}) };
   } catch (error) {
     const code = error instanceof SyncError ? error.message : 'sync_internal_error';
     await env.DB.prepare(`UPDATE sheets_sync SET attempts = attempts + 1, last_error = ? WHERE (kind,record_id) =

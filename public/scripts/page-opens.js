@@ -1,6 +1,6 @@
 import {publicPath} from './analytics-metrics.js?v=20261127';
 // Each page load or back/forward restoration counts again. No cookies or IDs.
-if(publicPath(location.pathname) && !navigator.webdriver && !document.querySelector('meta[name="robots"]')?.content.includes('noindex')) {
+if(publicPath(location.pathname) && !(location.pathname==='/membership/' && new URLSearchParams(location.search).has('m')) && !navigator.webdriver && !document.querySelector('meta[name="robots"]')?.content.includes('noindex')) {
  let recorded=false;
  const record=event=>{
   if(document.prerendering || (recorded && !event?.persisted))return;

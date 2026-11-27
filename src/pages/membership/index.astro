@@ -3,350 +3,45 @@ import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Icon from '../../components/Icon.astro';
-import GcashPayment from '../../components/GcashPayment.astro';
-import { site, membership, gcash, formatPeso } from '../../data/site';
-import { photos } from '../../data/images';
-
-const origin = Astro.site ?? new URL('https://chessunitedglobal.com');
-const abs = (path: string) => new URL(path, origin).href;
-
-const breadcrumbJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: abs('/') },
-    { '@type': 'ListItem', position: 2, name: 'Membership', item: abs('/membership/') },
-  ],
-};
-
-/* The success panel is filled in the browser by public/scripts/forms.js, which
-   swaps each {{placeholder}} for the value the server returns. It is kept as a
-   string so the braces stay literal in the built HTML instead of being read as
-   an Astro expression. */
-const successTemplate = `
-  <h3>Welcome to Chess United.</h3>
-  <p>Your membership number is</p>
-  <p class="success-code">{{member.memberNo}}</p>
-  <p>
-    Open your digital card any time at
-    <a data-href="{{cardUrl}}">your membership card</a> — bookmark it, or show the number at a
-    Saturday session.
-  </p>
-  <p>
-    <strong>{{member.firstName}} {{member.lastName}}</strong> · {{member.division}} Division
-  </p>
-  <p>{{member.printedNote}}</p>
-`;
+import {site} from '../../data/site';
+import {scriptUrl} from '../../lib/assets';
+const today=new Date(Date.now()+8*3600000).toISOString().slice(0,10);
+const successTemplate='<h3>You’re registered.</h3><p>Thank you. Chess United has received your registration details.</p><p><a href="/visit/">See weekly play details</a> or <a href="/events/">browse upcoming events</a>.</p>';
 ---
-
-<Base
-  title="Membership — Chess United"
-  description={`Register as a Chess United member online and get a digital club card. A printed membership ID with the club lanyard is ${formatPeso(membership.printFee)}, paid by GCash.`}
-  jsonLd={breadcrumbJsonLd}
->
+<Base title="Club registration — Chess United" description="Register with Chess United: tell us your player details, chess experience and accompanying guests. Receive a simple acknowledgement when your details are saved.">
   <Header />
-
   <main id="main">
-    <header class="page-hero">
-      <div class="wrap">
-        <p class="eyebrow">Club membership</p>
-        <h1>Join the club.</h1>
-        <p class="lede">
-          Register online and your digital membership card is issued straight away — a member
-          number you can show at the table. Want the card in your hand? The printed ID with the
-          club lanyard is {formatPeso(membership.printFee)}.
-        </p>
-        <div class="page-hero-meta">
-          <span><Icon name="check" size={15} /> Free digital card</span>
-          <span><Icon name="users" size={15} /> Open + Kiddies</span>
-          <span><Icon name="spark" size={15} /> {formatPeso(membership.printFee)} printed</span>
-        </div>
+    <header class="page-hero"><div class="wrap"><p class="eyebrow">Chess United · Club registration</p><h1>Come and play.</h1><p class="lede">Tell us about the player and any guests coming along. Once your details are saved, we’ll acknowledge your registration here.</p></div></header>
+    <section class="section" id="register" aria-labelledby="register-title"><div class="wrap registration-layout">
+      <aside class="registration-intro"><p class="eyebrow">Join the community</p><h2 id="register-title">Register with the club.</h2><p>Kids, teens and adults are welcome. Parents or guardians should help younger players complete the form.</p><p>New to chess? Choose Beginner and Unrated. If you don’t belong to a chess club, leave that field blank.</p><p>This is general club registration. Tournament entry details are announced separately on the <a href="/events/">Events page</a>.</p><a class="text-link" href={site.groupUrl} target="_blank" rel="noopener noreferrer">Ask the club <Icon name="external" size={16} /></a></aside>
+      <div data-form-shell>
+        <form class="form-card" method="post" action="/api/club-registrations" data-api="/api/club-registrations" data-club-registration>
+          <h3>Player registration</h3><p class="hint">Required fields are marked *. Your details are kept privately for club administration.</p>
+          <div class="form-grid">
+            <div class="field field--wide"><label for="r-name">Full name *</label><input id="r-name" name="fullName" required minlength="3" maxlength="120" autocomplete="name" /><p class="field-error" data-error-for="fullName" hidden></p></div>
+            <div class="field"><label for="r-age">Age *</label><input id="r-age" name="age" type="number" min="0" max="120" readonly required data-number /><p class="hint">Calculated from your date of birth.</p><p class="field-error" data-error-for="age" hidden></p></div>
+            <div class="field"><label for="r-birth">Date of birth *</label><input id="r-birth" name="dateOfBirth" type="date" min="1900-01-01" max={today} required autocomplete="bday" /><p class="field-error" data-error-for="dateOfBirth" hidden></p></div>
+            <div class="field field--wide"><label for="r-brgy">Brgy name *</label><input id="r-brgy" name="barangay" required minlength="2" maxlength="120" autocomplete="address-level3" /><p class="field-error" data-error-for="barangay" hidden></p></div>
+            <div class="field"><label for="r-city">City or municipality *</label><input id="r-city" name="city" required minlength="2" maxlength="100" autocomplete="address-level2" /><p class="field-error" data-error-for="city" hidden></p></div>
+            <div class="field"><label for="r-province">Province *</label><input id="r-province" name="province" required minlength="2" maxlength="100" autocomplete="address-level1" /><p class="field-error" data-error-for="province" hidden></p></div>
+            <div class="field"><label for="r-club">Chess club</label><input id="r-club" name="chessClub" maxlength="120" /><p class="hint">Leave blank if you are not part of a club.</p></div>
+            <div class="field"><label for="r-level">Chess level *</label><select id="r-level" name="chessLevel" required><option value="">Choose your level</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select><p class="field-error" data-error-for="chessLevel" hidden></p></div>
+            <div class="field"><label for="r-source">Chess ranking source *</label><select id="r-source" name="rankingSource" required><option>Unrated</option><option>FIDE</option><option>Chess.com</option></select><p class="field-error" data-error-for="rankingSource" hidden></p></div>
+            <div class="field" data-ranking-field hidden><label for="r-ranking">Chess ranking / rating *</label><input id="r-ranking" name="chessRanking" maxlength="80" disabled placeholder="e.g. 1200 rapid" /><p class="hint">Enter the rating or ranking shown by your selected source.</p><p class="field-error" data-error-for="chessRanking" hidden></p></div>
+            <div class="field"><label for="r-tournaments">Tournaments played in *</label><select id="r-tournaments" name="tournamentsPlayed" required>{Array.from({length:100},(_,i)=><option value={String(i)}>{i}</option>)}<option value="100+">100+</option></select><p class="field-error" data-error-for="tournamentsPlayed" hidden></p></div>
+            <div class="field"><label for="r-guests">Number of guests coming *</label><input id="r-guests" name="guestCount" type="number" min="0" max="100" value="0" required data-number /><p class="hint">Do not include the player. Enter 0 if coming alone.</p><p class="field-error" data-error-for="guestCount" hidden></p></div>
+            <div class="field field--wide" data-guests-field hidden><label for="r-guest-names">Names of guests coming *</label><textarea id="r-guest-names" name="guestNames" maxlength="12000" rows="4" placeholder="One full name per line"></textarea><p class="hint">List one name for each guest counted above.</p><p class="field-error" data-error-for="guestNames" hidden></p></div>
+          </div>
+          <p class="hint mt-2"><a href="/about/#privacy">How the club uses your details</a></p><p class="form-status" data-form-status role="status" hidden></p>
+          <div class="form-actions"><button class="btn" type="submit" data-busy="Registering…">Register <Icon name="check" size={16} /></button></div>
+          <noscript><p class="note-box">Enable JavaScript to register online, or contact the club for help.</p></noscript>
+        </form>
+        <div class="form-success" data-success role="status" hidden><template data-success-template set:html={successTemplate}></template></div>
       </div>
-    </header>
-
-    <section class="section" id="register" aria-labelledby="register-title">
-      <div class="wrap about-split">
-        <div>
-          <p class="eyebrow">Step one</p>
-          <h2 id="register-title" class="display-md">Register online.</h2>
-          <p class="lede">
-            Four details are required: your name, email, mobile number and division. The member
-            number is generated the moment you submit, and the club gets a copy in its dashboard.
-          </p>
-
-          <div class="pay-box mt-3">
-            <strong>If you want the printed card</strong>
-            <ol>
-              <li>Tick the printed card option in the form.</li>
-              <li>{gcash.instructions}</li>
-              <li>Send {formatPeso(membership.printFee)} and paste the reference number in the form.</li>
-              <li>The club checks the reference, prints the ID, and hands it over at a Saturday session.</li>
-            </ol>
-          </div>
-
-          <figure class="about-photo mt-3 reveal" style="margin:0">
-            <img
-              src={photos.lanyard.src}
-              srcset={photos.lanyard.srcset}
-              sizes="(max-width: 980px) 92vw, 40vw"
-              width={photos.lanyard.width}
-              height={photos.lanyard.height}
-              alt={photos.lanyard.alt}
-              loading="lazy"
-              decoding="async"
-            />
-            <figcaption class="caption">
-              {membership.printIncludes} · {formatPeso(membership.printFee)}
-            </figcaption>
-          </figure>
-        </div>
-
-        <div data-form-shell>
-          <form class="form-card" data-api="/api/members">
-            <h3>Membership registration</h3>
-            <p class="lede">
-              Nothing is charged here. This form only issues the card and, if you ask for it, the
-              printed ID order. Parents or guardians should help younger players register.
-            </p>
-
-            <div class="form-grid">
-              <div class="field">
-                <label for="m-first">First name</label>
-                <input id="m-first" name="firstName" required minlength="2" maxlength="60" autocomplete="given-name" />
-                <p class="field-error" data-error-for="firstName" hidden></p>
-              </div>
-
-              <div class="field">
-                <label for="m-last">Last name</label>
-                <input id="m-last" name="lastName" required minlength="2" maxlength="60" autocomplete="family-name" />
-                <p class="field-error" data-error-for="lastName" hidden></p>
-              </div>
-
-              <div class="field">
-                <label for="m-email">Email</label>
-                <input id="m-email" name="email" type="email" required autocomplete="email" />
-                <p class="field-error" data-error-for="email" hidden></p>
-              </div>
-
-              <div class="field">
-                <label for="m-phone">Mobile number</label>
-                <input id="m-phone" name="phone" required inputmode="tel" placeholder="09171234567" autocomplete="tel" />
-                <p class="field-error" data-error-for="phone" hidden></p>
-              </div>
-
-              <div class="field">
-                <label for="m-city">City or municipality</label>
-                <input id="m-city" name="city" maxlength="80" autocomplete="address-level2" />
-              </div>
-
-              <div class="field">
-                <label for="m-province">Province</label>
-                <input id="m-province" name="province" maxlength="80" autocomplete="address-level1" />
-              </div>
-
-              <div class="field">
-                <label for="m-birth">Year of birth</label>
-                <input id="m-birth" name="birthYear" type="number" min="1900" max="2030" inputmode="numeric" data-number />
-                <p class="hint">Used to place you in the right division.</p>
-              </div>
-
-              <div class="field">
-                <label for="m-division">Division</label>
-                <select id="m-division" name="division">
-                  <option value="open">Open Division — 13 &amp; above</option>
-                  <option value="kiddies">Kiddies Division — 12 &amp; below</option>
-                </select>
-              </div>
-
-              <div class="field field--wide">
-                <div class="check-row">
-                  <input id="m-printed" name="printedId" type="checkbox" data-bool />
-                  <label for="m-printed">
-                    <strong>Print my membership ID — {formatPeso(membership.printFee)}</strong>
-                    <span>{membership.printIncludes}, paid by GCash before printing.</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="field field--wide">
-                <label for="m-ref">GCash reference number</label>
-                <input id="m-ref" name="gcashRef" inputmode="numeric" maxlength="20" placeholder="13 digits" />
-                <p class="hint">
-                  Required only for the printed {formatPeso(membership.printFee)} card.
-                </p>
-                <p class="field-error" data-error-for="gcashRef" hidden></p>
-              </div>
-            </div>
-
-            <div data-printed-payment hidden><GcashPayment amount={membership.printFee} /></div>
-            <p class="hint mt-2"><a href="/about/#privacy">How the club uses your details</a></p>
-            <p class="form-status" data-form-status hidden></p>
-
-            <div class="form-actions">
-              <button class="btn" type="submit" data-busy="Sending…">
-                <Icon name="check" size={16} /> Register and get my card
-              </button>
-              <a class="btn btn--ghost" href="#card">Look up a card</a>
-            </div>
-          </form>
-
-          <div class="form-success" data-success hidden>
-            <template data-success-template set:html={successTemplate}></template>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--paper" id="card" aria-labelledby="card-title">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Member lookup</p>
-            <h2 id="card-title">Find your card.</h2>
-          </div>
-          <p class="lede">
-            Your registration gives you a private card link. Bookmark that link to open your card again.
-            Your member number identifies you at the tables; the private link protects your name. Open it on your phone to show at the table, or print it;
-            the card is laid out to print cleanly on A4 or card stock.
-          </p>
-        </div>
-
-        <div class="mt-3" data-member-card>
-          <noscript>
-            <p class="note-box">
-              JavaScript is switched off, so the card cannot be looked up on this page. Ask in the
-              club group and an officer will confirm your membership number.
-            </p>
-          </noscript>
-
-          <div class="club-empty" data-card-loading hidden>Looking up your card…</div>
-
-          <div class="club-empty" data-card-empty>
-            <strong>Open your private card link.</strong> Use the link saved after registration, or ask a club officer for a replacement.
-          </div>
-
-          <div class="club-empty" data-card-error hidden>
-            <strong data-card-error-message>That membership number was not found.</strong>
-            Check the digits, or ask in the club group. If you have not registered yet,
-            <a href="#register">the form takes a minute</a>.
-          </div>
-
-          <div data-card-body hidden>
-            <article class="member-card">
-              <div class="member-card-head">
-                <img src="/images/logo.webp" width="560" height="560" alt="" />
-                <div>
-                  <span>Chess United</span>
-                  <span>San Fernando · La Union</span>
-                </div>
-              </div>
-
-              <div class="member-card-body">
-                <dl>
-                  <div>
-                    <dt>Member</dt>
-                    <dd data-card-name>—</dd>
-                  </div>
-                  <div>
-                    <dt>Division</dt>
-                    <dd data-card-division>—</dd>
-                  </div>
-                  <div>
-                    <dt>Member since</dt>
-                    <dd data-card-since>—</dd>
-                  </div>
-                  <div>
-                    <dt>Status</dt>
-                    <dd><span class="member-card-status" data-card-status>—</span></dd>
-                  </div>
-                </dl>
-
-                <p class="member-card-number" data-card-number>—</p>
-              </div>
-
-              <div class="member-card-foot">
-                <span>chessunitedglobal.com</span>
-                <span data-card-print-note hidden>{formatPeso(membership.printFee)} printed ID</span>
-              </div>
-            </article>
-
-            <div class="card-actions">
-              <button class="btn" type="button" data-print-card>
-                <Icon name="download" size={16} /> Print this card
-              </button>
-              <a class="btn btn--ghost" href={site.groupUrl} target="_blank" rel="noopener">
-                Ask the club <Icon name="external" size={15} />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="note-box mt-3">
-          <strong>Want it in your hand?</strong> The official printed ID and the club lanyard are
-          {formatPeso(membership.printFee)} together. Pay by GCash with the reference number, and
-          collect it at a Saturday session — the club matches every reference by hand before
-          printing.
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="how-card-title">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">The card</p>
-            <h2 id="how-card-title">One number, two ways to carry it.</h2>
-          </div>
-          <p class="lede">
-            The digital card costs nothing and never needs printing. The physical ID is the
-            club's own print run.
-          </p>
-        </div>
-
-        <div class="value-grid">
-          <article class="value-card reveal">
-            <p class="value-num">01 / Digital</p>
-            <h3>Free, issued online.</h3>
-            <p>
-              Your member number is created the moment you register. Open the card page, or print
-              it yourself onto paper or card stock — the page is laid out for it.
-            </p>
-          </article>
-          <article class="value-card reveal">
-            <p class="value-num">02 / Printed</p>
-            <h3>{formatPeso(membership.printFee)} with the lanyard.</h3>
-            <p>
-              {membership.printIncludes} — the club's own ID card. Pay by GCash, paste the
-              reference number, and collect it at a Saturday session.
-            </p>
-          </article>
-          <article class="value-card reveal">
-            <p class="value-num">03 / Verified</p>
-            <h3>Every reference is checked.</h3>
-            <p>
-              A club officer matches each GCash reference number against the club account before
-              the printed card is made. No reference, no print run.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta-band" aria-labelledby="membership-cta">
-      <div class="wrap cta-inner">
-        <div>
-          <h2 id="membership-cta" class="display-lg">Register, then come and play.</h2>
-          <p>Membership is open to kids, teens and adults. Saturdays from 10 AM.</p>
-        </div>
-        <div class="cta-actions">
-          <a class="btn" href={site.groupUrl} target="_blank" rel="noopener">
-            Join the group <Icon name="external" size={15} />
-          </a>
-          <a class="btn btn--light" href="/visit/">Weekly play</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <Footer />
+    </div></section>
+  </main><Footer />
+  <script is:inline src={scriptUrl('registration-fields.js')} defer></script>
 </Base>
+<style>
+ .registration-layout{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(2rem,5vw,4rem);align-items:start}.registration-intro{position:sticky;top:110px}.registration-intro h2{font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15;margin-block:1rem}.registration-intro p{font-size:.95rem;line-height:1.8;margin-bottom:1rem}.registration-intro .text-link{font-size:.85rem}.field input[readonly]{background:var(--azure-tint)}@media(max-width:980px){.registration-layout{grid-template-columns:1fr}.registration-intro{position:static}}
+</style>
