@@ -1,11 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
 import {scriptUrl} from '../lib/assets';
+import AnalyticsDetails from '../components/AnalyticsDetails.astro';
 ---
-<Base title="Website analytics — Chess United" description="Chess United website opens by day, week, month and year, with verified Cloudflare history and a live count of public page opens." noindex canonical={false}>
+<Base title="Website analytics — Chess United" description="Chess United website opens, traffic sources, active time, popular pages, exits and new versus returning visits." noindex canonical={false}>
   <main id="main" class="analytics-report" data-analytics-report>
     <header class="report-header"><a class="brand" href="/" aria-label="Chess United homepage"><img src="/images/logo.webp" width="560" height="560" alt="" /><span>Chess United<small>San Fernando · La Union</small></span></a><span class="report-tag">Unlisted report</span></header>
-    <div class="report-heading"><p class="eyebrow">Website overview</p><h1>Site opens.</h1><p class="period">Dates in Asia/Manila · Repeat opens count again.</p></div>
+    <div class="report-heading"><p class="eyebrow">Website overview</p><h1>Website analytics.</h1><p class="period">Dates in Asia/Manila · Repeat opens count again.</p></div>
     <div class="report-status"><p role="status" aria-live="polite" data-report-status>Loading analytics…</p><button type="button" class="refresh-button" data-refresh>Refresh data</button></div>
     <form data-report-filters>
       <fieldset disabled><legend class="sr-only">Report dates and grouping</legend><div class="filter-grid">
@@ -19,13 +20,14 @@ import {scriptUrl} from '../lib/assets';
       <div class="metric"><p>Daily average</p><strong data-average>—</strong><span>Opens per day in this date range</span></div>
       <div class="metric"><p data-peak-label>Busiest day</p><strong data-peak>—</strong><span data-peak-note>Waiting for recorded data</span></div>
     </section>
+    <AnalyticsDetails />
     <aside class="visit-insight" data-november-insight hidden><p class="eyebrow">Traffic increase</p><h2>25 November 2026</h2><p data-november-copy></p></aside>
     <section class="chart-panel" aria-labelledby="daily-title"><div class="panel-heading"><div><p class="eyebrow">Traffic over time</p><h2 id="daily-title" data-chart-title>Daily opens</h2></div><span class="chart-legend"><i aria-hidden="true"></i> Website opens</span></div><p class="chart-help" data-chart-help>Select a bar to see its breakdown below.</p><div class="chart" role="group" aria-label="Website opens by date"><div class="chart-scale" aria-hidden="true" data-chart-scale></div><div class="chart-bars" data-chart-bars></div></div><div class="chart-dates" aria-hidden="true" data-chart-dates></div></section>
     <section class="breakdown" aria-labelledby="breakdown-title"><div class="panel-heading"><div><p class="eyebrow">The numbers</p><h2 id="breakdown-title" data-breakdown-title>Daily breakdown</h2></div><span class="small-label" data-period-count></span></div>
       <table><caption class="sr-only">Website opens by date. Historical Cloudflare counts are estimates; new public page opens are recorded directly.</caption><thead><tr><th scope="col">Period</th><th scope="col">Opens</th><th scope="col">Change</th><th scope="col">Source</th></tr></thead><tbody data-report-rows></tbody><tfoot><tr><th scope="row">Total</th><td data-table-total>—</td><td colspan="2"></td></tr></tfoot></table>
       <div class="pagination"><button type="button" data-page-prev disabled>Previous</button><p data-page-label></p><button type="button" data-page-next disabled>Next</button></div>
     </section>
-    <footer class="report-footer"><h2>How to read this report</h2><p data-coverage>Historical counts come from Cloudflare Web Analytics. New page opens are counted automatically.</p><p>Historical counts are estimates, marked with ≈. New recorded opens count each public page load or browser Back/Forward return, including repeated opens by the same person. Report pages, private pages and automated checks are excluded.</p><p>Weeks begin on Monday. Date filters may show part of a week, month or year. Change compares consecutive complete periods; incomplete periods show a dash. Browser-based counting can miss opens when scripts or requests are blocked.</p><p>Counts refresh automatically while this report is open. No analytics cookies or visitor identifiers are used.</p><p class="access-note">Shared by link · No login required. Anyone with this link can view the report.</p></footer>
+    <footer class="report-footer"><h2>How to read this report</h2><p data-coverage>Historical counts come from Cloudflare Web Analytics. New page opens are counted automatically.</p><p>Historical counts are estimates, marked with ≈. New recorded opens count each public page load or browser Back/Forward return, including repeated opens by the same person. Report pages, private pages and automated checks are excluded.</p><p>Weeks begin on Monday. Date filters may show part of a week, month or year. Change compares consecutive complete periods; incomplete periods show a dash. Browser-based counting can miss opens when scripts or requests are blocked.</p><p>Counts refresh automatically while this report is open. New and returning visits use a random browser identifier stored locally for up to 90 days. No names, form answers or private URLs appear in analytics. Browsers and visits are not guaranteed to represent individual people. <a href="/about/#privacy">Privacy details</a>.</p><p class="access-note">Shared by link · No login required. Anyone with this link can view the report.</p></footer>
     <noscript><p class="data-note">Enable JavaScript to load the live report and change its date ranges.</p></noscript>
   </main>
   <script is:inline type="module" src={scriptUrl('analytics-report.js')}></script>

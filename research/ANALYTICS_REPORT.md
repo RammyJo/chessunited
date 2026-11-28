@@ -1,32 +1,27 @@
-# Active website analytics — 27 November 2026
+# Website analytics — 28 November 2026
 
-The owner requested live daily, weekly, monthly and yearly reports with dates
-only. The former invented 478 fixtures have been removed, not relabeled as real
-traffic. Actual Cloudflare Web Analytics history exists from 2 November 2026.
-The verified GraphQL query was grouped by UTC hour and converted to Asia/Manila
-dates. The only hostname returned is chessunitedglobal.com. Daily estimates total
-680 through 26 November. November 25 has 140 versus 60 on November 24 (+133.3%).
-The historical dataset has an average sampling interval of 10; its normalized
-counts are estimates. See analytics-cloudflare-history.json for the response.
-No counts were adjusted to force a spike or total. Do not multiply the counts
-by the sampling interval again.
+The owner's unlisted `/analytics/` report covers all five requested areas: traffic sources, active time, pages/tabs, exit pages and form problems, and new versus returning visits. It remains noindex, absent from navigation/sitemap and public to anyone with its link; no login is required. The existing site-open counter, date-only presentation, daily/weekly/monthly/yearly grouping, date filters, charts and 30-second refresh remain.
 
-Additive migration 0008 stores daily aggregate counts and coverage dates in D1.
-Historical estimates remain separate from new recorded opens. Live tracking
-starts 27 November; this first day has partial coverage. Repeat public page loads
-and Back/Forward restorations count again. There are no analytics cookies,
-visitor identifiers, per-visit timestamps, page URLs, raw IP addresses or user
-agents stored in analytics. Existing API abuse budgets keep their usual expiring
-hashed IP keys separately. Report/admin/private pages, known bots and browser
-automation checks are excluded. Counters increment atomically and ignore client
-supplied dates/counts. Origins must match and the public route is validated.
-Browser counting can miss blocked requests; it is not proof of unique people.
+## Coverage and definitions
 
-/analytics/ remains unlisted, noindex/nofollow, without login and public by link.
-It shows historical estimates, live coverage, the real November 25 increase,
-date filters, Monday-based weeks, monthly/yearly grouping, comparisons between
-complete periods, charts, table pagination and visibility-aware automatic
-refresh every 30 seconds. The UI displays dates without clock times. Approximate
-figures are marked ≈. The current day and first live-tracking day are partial;
-they do not receive misleading percentage comparisons against complete days.
-No Cloudflare API credential is put in the website, browser or application.
+Genuine Cloudflare estimates from 2–26 November total 680 opens. November 25 has 140 versus 60 on November 24 (+133.3%). Existing evidence is in `analytics-cloudflare-history.json`. Additional hourly path/referrer groups in `analytics-dimensions-cloudflare.json` independently total 680 and generate migration0011's 78 dimension rows. Counts are normalized Cloudflare estimates (average sampling interval10); do not multiply them again. Historical source and page counts are displayed separately from live visits, marked≈. They never increment the existing counter. There are no historical engagement or returning-visitor fixtures. November27 has site-open counting only; detailed tracking begins November28.
+
+Each public load/reload or Back/Forward restore adds one open. New tracker requests carry a random page token, so transport retries add no duplicates. Older cached tracker requests still increment the aggregate counter. A visit groups public browsing with a 30-minute inactivity limit. An in-place return after inactivity starts a new visit without adding a fictional page open. New/returning are mutually exclusive visit classifications: the first known visit of a browser is new; later visits are returning. A browser can have both types of visits in one report range. Distinct identified browsers are shown separately, not claimed as people.
+
+Traffic sources recognize Facebook, Instagram and Google referrers or their allowlisted utm_source tags. The client sends only the referrer's origin, never its path/query/fragment, and no arbitrary campaign strings. Only source categories are stored. Referrer suppression means social shares can appear as Direct/unknown. The first page attributes a visit's source; internal navigation does not overwrite it.
+
+Active time counts foreground, focused browsing; after60seconds without interaction it pauses unless a video is playing. Heartbeats and page lifecycle checkpoints send cumulative active milliseconds, greatest scroll depth, and boolean form-start/completion/error/outbound observations. The server caps time to elapsed time and four hours per page stay; MAX updates prevent retries/out-of-order events from double counting. Hidden/background tabs and idle windows do not add time. Recording is browser based and can miss blocked or interrupted requests.
+
+An exit is the final page of a visit inactive for at least30minutes; current visits are not falsely classified as exits. The report shows completed visits, single-page visits with under10seconds recorded active time, exit-page unfinished forms/errors/outbound clicks, plus page-level form errors. These are observations, not claims about why a person left. A successful outward contact click is not labeled a failure. Form error/completion events carry no answers, error text or customer details. The final order completion event is observed without altering checkout/payment code.
+
+Visit summaries and visit breakdowns attribute engagement to the visit-start date in Manila. Popular-page activity belongs to the page-open date. Weeks start Monday. Missing historical metrics display not tracked rather than invented zero; live periods with no visits show waiting. Failed detail refreshes explicitly label previous data as potentially stale.
+
+## Storage and privacy
+
+Migration0010 adds D1 tables/configuration and does not change customers, payment records, Sheet tabs or the existing analytics counters. Existing Cloudflare compatibility2026-10-01, bindings, secrets and publication workflow remain. Analytics uses a random first-party browser identifier in localStorage with a90-day expiry; the server stores its SHA256 hash. It uses neither account/contact identities nor IP/UA fingerprinting. GPC/DNT and unavailable storage produce unidentified visits without persistent analytics identifiers. Old browser lookup rows are pruned after90days inactive. Existing rate-limit hashes remain separate from analytics.
+
+Only validated public routes can be tracked. Report, private-card/order, admin, API and automation traffic are excluded. No query strings, fragments, private tokens, form answers, names, payment data, raw IPs or UAs are retained in analytics or returned by the report. Raw random page/visit/browser tokens are never exposed by aggregate GETs. Each mutation requires same origin and bounded JSON, uses the existing separate600/minute analytics budget and atomic D1 writes. Public response data contains only dates, fixed paths/source categories and aggregates. Website privacy copy explains local storage and choices.
+
+## Verification
+
+Pure tests cover Manila/calendar boundaries, grouping, source classification and genuine history. Real Workers/D1 tests cover concurrent open dedup, legacy opens, session navigation, browser classification, unidentified/DNT tracking, cumulative time caps, monotonic checkpoints, page/source/exit/form aggregation, privacy and invalid requests. Browser tests use local-only fixtures: repeat opens and BFCache, new and returning visits, active time/background pauses, form errors without values, DNT aggregate time, exit finalization, all date groupings, stale-refresh errors, and responsive production-CSP rendering at320/390/768/1440. Production verification uses reads and normal automation-excluded pages, not fake visitor rows.

@@ -113,6 +113,7 @@
     };
 
     const showErrors = (message, fields) => {
+      form.dispatchEvent(new CustomEvent('cu:form-result',{bubbles:true,detail:{ok:false}}));
       if (status) {
         status.textContent = message || 'Please check the highlighted fields.';
         status.hidden = false;
@@ -203,6 +204,7 @@
           return;
         }
 
+        if (endpoint !== '/api/orders') form.dispatchEvent(new CustomEvent('cu:form-result',{bubbles:true,detail:{ok:true}}));
         if (endpoint === '/api/orders') {
           document.dispatchEvent(new CustomEvent('cu:order-prepared', { detail: body }));
           return;
