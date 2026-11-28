@@ -29,6 +29,10 @@ export async function runSheetsCleanup(env,client,job,columns){
    env.DB.prepare("DELETE FROM sheets_sync WHERE (kind='order' AND record_id<=?) OR (kind='member' AND record_id<=?) OR (kind='registration' AND record_id<=?)").bind(job.order_max,job.member_max,job.registration_max),
    env.DB.prepare("DELETE FROM form_submissions WHERE key_hash IN (SELECT value FROM json_each(?)) AND kind IN ('member','registration','order','club-registration')").bind(job.submission_keys_json),
    env.DB.prepare('DELETE FROM shipping_quotes WHERE id IN (SELECT value FROM json_each(?))').bind(job.quote_ids_json),
+   // Newer records may already have synced before this lease was acquired.
+   // Their source data survives; queue them again after clearing Sheet rows.
+   env.DB.prepare('UPDATE sheets_sync SET pending=1,last_error=NULL'),
+   env.DB.prepare('UPDATE club_registrations SET pending=1,last_error=NULL'),
    env.DB.prepare("UPDATE sheets_cleanup SET requested=0,completed_at=datetime('now'),last_error=NULL,result_json=?,submission_keys_json='[]',quote_ids_json='[]' WHERE id=1 AND requested=1").bind(JSON.stringify(info))
   ]);
   return{cleared:true,deleted:result.slice(0,7).map(r=>r.meta?.changes||0)};
