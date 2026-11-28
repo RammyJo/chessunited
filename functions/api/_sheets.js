@@ -1,5 +1,6 @@
 import {clubSetup,LEGACY_TOURNAMENT_TAB} from './_club-registration.js';
 import {runClubSheetWork,verifyClubHeaders} from './_club-sheets.js';
+import {pendingSheetsCleanup,runSheetsCleanup} from './_sheets-cleanup.js';
 import { paidLabel, paymentStatusForMark } from './_payment-status.js';
 /** Server-only Google Sheets mirror. D1 is authoritative; never append blindly. */
 const DEFAULT_SHEET = '1HyWudE1b-yizLdvrjAwUfx7roC-jLYQZig-VfpoCLbI';
@@ -184,6 +185,8 @@ export async function drainSheets(env, { fetcher = fetch, deadline = Date.now() 
   let processed = 0;
   let checked = 0;
   try {
+    const cleanup=await pendingSheetsCleanup(env);
+    if(cleanup){const client=await createSheetsClient(env,fetcher,deadline);return{processed,checked,...await runSheetsCleanup(env,client,cleanup,SHEET_COLUMNS)};}
     const candidates = (await env.DB.prepare('SELECT kind,record_id,version,paid_snapshot FROM sheets_sync ORDER BY payment_checked_at, kind, record_id LIMIT 40').all()).results || [];
     const setup=await clubSetup(env);
     if (!candidates.length && !setup?.enabled) return { processed, checked };
